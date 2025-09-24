@@ -2293,7 +2293,7 @@ MonoBehaviour:
   m_FillClockwise: 1
   m_FillOrigin: 0
   m_UseSpriteMesh: 0
-  m_PixelsPerUnitMultiplier: 0.2
+  m_PixelsPerUnitMultiplier: 0.25
 --- !u!222 &1409530313
 CanvasRenderer:
   m_ObjectHideFlags: 0
@@ -2683,8 +2683,12 @@ PrefabInstance:
     m_TransformParent: {fileID: 1085398271}
     m_Modifications:
     - target: {fileID: 17509593006694812, guid: e7b7bff0678d1134fa5614c6634c15ac, type: 3}
+      propertyPath: m_Sprite
+      value: 
+      objectReference: {fileID: 21300000, guid: 94fc7c772ff3e3e4e82e2104009827fe, type: 3}
+    - target: {fileID: 17509593006694812, guid: e7b7bff0678d1134fa5614c6634c15ac, type: 3}
       propertyPath: m_PixelsPerUnitMultiplier
-      value: 0.4
+      value: 0.22
       objectReference: {fileID: 0}
     - target: {fileID: 3065580681144466826, guid: e7b7bff0678d1134fa5614c6634c15ac, type: 3}
       propertyPath: m_Name
