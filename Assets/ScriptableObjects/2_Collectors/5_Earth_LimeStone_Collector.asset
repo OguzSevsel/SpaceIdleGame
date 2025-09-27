@@ -13,6 +13,7 @@ MonoBehaviour:
   m_Name: 5_Earth_LimeStone_Collector
   m_EditorClassIdentifier: Assembly-CSharp::CollectorType
   CollectorTypeName: 4
-  Resource: {fileID: 11400000, guid: f918dbeec31ff9d41959da7aa440e955, type: 2}
+  generatedResource: {fileID: 11400000, guid: f918dbeec31ff9d41959da7aa440e955, type: 2}
+  costResourcesToUpgrade: []
   CollectionRate: 5
   Speed: 5

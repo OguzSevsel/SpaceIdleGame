@@ -13,6 +13,7 @@ MonoBehaviour:
   m_Name: 9_Earth_Diamond_Collector
   m_EditorClassIdentifier: Assembly-CSharp::CollectorType
   CollectorTypeName: 8
-  Resource: {fileID: 11400000, guid: 4cef1d4828b12fe4fb5d71b6d30f5adc, type: 2}
+  generatedResource: {fileID: 11400000, guid: 4cef1d4828b12fe4fb5d71b6d30f5adc, type: 2}
+  costResourcesToUpgrade: []
   CollectionRate: 5
   Speed: 5

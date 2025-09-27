@@ -13,6 +13,7 @@ MonoBehaviour:
   m_Name: 3_Earth_Copper_Collector
   m_EditorClassIdentifier: Assembly-CSharp::CollectorType
   CollectorTypeName: 2
-  Resource: {fileID: 11400000, guid: 4da0a6aaf214d83469a59f42db428c8e, type: 2}
+  generatedResource: {fileID: 11400000, guid: 4da0a6aaf214d83469a59f42db428c8e, type: 2}
+  costResourcesToUpgrade: []
   CollectionRate: 2
   Speed: 2

@@ -13,6 +13,7 @@ MonoBehaviour:
   m_Name: 4_Earth_Silicon_Collector
   m_EditorClassIdentifier: Assembly-CSharp::CollectorType
   CollectorTypeName: 3
-  Resource: {fileID: 11400000, guid: 5b05eeaf8fe298346a5c9875857fd020, type: 2}
+  generatedResource: {fileID: 11400000, guid: 5b05eeaf8fe298346a5c9875857fd020, type: 2}
+  costResourcesToUpgrade: []
   CollectionRate: 1.5
   Speed: 0.5

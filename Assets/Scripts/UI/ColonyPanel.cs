@@ -29,11 +29,11 @@ public class ColonyPanel : MonoBehaviour
     {
         if (e.colonyType == this.colonyType)
         {
-            _resourceText = GetResourceText(e.collectorType.CollectorTypeName);
+            _resourceText = GetResourceText(e.collector.CollectorType.CollectorTypeName);
 
             if (_resourceText != null)
             {
-                _resourceText.text = e.collectorType.ToString();
+                _resourceText.text = e.collector.ToString();
             }
         }
     }

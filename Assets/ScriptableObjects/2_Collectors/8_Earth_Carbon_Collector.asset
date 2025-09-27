@@ -13,6 +13,7 @@ MonoBehaviour:
   m_Name: 8_Earth_Carbon_Collector
   m_EditorClassIdentifier: Assembly-CSharp::CollectorType
   CollectorTypeName: 7
-  Resource: {fileID: 11400000, guid: d32da9f7dd24515489725c511123faa9, type: 2}
+  generatedResource: {fileID: 11400000, guid: d32da9f7dd24515489725c511123faa9, type: 2}
+  costResourcesToUpgrade: []
   CollectionRate: 5
   Speed: 5

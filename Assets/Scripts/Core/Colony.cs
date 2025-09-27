@@ -1,3 +1,4 @@
+using Mono.Cecil;
 using System;
 using System.Collections.Generic;
 using UnityEngine;
@@ -6,6 +7,8 @@ public class Colony : MonoBehaviour
 {
     public ColonyType ColonyType;
     public List<Collector> Collectors;
+    public ResourceType Money;
+    private double moneyAmount;
 
     private void OnEnable()
     {
@@ -21,6 +24,28 @@ public class Colony : MonoBehaviour
             {
                 foundCollector.Collect();
             }
+        }
+    }
+
+    public bool CheckIfColonyHasEnoughResourcesForUpgrade(ResourceTypeEnum resourceType, double resourceAmount)
+    {
+        if (resourceType == Money.ResourceName)
+        {
+            return moneyAmount >= resourceAmount;
+        }
+        else
+        {
+            foreach (Collector collector in Collectors)
+            {
+                foreach (CostResource resource in collector.CollectorType.costResourcesToUpgrade)
+                {
+                    if (resource.resourceType.ResourceName == resourceType)
+                    {
+                        return collector.resourceAmount >= resource.amount;
+                    }
+                }
+            }
+            return false;
         }
     }
 

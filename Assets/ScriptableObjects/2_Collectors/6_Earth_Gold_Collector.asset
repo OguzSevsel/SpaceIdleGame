@@ -13,6 +13,7 @@ MonoBehaviour:
   m_Name: 6_Earth_Gold_Collector
   m_EditorClassIdentifier: Assembly-CSharp::CollectorType
   CollectorTypeName: 5
-  Resource: {fileID: 11400000, guid: 42fa758f7e75b3d489c76fe3527e883d, type: 2}
+  generatedResource: {fileID: 11400000, guid: 42fa758f7e75b3d489c76fe3527e883d, type: 2}
+  costResourcesToUpgrade: []
   CollectionRate: 5
   Speed: 5

@@ -4445,6 +4445,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Collector
   CollectorType: {fileID: 11400000, guid: 21486b47564519640926d55879042de5, type: 2}
+  resourceAmount: 0
 --- !u!1 &298124298
 GameObject:
   m_ObjectHideFlags: 0
@@ -4839,6 +4840,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Collector
   CollectorType: {fileID: 11400000, guid: 02774d237e6162b42af96fc8141cfa08, type: 2}
+  resourceAmount: 0
 --- !u!1 &418979915
 GameObject:
   m_ObjectHideFlags: 0
@@ -5005,6 +5007,7 @@ MonoBehaviour:
   - {fileID: 402933533}
   - {fileID: 864764568}
   - {fileID: 1093115195}
+  Money: {fileID: 0}
 --- !u!1 &478623017
 GameObject:
   m_ObjectHideFlags: 0
@@ -5335,6 +5338,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Collector
   CollectorType: {fileID: 11400000, guid: 7c9104edf94c00b4bb1756047e75e433, type: 2}
+  resourceAmount: 0
 --- !u!1 &751459188
 GameObject:
   m_ObjectHideFlags: 0
@@ -5380,6 +5384,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Collector
   CollectorType: {fileID: 11400000, guid: 1b7a74ff163ffbe4aa2dda452ce6fbf7, type: 2}
+  resourceAmount: 0
 --- !u!1 &799713635
 GameObject:
   m_ObjectHideFlags: 0
@@ -5607,6 +5612,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Collector
   CollectorType: {fileID: 11400000, guid: 093e44719c2402e418646e2082412a0e, type: 2}
+  resourceAmount: 0
 --- !u!1 &864764566
 GameObject:
   m_ObjectHideFlags: 0
@@ -5652,6 +5658,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Collector
   CollectorType: {fileID: 11400000, guid: a26f276b9a66b43419b157cf27d69d4f, type: 2}
+  resourceAmount: 0
 --- !u!1 &867395623
 GameObject:
   m_ObjectHideFlags: 0
@@ -6277,6 +6284,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Collector
   CollectorType: {fileID: 11400000, guid: 1de7a2d8c62d53d42a232095a39713b5, type: 2}
+  resourceAmount: 0
 --- !u!1 &1211380841
 GameObject:
   m_ObjectHideFlags: 0
@@ -7804,6 +7812,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Collector
   CollectorType: {fileID: 11400000, guid: c8882836575a58849846538e1900aeab, type: 2}
+  resourceAmount: 0
 --- !u!1 &1781506162
 GameObject:
   m_ObjectHideFlags: 0
@@ -8212,6 +8221,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Collector
   CollectorType: {fileID: 11400000, guid: 34e4d3851261e414280d97d109166617, type: 2}
+  resourceAmount: 0
 --- !u!1 &2087629298
 GameObject:
   m_ObjectHideFlags: 0

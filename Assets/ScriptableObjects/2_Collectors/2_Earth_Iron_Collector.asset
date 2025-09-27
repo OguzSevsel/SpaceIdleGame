@@ -13,6 +13,7 @@ MonoBehaviour:
   m_Name: 2_Earth_Iron_Collector
   m_EditorClassIdentifier: Assembly-CSharp::CollectorType
   CollectorTypeName: 1
-  Resource: {fileID: 11400000, guid: 2aaf09a0c69eb8446a6817b2086b6906, type: 2}
+  generatedResource: {fileID: 11400000, guid: 2aaf09a0c69eb8446a6817b2086b6906, type: 2}
+  costResourcesToUpgrade: []
   CollectionRate: 5
   Speed: 1

@@ -6,10 +6,9 @@ using UnityEngine;
 
 public struct CollectorFinishedEvent
 {
-    public CollectorType collectorType;
+    public Collector collector;
     public ColonyTypeEnum colonyType;
     public double amountCollected;
-
 }
 
 public struct CollectorRequestedEvent
@@ -35,8 +34,11 @@ public struct CollectorUpgradeRequestedEvent
 
 public struct CollectorUpgradeStartedEvent
 {
-    public CollectorTypeEnum collectorType;
-    public ColonyTypeEnum colonyType;
+    public CollectorTypeEnum? collectorType;
+    public ColonyTypeEnum? colonyType;
+    public UpgradeCategory upgradeCategory;
+    public UpgradeType upgradeType;
+    public double upgradeMultiplier;
 }
 
 public struct CollectorUpgradeFinishedEvent

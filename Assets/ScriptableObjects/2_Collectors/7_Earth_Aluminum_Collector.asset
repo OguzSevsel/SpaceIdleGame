@@ -13,6 +13,7 @@ MonoBehaviour:
   m_Name: 7_Earth_Aluminum_Collector
   m_EditorClassIdentifier: Assembly-CSharp::CollectorType
   CollectorTypeName: 6
-  Resource: {fileID: 11400000, guid: d4ec4f414046d4642b5a56335db4ae9c, type: 2}
+  generatedResource: {fileID: 11400000, guid: d4ec4f414046d4642b5a56335db4ae9c, type: 2}
+  costResourcesToUpgrade: []
   CollectionRate: 5
   Speed: 5

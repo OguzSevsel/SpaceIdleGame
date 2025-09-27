@@ -1,3 +1,5 @@
+using System;
+using System.Collections.Generic;
 using UnityEngine;
 
 public enum  CollectorTypeEnum
@@ -13,18 +15,19 @@ public enum  CollectorTypeEnum
     DiamondCollector
 }
 
+[Serializable]
+public struct CostResource
+{
+    public ResourceType resourceType;
+    public double amount;
+}
 
 [CreateAssetMenu(fileName = "New Collector Type", menuName = "Scriptable Objects/ New Collector Type")]
 public class CollectorType : ScriptableObject
 {
     public CollectorTypeEnum CollectorTypeName;
-    public ResourceType Resource;
+    public ResourceType generatedResource;
+    public List<CostResource> costResourcesToUpgrade;
     public double CollectionRate;
     public double Speed;
-    
-
-    public override string ToString()
-    {
-        return $"{Resource.Amount} {Resource.Unit}";
-    }
 }
