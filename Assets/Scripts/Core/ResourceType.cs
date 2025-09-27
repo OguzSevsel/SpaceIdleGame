@@ -17,8 +17,8 @@ public enum ResourceTypeEnum
 public class ResourceType : ScriptableObject
 {
     public ResourceTypeEnum ResourceName;
-    public Sprite Icon;
     public double Amount = 0d;
+    public string Unit;
 
     public void AddAmount(double amountToAdd)
     {

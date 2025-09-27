@@ -21,4 +21,10 @@ public class CollectorType : ScriptableObject
     public ResourceType Resource;
     public double CollectionRate;
     public double Speed;
+    
+
+    public override string ToString()
+    {
+        return $"{Resource.Amount} {Resource.Unit}";
+    }
 }

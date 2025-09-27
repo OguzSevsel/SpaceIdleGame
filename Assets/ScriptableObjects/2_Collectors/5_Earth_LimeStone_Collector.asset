@@ -10,9 +10,9 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 8d037f67aabf2b246a5cccc3dd141173, type: 3}
-  m_Name: Earth_Energy_Collector
+  m_Name: 5_Earth_LimeStone_Collector
   m_EditorClassIdentifier: Assembly-CSharp::CollectorType
-  CollectorName: EnergyCollector
-  Resource: {fileID: 11400000, guid: cf6cf8b99a21ade469aa0ce7005d4f70, type: 2}
-  CollectionRate: 15
-  Speed: 3
+  CollectorTypeName: 4
+  Resource: {fileID: 11400000, guid: f918dbeec31ff9d41959da7aa440e955, type: 2}
+  CollectionRate: 5
+  Speed: 5

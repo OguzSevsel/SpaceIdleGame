@@ -33,7 +33,7 @@ public class Collector : MonoBehaviour
                 isCollecting = false;
                 EventBus.Publish(new CollectorFinishedEvent() 
                 { 
-                    collectorType = CollectorType.CollectorTypeName, 
+                    collectorType = this.CollectorType, 
                     colonyType = GetComponentInParent<Colony>().ColonyType.ColonyTypeName 
                 });
 

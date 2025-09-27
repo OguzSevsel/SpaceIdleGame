@@ -38,4 +38,9 @@ public static class EventBus
             (del as Action<T>)?.Invoke(eventData);
         }
     }
+
+    internal static object Subscribe<T>()
+    {
+        throw new NotImplementedException();
+    }
 }

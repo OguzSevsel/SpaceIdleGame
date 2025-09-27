@@ -1,9 +1,15 @@
 using UnityEngine;
 
+
+
+#region Collector Events
+
 public struct CollectorFinishedEvent
 {
-    public CollectorTypeEnum collectorType;
+    public CollectorType collectorType;
     public ColonyTypeEnum colonyType;
+    public double amountCollected;
+
 }
 
 public struct CollectorRequestedEvent
@@ -18,6 +24,9 @@ public struct CollectorStartedEvent
     public ColonyTypeEnum colonyType;
 }
 
+#endregion
+
+#region Collector Upgrade Events
 public struct CollectorUpgradeRequestedEvent
 {
     public CollectorTypeEnum collectorType;
@@ -35,8 +44,10 @@ public struct CollectorUpgradeFinishedEvent
     public CollectorTypeEnum collectorType;
     public ColonyTypeEnum colonyType;
 }
+#endregion
 
-public struct  CollectorLevelAmountRequestedEvent
+#region Collector Level Amount Events
+public struct CollectorLevelAmountRequestedEvent
 {
     public int amount;
 }
@@ -50,6 +61,9 @@ public struct CollectorLevelAmountFinishedEvent
 {
     public int amount;
 }
+#endregion
+
+#region Collector ProgressBar Events
 
 public struct CollectorProgressEvent
 {
@@ -58,3 +72,7 @@ public struct CollectorProgressEvent
     public float progress;
     public float timeRemaining;
 }
+
+#endregion
+
+

@@ -5206,7 +5206,7 @@ GameObject:
   - component: {fileID: 7448947396275244550}
   - component: {fileID: 4157219813155113175}
   m_Layer: 5
-  m_Name: Panel_Colony_TheMoon
+  m_Name: 12_Panel_Colony_TheMoon
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

@@ -28,6 +28,21 @@ public class CollectorPanel : MonoBehaviour
 
     private void OnEnable()
     {
+        Subscribe();
+    }
+
+    private void OnDisable()
+    {
+        UnSubscribe();
+    }
+
+    private void UnSubscribe()
+    {
+        EventBus.Unsubscribe<CollectorProgressEvent>(OnProgressChanged);
+    }
+
+    private void Subscribe()
+    {
         EventBus.Subscribe<CollectorProgressEvent>(OnProgressChanged);
     }
 
@@ -41,40 +56,7 @@ public class CollectorPanel : MonoBehaviour
 
     private void Start()
     {
-        switch (gameObject.name)
-        {
-            case "Energy_Industry":
-                _collectorType = CollectorTypeEnum.EnergyCollector;
-                break;
-            case "Iron_Industry":
-                _collectorType = CollectorTypeEnum.IronCollector;
-                break;
-            case "Copper_Industry":
-                _collectorType = CollectorTypeEnum.CopperCollector;
-                break;
-            case "Silicon_Industry":
-                _collectorType = CollectorTypeEnum.SiliconCollector;
-                break;
-            case "LimeStone_Industry":
-                _collectorType = CollectorTypeEnum.LimeStoneCollector;
-                break;
-            case "Gold_Industry":
-                _collectorType = CollectorTypeEnum.GoldCollector;
-                break;
-            case "Aluminum_Industry":
-                _collectorType = CollectorTypeEnum.AluminiumCollector;
-                break;
-            case "Carbon_Industry":
-                _collectorType = CollectorTypeEnum.CarbonCollector;
-                break;
-            case "Diamond_Industry":
-                _collectorType = CollectorTypeEnum.DiamondCollector;
-                break;
-
-            default:
-                break;
-        }
-
+        selectCollectorType();
         _button_CollectorPanel = GetComponent<Button>();
         _button_CollectorPanel.onClick.AddListener(OnCollectorPanelButtonClicked);
         button_Upgrade.onClick.AddListener(OnUpgradeButtonClicked);
@@ -120,5 +102,41 @@ public class CollectorPanel : MonoBehaviour
     private void UpdateOutputUIElements(string output)
     {
         text_Output.text = output; 
+    }
+
+    private void selectCollectorType()
+    {
+        switch (gameObject.name)
+        {
+            case "Energy_Industry":
+                _collectorType = CollectorTypeEnum.EnergyCollector;
+                break;
+            case "Iron_Industry":
+                _collectorType = CollectorTypeEnum.IronCollector;
+                break;
+            case "Copper_Industry":
+                _collectorType = CollectorTypeEnum.CopperCollector;
+                break;
+            case "Silicon_Industry":
+                _collectorType = CollectorTypeEnum.SiliconCollector;
+                break;
+            case "LimeStone_Industry":
+                _collectorType = CollectorTypeEnum.LimeStoneCollector;
+                break;
+            case "Gold_Industry":
+                _collectorType = CollectorTypeEnum.GoldCollector;
+                break;
+            case "Aluminum_Industry":
+                _collectorType = CollectorTypeEnum.AluminiumCollector;
+                break;
+            case "Carbon_Industry":
+                _collectorType = CollectorTypeEnum.CarbonCollector;
+                break;
+            case "Diamond_Industry":
+                _collectorType = CollectorTypeEnum.DiamondCollector;
+                break;
+            default:
+                break;
+        }
     }
 }

@@ -10,8 +10,8 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 650bf65b0de402345ac161031f4b9476, type: 3}
-  m_Name: Earth_Energy_Resource
+  m_Name: 7_Earth_Aluminum_Resource
   m_EditorClassIdentifier: Assembly-CSharp::ResourceType
-  ResourceName: 0
-  Icon: {fileID: 21300000, guid: deb27b0a8100c324d9d21e72c27135d3, type: 3}
+  ResourceName: 6
   Amount: 0
+  Unit: KG
