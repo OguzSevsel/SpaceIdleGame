@@ -17,5 +17,9 @@ MonoBehaviour:
   costResourcesToUpgrade:
   - resourceType: {fileID: 11400000, guid: eb45bf55438da1a4f8c1c9e913515d4b, type: 2}
     amount: 5
-  CollectionRate: 15
+    BaseAmount: 5
+  CollectionRate: 2
   Speed: 3
+  Level: 2
+  BaseProduction: 1
+  BaseSpeed: 3

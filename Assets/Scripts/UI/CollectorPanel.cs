@@ -64,7 +64,11 @@ public class CollectorPanel : MonoBehaviour
 
     private void OnUpgradeButtonClicked()
     {
-        EventBus.Publish(new CollectorUpgradeRequestedEvent() { collectorType = this._collectorType , colonyType = this.colonyType});
+        EventBus.Publish(new CollectorUpgradeRequestedEvent() 
+        { 
+            collectorType = this._collectorType,
+            colonyType = this.colonyType
+        });
     }
 
     private void OnCollectorPanelButtonClicked()

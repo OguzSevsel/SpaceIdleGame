@@ -16,10 +16,11 @@ public enum  CollectorTypeEnum
 }
 
 [Serializable]
-public struct CostResource
+public class CostResource
 {
     public ResourceType resourceType;
     public double amount;
+    public double BaseAmount;
 }
 
 [CreateAssetMenu(fileName = "New Collector Type", menuName = "Scriptable Objects/ New Collector Type")]
@@ -30,4 +31,7 @@ public class CollectorType : ScriptableObject
     public List<CostResource> costResourcesToUpgrade;
     public double CollectionRate;
     public double Speed;
+    public int Level;
+    public double BaseProduction;
+    public double BaseSpeed;
 }

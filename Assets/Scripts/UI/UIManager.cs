@@ -22,7 +22,14 @@ public class UIManager : MonoBehaviour
 
     private void OnCollectorUpgradeRequested(CollectorUpgradeRequestedEvent e)
     {
-        EventBus.Publish(new CollectorUpgradeStartedEvent() { collectorType = e.collectorType, colonyType = e.colonyType});
+        EventBus.Publish(new CollectorUpgradeStartedEvent()
+        {
+            collectorType = e.collectorType,
+            colonyType = e.colonyType,
+            upgradeCategory = UpgradeCategory.Local,
+            upgradeType = UpgradeType.CollectorAmount,
+            upgradeMultiplier = 1.1d
+        });
     }
 
     private void OnCollectorRequested(CollectorRequestedEvent e)

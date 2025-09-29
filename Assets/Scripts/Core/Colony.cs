@@ -7,8 +7,7 @@ public class Colony : MonoBehaviour
 {
     public ColonyType ColonyType;
     public List<Collector> Collectors;
-    public ResourceType Money;
-    private double moneyAmount;
+    public CostResource Money;
 
     private void OnEnable()
     {
@@ -27,11 +26,16 @@ public class Colony : MonoBehaviour
         }
     }
 
-    public bool CheckIfColonyHasEnoughResourcesForUpgrade(ResourceTypeEnum resourceType, double resourceAmount)
+    public bool CheckIfColonyHasEnoughResourcesForUpgrade(CostResource resourceType, double resourceAmount)
     {
-        if (resourceType == Money.ResourceName)
+        if (resourceType.resourceType == Money.resourceType)
         {
-            return moneyAmount >= resourceAmount;
+            if (Money.amount >= resourceAmount)
+            {
+                Money.amount = Money.amount - resourceAmount;
+                return true;
+            }
+            return false;
         }
         else
         {
@@ -39,9 +43,13 @@ public class Colony : MonoBehaviour
             {
                 foreach (CostResource resource in collector.CollectorType.costResourcesToUpgrade)
                 {
-                    if (resource.resourceType.ResourceName == resourceType)
+                    if (resource.resourceType == resourceType.resourceType)
                     {
-                        return collector.resourceAmount >= resource.amount;
+                        if (collector.resourceAmount >= resource.amount)
+                        {
+                            collector.resourceAmount -= resource.amount;
+                            return true;
+                        }
                     }
                 }
             }

@@ -26,7 +26,8 @@ public class Collector : MonoBehaviour, IUpgradeable
             EventBus.Publish(new CollectorProgressEvent() 
             { 
                 collectorType = CollectorType.CollectorTypeName, 
-                progress = Mathf.Clamp01(collectionTimer /(float)CollectorType.Speed) , timeRemaining = (float)CollectorType.Speed - collectionTimer 
+                progress = Mathf.Clamp01(collectionTimer /(float)CollectorType.Speed), 
+                timeRemaining = (float)CollectorType.Speed - collectionTimer 
             });
 
             if (collectionTimer >= CollectorType.Speed)
@@ -44,7 +45,8 @@ public class Collector : MonoBehaviour, IUpgradeable
                 { 
                     collectorType = CollectorType.CollectorTypeName,
                     colonyType = _colony.ColonyType.ColonyTypeName,
-                    progress = Mathf.Clamp01(0f), timeRemaining = 0f
+                    progress = Mathf.Clamp01(0f), 
+                    timeRemaining = 0f
                 });
             }
         }
@@ -111,7 +113,7 @@ public class Collector : MonoBehaviour, IUpgradeable
     {
         foreach (CostResource resource in this.CollectorType.costResourcesToUpgrade)
         {
-            bool isUpgradeable = _colony.CheckIfColonyHasEnoughResourcesForUpgrade(resource.resourceType.ResourceName, resource.amount);
+            bool isUpgradeable = _colony.CheckIfColonyHasEnoughResourcesForUpgrade(resource, resource.amount);
 
             if (isUpgradeable)
             {
@@ -123,8 +125,9 @@ public class Collector : MonoBehaviour, IUpgradeable
                             this.CollectorType.Speed /= upgradeMultiplier;
                             break;
                         case UpgradeType.CollectorAmount:
-                            this.CollectorType.CollectionRate *= upgradeMultiplier;
-                            IncreaseUpgradeCost(upgradeCostMultiplier);
+                            this.CollectorType.Level++;
+                            this.CollectorType.CollectionRate = CollectorType.BaseProduction * CollectorType.Level;
+                            IncreaseUpgradeCost(resource, upgradeCostMultiplier);
                             break;
                         case UpgradeType.AutoCollect:
                             AutoCollect();
@@ -137,15 +140,10 @@ public class Collector : MonoBehaviour, IUpgradeable
         }
     }
 
-    private void IncreaseUpgradeCost(double costMultiplier)
+    private void IncreaseUpgradeCost(CostResource resource, double costMultiplier)
     {
-        for (int i = 0; i < CollectorType.costResourcesToUpgrade.Count; i++)
-        {
-            var resource = CollectorType.costResourcesToUpgrade[i];
-            resource.amount *= upgradeCostMultiplier;
-            CollectorType.costResourcesToUpgrade[i] = resource;
-            Debug.Log($"New upgrade cost for {CollectorType.CollectorTypeName} is {resource.resourceType} {resource.amount}");
-        }
+        resource.amount *= resource.BaseAmount * Math.Pow(costMultiplier, this.CollectorType.Level);
+        Debug.Log($"New upgrade cost for {CollectorType.CollectorTypeName} is {resource.resourceType} {resource.amount}");
     }
 
 
