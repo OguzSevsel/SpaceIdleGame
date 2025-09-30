@@ -12,7 +12,6 @@ public class ColonyPanel : MonoBehaviour
     public List<CollectorPanel> CollectorPanels;
     public List<TextMeshProUGUI> ColonyResourceTexts;
     public List<Button> CollectorAmountButtons;
-    
     private TextMeshProUGUI _resourceText;
 
     void Start()

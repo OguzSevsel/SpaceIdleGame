@@ -12,6 +12,12 @@ public class Colony : MonoBehaviour
     private void OnEnable()
     {
         EventBus.Subscribe<CollectorStartedEvent>(OnCollectorStarted);
+        EventBus.Subscribe<ConverterRequestedEvent>(OnConverterRequested);
+    }
+
+    private void OnConverterRequested(ConverterRequestedEvent @event)
+    {
+        throw new NotImplementedException();
     }
 
     private void OnCollectorStarted(CollectorStartedEvent e)

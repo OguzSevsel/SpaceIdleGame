@@ -77,4 +77,20 @@ public struct CollectorProgressEvent
 
 #endregion
 
+#region Converter Events
+
+public struct ConverterRequestedEvent
+{
+    public ColonyTypeEnum colonyType;
+    public TabButton tabButton;
+}
+
+public struct ConverterStartedEvent
+{
+    public Colony colony;
+
+}
+
+#endregion
+
 

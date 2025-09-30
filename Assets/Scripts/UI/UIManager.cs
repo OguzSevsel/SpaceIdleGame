@@ -7,6 +7,7 @@ using System;
 public class UIManager : MonoBehaviour
 {
     public List<ColonyPanel> ColonyPanels;
+    public List<ConvertPanel> ConverterPanels;
 
     private void SubscribeToEvents()
     {
