@@ -2,29 +2,52 @@ using Mono.Cecil;
 using System;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UIElements;
 
 public class Colony : MonoBehaviour
 {
     public ColonyType ColonyType;
     public List<Collector> Collectors;
     public CostResource Money;
+    public UpgradeMultipliers Multiplier;
+
+    private bool _isShowingSellUI = false;
 
     private void OnEnable()
     {
         EventBus.Subscribe<CollectorStartedEvent>(OnCollectorStarted);
-        EventBus.Subscribe<ConverterRequestedEvent>(OnConverterRequested);
+        EventBus.Subscribe<SellUIStartedEvent>(OnSellUIStarted);
     }
 
-    private void OnConverterRequested(ConverterRequestedEvent @event)
+    private void OnSellUIStarted(SellUIStartedEvent e)
     {
-        throw new NotImplementedException();
+        if (e.TabButton.gameObject.name == "Button_Convert")
+        {
+            _isShowingSellUI = true;
+        }
+        else
+        {
+            _isShowingSellUI = false;
+        }
+    }
+
+    private void Update()
+    {
+        if (_isShowingSellUI)
+        {
+            EventBus.Publish(new SellUIChangeEvent()
+            {
+                ColonyType = ColonyType.ColonyTypeName,
+                Collectors = this.Collectors,
+            });
+        }
     }
 
     private void OnCollectorStarted(CollectorStartedEvent e)
     {
-        if (e.colonyType == ColonyType.ColonyTypeName)
+        if (e.ColonyType == ColonyType.ColonyTypeName)
         {
-            Collector foundCollector = GetCollector(e.collectorType);
+            Collector foundCollector = GetCollector(e.CollectorType);
             if (foundCollector != null)
             {
                 foundCollector.Collect();
@@ -47,13 +70,13 @@ public class Colony : MonoBehaviour
         {
             foreach (Collector collector in Collectors)
             {
-                foreach (CostResource resource in collector.CollectorType.costResourcesToUpgrade)
+                foreach (CostResource resource in collector.CollectorType.CostResourcesToUpgrade)
                 {
                     if (resource.resourceType == resourceType.resourceType)
                     {
-                        if (collector.resourceAmount >= resource.amount)
+                        if (collector.ResourceAmount >= resource.amount)
                         {
-                            collector.resourceAmount -= resource.amount;
+                            collector.ResourceAmount -= resource.amount;
                             return true;
                         }
                     }

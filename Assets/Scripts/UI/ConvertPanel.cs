@@ -1,16 +1,17 @@
+using System;
 using UnityEngine;
+using System.Collections.Generic;
+using UnityEngine.UI;
+using TMPro;
 
 public class ConvertPanel : MonoBehaviour
 {
-    // Start is called once before the first execution of Update after the MonoBehaviour is created
-    void Start()
+    [SerializeField] private List<ConvertButton> _convertButtons;
+    [SerializeField] private Button _buttonSell;
+    [SerializeField] private TextMeshProUGUI _textSell;
+    
+    public void UpdateUI(string resourceUnit, string resourceName, double moneyAmount, double resourceAmount)
     {
-        
-    }
-
-    // Update is called once per frame
-    void Update()
-    {
-        
+        _textSell.text = $"You will sell {resourceAmount} {resourceUnit} of {resourceName} for {moneyAmount}?";
     }
 }

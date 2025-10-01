@@ -21,5 +21,6 @@ MonoBehaviour:
   CollectionRate: 2
   Speed: 3
   Level: 2
+  LevelAmount: 1
   BaseProduction: 1
   BaseSpeed: 3

@@ -5,79 +5,86 @@ using UnityEngine;
 
 public class Collector : MonoBehaviour, IUpgradeable
 {
+    //Types
     public CollectorType CollectorType;
-    private float collectionTimer;
-    private bool isCollecting;
-    private bool isAutoCollecting;
-    public double resourceAmount;
     private Colony _colony;
-    private double upgradeCostMultiplier = 1.1d;
+
+    //Bools
+    private bool _isCollecting;
+    private bool _isAutoCollecting;
+
+    //Trackers
+    private float _collectionTimer;
+    public double ResourceAmount;
+    public double SellMoneyAmount;
+
 
     private void Start()
     {
         _colony = GetComponentInParent<Colony>();
     }
+
     void Update()
     {
-        if (isCollecting)
+        if (_isCollecting)
         {
-            collectionTimer += Time.deltaTime;
+            _collectionTimer += Time.deltaTime;
 
             EventBus.Publish(new CollectorProgressEvent() 
             { 
-                collectorType = CollectorType.CollectorTypeName, 
-                progress = Mathf.Clamp01(collectionTimer /(float)CollectorType.Speed), 
-                timeRemaining = (float)CollectorType.Speed - collectionTimer 
+                CollectorType = CollectorType.CollectorTypeName, 
+                Progress = Mathf.Clamp01(_collectionTimer /(float)CollectorType.Speed), 
+                TimeRemaining = (float)CollectorType.Speed - _collectionTimer 
             });
 
-            if (collectionTimer >= CollectorType.Speed)
+            if (_collectionTimer >= CollectorType.Speed)
             {
-                collectionTimer = 0f;
+                _collectionTimer = 0f;
                 AddAmount(CollectorType.CollectionRate);
-                isCollecting = false;
+                _isCollecting = false;
                 EventBus.Publish(new CollectorFinishedEvent()
                 {
-                    collector = this,
-                    colonyType = _colony.ColonyType.ColonyTypeName
+                    Collector = this,
+                    ColonyType = _colony.ColonyType.ColonyTypeName
                 });
 
                 EventBus.Publish(new CollectorProgressEvent() 
                 { 
-                    collectorType = CollectorType.CollectorTypeName,
-                    colonyType = _colony.ColonyType.ColonyTypeName,
-                    progress = Mathf.Clamp01(0f), 
-                    timeRemaining = 0f
+                    CollectorType = CollectorType.CollectorTypeName,
+                    ColonyType = _colony.ColonyType.ColonyTypeName,
+                    Progress = Mathf.Clamp01(0f), 
+                    TimeRemaining = 0f
                 });
             }
         }
 
-        if (isAutoCollecting)
+        if (_isAutoCollecting)
         {
-            collectionTimer += Time.deltaTime;
+            _collectionTimer += Time.deltaTime;
 
             EventBus.Publish(new CollectorProgressEvent()
             {
-                collectorType = CollectorType.CollectorTypeName,
-                progress = Mathf.Clamp01(collectionTimer / (float)CollectorType.Speed),
-                timeRemaining = (float)CollectorType.Speed - collectionTimer
+                CollectorType = CollectorType.CollectorTypeName,
+                Progress = Mathf.Clamp01(_collectionTimer / (float)CollectorType.Speed),
+                TimeRemaining = (float)CollectorType.Speed - _collectionTimer
             });
 
-            if (collectionTimer >= CollectorType.Speed)
+            if (_collectionTimer >= CollectorType.Speed)
             {
-                collectionTimer = 0f;
+                _collectionTimer = 0f;
                 AddAmount(CollectorType.CollectionRate);
                 EventBus.Publish(new CollectorFinishedEvent()
                 {
-                    collector = this,
-                    colonyType = _colony.ColonyType.ColonyTypeName
+                    Collector = this,
+                    ColonyType = _colony.ColonyType.ColonyTypeName
                 });
 
                 EventBus.Publish(new CollectorProgressEvent()
                 {
-                    collectorType = CollectorType.CollectorTypeName,
-                    colonyType = _colony.ColonyType.ColonyTypeName,
-                    progress = Mathf.Clamp01(0f),
-                    timeRemaining = 0f
+                    CollectorType = CollectorType.CollectorTypeName,
+                    ColonyType = _colony.ColonyType.ColonyTypeName,
+                    Progress = Mathf.Clamp01(0f),
+                    TimeRemaining = 0f
                 });
             }
         }
@@ -90,28 +97,29 @@ public class Collector : MonoBehaviour, IUpgradeable
 
     public override string ToString()
     {
-        return $"{resourceAmount} {CollectorType.generatedResource.Unit}";
+        return $"{ResourceAmount} {CollectorType.GeneratedResource.Unit}";
     }
 
     public void AddAmount(double amountToAdd)
     {
-        resourceAmount += amountToAdd;
+        ResourceAmount += amountToAdd;
+        SellMoneyAmount = ResourceAmount * _colony.Multiplier.SellRate;
     }
 
 
     public void Collect()
     {
-        isCollecting = true;
+        _isCollecting = true;
     }
     public void AutoCollect()
     {
-        isAutoCollecting = true;
+        _isAutoCollecting = true;
     }
 
 
     public void Upgrade(UpgradeCategory upgradeCategory, UpgradeType upgradeType, ColonyTypeEnum? colonyType, CollectorTypeEnum? collectorType, double upgradeMultiplier)
     {
-        foreach (CostResource resource in this.CollectorType.costResourcesToUpgrade)
+        foreach (CostResource resource in this.CollectorType.CostResourcesToUpgrade)
         {
             bool isUpgradeable = _colony.CheckIfColonyHasEnoughResourcesForUpgrade(resource, resource.amount);
 
@@ -125,9 +133,9 @@ public class Collector : MonoBehaviour, IUpgradeable
                             this.CollectorType.Speed /= upgradeMultiplier;
                             break;
                         case UpgradeType.CollectorAmount:
-                            this.CollectorType.Level++;
+                            this.CollectorType.Level = this.CollectorType.Level + this.CollectorType.LevelAmount;
                             this.CollectorType.CollectionRate = CollectorType.BaseProduction * CollectorType.Level;
-                            IncreaseUpgradeCost(resource, upgradeCostMultiplier);
+                            IncreaseUpgradeCost(resource, _colony.Multiplier.CollectorUpgradeCostMultiplier);
                             break;
                         case UpgradeType.AutoCollect:
                             AutoCollect();
@@ -149,14 +157,21 @@ public class Collector : MonoBehaviour, IUpgradeable
 
     private void OnCollectorUpgradeStarted(CollectorUpgradeStartedEvent e)
     {
-        Upgrade(e.upgradeCategory, e.upgradeType, e.colonyType, e.collectorType, e.upgradeMultiplier);
+        Upgrade(e.UpgradeCategory, e.UpgradeType, e.ColonyType, e.CollectorType, e.UpgradeMultiplier);
     }
 
 
     private void OnEnable()
     {
         EventBus.Subscribe<CollectorUpgradeStartedEvent>(OnCollectorUpgradeStarted);
+        EventBus.Subscribe<CollectorLevelAmount>(OnCollectorLevelAmount);
     }
+
+    private void OnCollectorLevelAmount(CollectorLevelAmount e)
+    {
+        this.CollectorType.LevelAmount = e.Amount;
+    }
+
     private void OnDisable()
     {
         EventBus.Unsubscribe<CollectorUpgradeStartedEvent>(OnCollectorUpgradeStarted);

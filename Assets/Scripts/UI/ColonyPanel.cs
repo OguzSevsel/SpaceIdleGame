@@ -26,13 +26,13 @@ public class ColonyPanel : MonoBehaviour
 
     private void OnCollectorFinished(CollectorFinishedEvent e)
     {
-        if (e.colonyType == this.colonyType)
+        if (e.ColonyType == this.colonyType)
         {
-            _resourceText = GetResourceText(e.collector.CollectorType.CollectorTypeName);
+            _resourceText = GetResourceText(e.Collector.CollectorType.CollectorTypeName);
 
             if (_resourceText != null)
             {
-                _resourceText.text = e.collector.ToString();
+                _resourceText.text = e.Collector.ToString();
             }
         }
     }
@@ -117,6 +117,6 @@ public class ColonyPanel : MonoBehaviour
 
     private void OnCollectorAmountButtonClicked(int value)
     {
-        EventBus.Publish(new CollectorLevelAmountRequestedEvent() { amount = value });
+        EventBus.Publish(new CollectorLevelAmount() { Amount = value });
     }
 }

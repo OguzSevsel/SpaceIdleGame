@@ -27,11 +27,12 @@ public class CostResource
 public class CollectorType : ScriptableObject
 {
     public CollectorTypeEnum CollectorTypeName;
-    public ResourceType generatedResource;
-    public List<CostResource> costResourcesToUpgrade;
+    public ResourceType GeneratedResource;
+    public List<CostResource> CostResourcesToUpgrade;
     public double CollectionRate;
     public double Speed;
     public int Level;
+    public int LevelAmount;
     public double BaseProduction;
     public double BaseSpeed;
 }

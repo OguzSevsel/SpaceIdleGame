@@ -1,94 +1,78 @@
-using UnityEngine;
-
-
+using System.Collections.Generic;
 
 #region Collector Events
 
 public struct CollectorFinishedEvent
 {
-    public Collector collector;
-    public ColonyTypeEnum colonyType;
-    public double amountCollected;
-}
-
-public struct CollectorRequestedEvent
-{
-    public CollectorTypeEnum collectorType;
-    public ColonyTypeEnum colonyType;
+    public Collector Collector;
+    public ColonyTypeEnum ColonyType;
+    public double AmountCollected;
 }
 
 public struct CollectorStartedEvent
 {
-    public CollectorTypeEnum collectorType;
-    public ColonyTypeEnum colonyType;
+    public CollectorTypeEnum CollectorType;
+    public ColonyTypeEnum ColonyType;
 }
 
 #endregion
 
-#region Collector Upgrade Events
-public struct CollectorUpgradeRequestedEvent
-{
-    public CollectorTypeEnum collectorType;
-    public ColonyTypeEnum colonyType;
-}
+#region Collector Upgrade Event
 
 public struct CollectorUpgradeStartedEvent
 {
-    public CollectorTypeEnum? collectorType;
-    public ColonyTypeEnum? colonyType;
-    public UpgradeCategory upgradeCategory;
-    public UpgradeType upgradeType;
-    public double upgradeMultiplier;
+    public CollectorTypeEnum? CollectorType;
+    public ColonyTypeEnum? ColonyType;
+    public UpgradeCategory UpgradeCategory;
+    public UpgradeType UpgradeType;
+    public double UpgradeMultiplier;
 }
 
 public struct CollectorUpgradeFinishedEvent
 {
-    public CollectorTypeEnum collectorType;
-    public ColonyTypeEnum colonyType;
+    public CollectorTypeEnum CollectorType;
+    public ColonyTypeEnum ColonyType;
 }
 #endregion
 
 #region Collector Level Amount Events
-public struct CollectorLevelAmountRequestedEvent
+
+public struct CollectorLevelAmount
 {
-    public int amount;
+    public int Amount;
 }
 
-public struct CollectorLevelAmountStartedEvent
-{
-    public int amount;
-}
-
-public struct CollectorLevelAmountFinishedEvent
-{
-    public int amount;
-}
 #endregion
 
 #region Collector ProgressBar Events
 
 public struct CollectorProgressEvent
 {
-    public CollectorTypeEnum collectorType;
-    public ColonyTypeEnum colonyType;
-    public float progress;
-    public float timeRemaining;
+    public CollectorTypeEnum CollectorType;
+    public ColonyTypeEnum ColonyType;
+    public float Progress;
+    public float TimeRemaining;
 }
 
 #endregion
 
 #region Converter Events
 
-public struct ConverterRequestedEvent
+public struct SellUIStartedEvent
 {
-    public ColonyTypeEnum colonyType;
-    public TabButton tabButton;
+    public ColonyTypeEnum ColonyType;
+    public TabButton TabButton;
 }
 
-public struct ConverterStartedEvent
+public struct SellUIChangeEvent
 {
-    public Colony colony;
+    public ColonyTypeEnum ColonyType;
+    public List<Collector> Collectors;
+}
 
+public struct SellButtonClickedEvent
+{
+    public ConvertButton Button;
 }
 
 #endregion

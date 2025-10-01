@@ -12,10 +12,10 @@ public class TabButton : MonoBehaviour, IPointerClickHandler, IPointerEnterHandl
     public void OnPointerClick(PointerEventData eventData)
     {
         tabGroup.OnTabSelected(this);
-        EventBus.Publish(new ConverterRequestedEvent() 
+        EventBus.Publish(new SellUIStartedEvent() 
         { 
-            colonyType = colonyType,
-            tabButton = this
+            ColonyType = colonyType,
+            TabButton = this
         });
     }
 
