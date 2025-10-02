@@ -44,7 +44,7 @@ public class CollectorPanel : MonoBehaviour
             CostResource resource = costResources[i];
             TextMeshProUGUI text = _textUpgradeCosts[i];
 
-            text.text = $"{resource.Resource.resourceType} {resource.Resource.ResourceUnit}";
+            text.text = $"{resource.GetCostAmount()} {resource.Resource.ResourceUnit}";
         }
 
         _textUpgradeEffect.text = $"{upgradeEffect}";

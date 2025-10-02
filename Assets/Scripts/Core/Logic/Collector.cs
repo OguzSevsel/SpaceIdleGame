@@ -116,26 +116,32 @@ public class Collector : MonoBehaviour, IUpgradeable, ISellable
 #nullable enable
     public void Upgrade(Upgrades upgrade, CollectorType collectorType, ColonyType colonyType)
     {
-        if (collectorType == this.CollectorData.CollectorType && colonyType == _colony.colonyData.ColonyType)
+        bool isColonyHasEnoughResource = _colony.CheckIfColonyHasEnoughResources(CostResources);
+
+        if (isColonyHasEnoughResource)
         {
-            switch (upgrade)
+            if (collectorType == this.CollectorData.CollectorType && colonyType == _colony.colonyData.ColonyType)
             {
-                case Upgrades.CollectorSpeed:
-                    _speed *= _speedMultiplier;
-                    break;
+                switch (upgrade)
+                {
+                    case Upgrades.CollectorSpeed:
+                        _speed *= _speedMultiplier;
+                        break;
 
-                case Upgrades.CollectorLevel:
-                    _level += _levelIncrement;
-                    _collectionRate = _baseCollectionRate * (_level + _collectionRateMultiplier);
-                    IncreaseCost(_level, overrideCostMultiplier: null);
-                    break;
+                    case Upgrades.CollectorLevel:
+                        _level += _levelIncrement;
+                        _collectionRate = _baseCollectionRate * (_level + _collectionRateMultiplier);
+                        _colony.SpendResources(CostResources);
+                        IncreaseCost(_level, overrideCostMultiplier: null);
+                        break;
 
-                case Upgrades.CollectorAutoCollect:
-                    AutoCollect();
-                    break;
+                    case Upgrades.CollectorAutoCollect:
+                        AutoCollect();
+                        break;
 
-                default:
-                    break;
+                    default:
+                        break;
+                }
             }
         }
     }
@@ -182,6 +188,11 @@ public class Collector : MonoBehaviour, IUpgradeable, ISellable
         {
             _collectionRateMultiplier = collectionRateMultiplier.Value;
         }
+    }
+
+    public void SetResourceAmount(double resourceAmount)
+    {
+        _resourceAmount = resourceAmount;
     }
 
     public double GetResourceAmount()

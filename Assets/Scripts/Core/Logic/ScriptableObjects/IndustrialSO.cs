@@ -78,4 +78,6 @@ public class CostResource
         
         _costAmount = _baseCostAmount * Math.Pow(_costMultiplier, (double)level);
     }
+
+    public double GetCostAmount() { return _costAmount; }
 }
