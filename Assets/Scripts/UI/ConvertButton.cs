@@ -4,7 +4,6 @@ using UnityEngine;
 
 public class ConvertButton : MonoBehaviour
 {
-    [SerializeField] private Collector _collector;
     [SerializeField] private TextMeshProUGUI _textResource;
     [SerializeField] private TextMeshProUGUI _textMoney;
     private double _resourceAmount;
@@ -25,21 +24,21 @@ public class ConvertButton : MonoBehaviour
         _convertPanel.UpdateUI(_resourceUnit, _resourceName, _moneyAmount, _resourceAmount);
     }
 
-    private void OnSellUIChange(SellUIChangeEvent e)
-    {
-        var collector = e.Collectors.Find(c => c == _collector);
+    //private void OnSellUIChange(SellUIChangeEvent e)
+    //{
+    //    var collector = e.Collectors.Find(c => c == _collector);
 
-        if (collector != null)
-        {
-            _resourceAmount = collector.ResourceAmount;
-            _moneyAmount = collector.SellMoneyAmount;
-            _resourceName = collector.CollectorType.GeneratedResource.ResourceName.ToString();
-            _resourceUnit = collector.CollectorType.GeneratedResource.Unit;
+    //    if (collector != null)
+    //    {
+    //        _resourceAmount = collector.CollectorType.ResourceAmount;
+    //        _moneyAmount = collector.CollectorType.SellMoneyAmount;
+    //        _resourceName = collector.CollectorType.GeneratedResource.ResourceName.ToString();
+    //        _resourceUnit = collector.CollectorType.GeneratedResource.Unit;
 
-            _textResource.text = $"{collector.ResourceAmount} {collector.CollectorType.GeneratedResource.Unit}";
-            _textMoney.text = $"{collector.SellMoneyAmount} $";
-        }
-    }
+    //        _textResource.text = $"{collector.CollectorType.ResourceAmount} {collector.CollectorType.GeneratedResource.Unit}";
+    //        _textMoney.text = $"{collector.CollectorType.SellMoneyAmount} $";
+    //    }
+    //}
 
     private void OnEnable()
     {
@@ -53,11 +52,9 @@ public class ConvertButton : MonoBehaviour
 
     private void Subscribe()
     {
-        EventBus.Subscribe<SellUIChangeEvent>(OnSellUIChange);
     }
 
     private void UnSubscribe()
     {
-        EventBus.Unsubscribe<SellUIChangeEvent>(OnSellUIChange);
     }
 }

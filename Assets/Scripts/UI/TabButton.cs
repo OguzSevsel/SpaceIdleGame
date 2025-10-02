@@ -7,16 +7,10 @@ public class TabButton : MonoBehaviour, IPointerClickHandler, IPointerEnterHandl
 {
     [SerializeField] private TabGroup tabGroup;
     public Image backgroundImage;
-    public ColonyTypeEnum colonyType;
 
     public void OnPointerClick(PointerEventData eventData)
     {
         tabGroup.OnTabSelected(this);
-        EventBus.Publish(new SellUIStartedEvent() 
-        { 
-            ColonyType = colonyType,
-            TabButton = this
-        });
     }
 
     public void OnPointerEnter(PointerEventData eventData)

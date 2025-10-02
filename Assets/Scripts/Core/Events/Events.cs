@@ -1,80 +1,38 @@
-using System.Collections.Generic;
+public struct ProgressBarUpdateEvent
+{
+    public Collector Collector;
+    public float Value;
+    public double RemainingTime;
+}
 
-#region Collector Events
+public struct CollectorEvent
+{
+
+}
 
 public struct CollectorFinishedEvent
 {
     public Collector Collector;
-    public ColonyTypeEnum ColonyType;
-    public double AmountCollected;
 }
 
-public struct CollectorStartedEvent
+public struct CollectorUpgradeAmountChangedEvent
 {
-    public CollectorTypeEnum CollectorType;
-    public ColonyTypeEnum ColonyType;
+    public int Value;
 }
 
-#endregion
 
-#region Collector Upgrade Event
 
-public struct CollectorUpgradeStartedEvent
+
+
+
+
+public struct CollectorUpgradeEvent
 {
-    public CollectorTypeEnum? CollectorType;
-    public ColonyTypeEnum? ColonyType;
-    public UpgradeCategory UpgradeCategory;
-    public UpgradeType UpgradeType;
-    public double UpgradeMultiplier;
+    public CollectorType CollectorType;
+    public Upgrades Upgrade;
+    public ColonyType ColonyType;
 }
-
 public struct CollectorUpgradeFinishedEvent
 {
-    public CollectorTypeEnum CollectorType;
-    public ColonyTypeEnum ColonyType;
+    public Collector Collector;
 }
-#endregion
-
-#region Collector Level Amount Events
-
-public struct CollectorLevelAmount
-{
-    public int Amount;
-}
-
-#endregion
-
-#region Collector ProgressBar Events
-
-public struct CollectorProgressEvent
-{
-    public CollectorTypeEnum CollectorType;
-    public ColonyTypeEnum ColonyType;
-    public float Progress;
-    public float TimeRemaining;
-}
-
-#endregion
-
-#region Converter Events
-
-public struct SellUIStartedEvent
-{
-    public ColonyTypeEnum ColonyType;
-    public TabButton TabButton;
-}
-
-public struct SellUIChangeEvent
-{
-    public ColonyTypeEnum ColonyType;
-    public List<Collector> Collectors;
-}
-
-public struct SellButtonClickedEvent
-{
-    public ConvertButton Button;
-}
-
-#endregion
-
-

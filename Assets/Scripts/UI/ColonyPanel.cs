@@ -6,77 +6,60 @@ using System;
 
 public class ColonyPanel : MonoBehaviour
 {
-    public ColonyTypeEnum colonyType;
+    //public ColonyTypeEnum colonyType;
 
     [Header("UI Elements")]
     public List<CollectorPanel> CollectorPanels;
     public List<TextMeshProUGUI> ColonyResourceTexts;
     public List<Button> CollectorAmountButtons;
     private TextMeshProUGUI _resourceText;
+    public ColonyType ColonyType;
 
     void Start()
     {
         SubscribeToLevelAmountButtons();
     }
 
-    private void OnEnable()
-    {
-        EventBus.Subscribe<CollectorFinishedEvent>(OnCollectorFinished);
-    }
-
-    private void OnCollectorFinished(CollectorFinishedEvent e)
-    {
-        if (e.ColonyType == this.colonyType)
-        {
-            _resourceText = GetResourceText(e.Collector.CollectorType.CollectorTypeName);
-
-            if (_resourceText != null)
-            {
-                _resourceText.text = e.Collector.ToString();
-            }
-        }
-    }
-
-    private TextMeshProUGUI GetResourceText(CollectorTypeEnum collectorType)
+    private TextMeshProUGUI GetResourceText(CollectorType collectorType)
     {
         foreach (TextMeshProUGUI text in ColonyResourceTexts)
         {
             switch (text.name)
             {
                 case "Text_Energy_Resource":
-                    if (collectorType == CollectorTypeEnum.EnergyCollector)
+                    if (collectorType == CollectorType.EnergyCollector)
                         return text;
                     break;
                 case "Text_Iron_Resource":
-                    if (collectorType == CollectorTypeEnum.IronCollector)
+                    if (collectorType == CollectorType.IronCollector)
                         return text;
                     break;
                 case "Text_Copper_Resource":
-                    if (collectorType == CollectorTypeEnum.CopperCollector)
+                    if (collectorType == CollectorType.CopperCollector)
                         return text;
                     break;
                 case "Text_Silicon_Resource":
-                    if (collectorType == CollectorTypeEnum.SiliconCollector)
+                    if (collectorType == CollectorType.SiliconCollector)
                         return text;
                     break;
                 case "Text_LimeStone_Resource":
-                    if (collectorType == CollectorTypeEnum.LimeStoneCollector)
+                    if (collectorType == CollectorType.LimeStoneCollector)
                         return text;
                     break;
                 case "Text_Gold_Resource":
-                    if (collectorType == CollectorTypeEnum.GoldCollector)
+                    if (collectorType == CollectorType.GoldCollector)
                         return text;
                     break;
                 case "Text_Aluminum_Resource":
-                    if (collectorType == CollectorTypeEnum.AluminiumCollector)
+                    if (collectorType == CollectorType.AluminumCollector)
                         return text;
                     break;
                 case "Text_Carbon_Resource":
-                    if (collectorType == CollectorTypeEnum.CarbonCollector)
+                    if (collectorType == CollectorType.CarbonCollector)
                         return text;
                     break;
                 case "Text_Diamond_Resource":
-                    if (collectorType == CollectorTypeEnum.DiamondCollector)
+                    if (collectorType == CollectorType.DiamondCollector)
                         return text;
                     break;
                 default:
@@ -84,11 +67,6 @@ public class ColonyPanel : MonoBehaviour
             }
         }
         return null;
-    }
-
-    private void OnDisable()
-    {
-        EventBus.Unsubscribe<CollectorFinishedEvent>(OnCollectorFinished);
     }
 
     private void SubscribeToLevelAmountButtons()
@@ -117,6 +95,39 @@ public class ColonyPanel : MonoBehaviour
 
     private void OnCollectorAmountButtonClicked(int value)
     {
-        EventBus.Publish(new CollectorLevelAmount() { Amount = value });
+        foreach (CollectorPanel panel in CollectorPanels)
+        {
+            panel.UpdateUpgradeAmountUI(value);
+        }
+    }
+
+    private void OnCollectorFinished(CollectorFinishedEvent @event)
+    {
+        _resourceText = GetResourceText(@event.Collector.CollectorData.CollectorType);
+
+        if (_resourceText != null)
+        {
+            _resourceText.text = $"{@event.Collector.GetResourceAmount()} {@event.Collector.GetResourceUnit()}";
+        }
+    }
+
+    private void Subscribe()
+    {
+        EventBus.Subscribe<CollectorFinishedEvent>(OnCollectorFinished);
+    }
+
+    private void UnSubscribe()
+    {
+        EventBus.Unsubscribe<CollectorFinishedEvent>(OnCollectorFinished);
+    }
+
+    private void OnEnable()
+    {
+        Subscribe();
+    }
+
+    private void OnDisable()
+    {
+        UnSubscribe();
     }
 }
