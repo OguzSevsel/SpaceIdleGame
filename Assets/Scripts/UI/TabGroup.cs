@@ -42,6 +42,15 @@ public class TabGroup : MonoBehaviour
         ResetTabs();
         button.backgroundImage.sprite = tabSelected;
 
+        if (button.gameObject.name != "Button_Convert")
+        {
+            EventBus.Publish(new SellResourceButtonHideEvent());
+        }
+        else
+        {
+            EventBus.Publish(new SellTabButtonClicked());
+        }
+
         int index = button.transform.GetSiblingIndex();
 
         for (int i = 0; i < objectsToSwap.Count; i++)

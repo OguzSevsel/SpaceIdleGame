@@ -6,7 +6,6 @@ using TMPro;
 
 public class ConvertPanel : MonoBehaviour
 {
-    [SerializeField] private List<ConvertButton> _convertButtons;
     [SerializeField] private Button _buttonSell;
     [SerializeField] private TextMeshProUGUI _textSell;
     public ColonyType ColonyType;

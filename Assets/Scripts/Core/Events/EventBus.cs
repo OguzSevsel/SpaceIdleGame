@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 public static class EventBus
 {
-    private static readonly Dictionary<Type, Delegate> _eventTable = new Dictionary<Type, Delegate>();
+    private static readonly Dictionary<Type, Delegate> _eventTable = new();
 
     // Subscribe to an event
     public static void Subscribe<T>(Action<T> listener)

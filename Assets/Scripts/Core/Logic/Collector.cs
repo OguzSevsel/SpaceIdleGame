@@ -1,10 +1,6 @@
 using System;
 using System.Collections.Generic;
-using System.Text.RegularExpressions;
-using Unity.VisualScripting;
-using UnityEditor.ShaderGraph.Internal;
 using UnityEngine;
-using UnityEngine.UIElements;
 
 public class Collector : MonoBehaviour, IUpgradeable, ISellable
 {
@@ -17,9 +13,9 @@ public class Collector : MonoBehaviour, IUpgradeable, ISellable
 
     // private fields
     // Resource Amount Field
-    [SerializeField] [Range(0f, 2f)] private double _resourceAmount;
-    [SerializeField] [Range(0f, 2f)] private double _sellRate;
-    [SerializeField] [Range(0f, 2f)] private double _sellMultiplier;
+    private double _resourceAmount = 0d;
+    private double _sellRate = 1d;
+    private double _sellMultiplier = 1.1d;
 
     // Collecting Bools
     private bool _isCollecting = false;
@@ -27,27 +23,24 @@ public class Collector : MonoBehaviour, IUpgradeable, ISellable
     private bool _isShowingInfo = false;
 
     //Collection Rate Fields
-    [SerializeField] [Range(0f, 2f)] private double _collectionRate;
-    [SerializeField] [Range(0f, 2f)] private double _baseCollectionRate;
-    [SerializeField] [Range(0f, 2f)] private double _collectionRateMultiplier;
+    private double _collectionRate = 1d;
+    private double _baseCollectionRate = 1d;
+    private double _collectionRateMultiplier = 1.1d;
 
     //Collection Speed Fields
-    [SerializeField] [Range(0f, 2f)] private double _speed;
-    [SerializeField] [Range(0f, 2f)] private double _speedMultiplier;
-    private double _time;
+    private double _speed = 1d;
+    private double _speedMultiplier = 0.95d;
+    private double _time = 1d;
 
     //Collector Level Fields
-    private int _level;
-    private int _levelIncrement;
+    private int _level = 1;
+    private int _levelIncrement = 1;
 
 
     private void Start()
     {
         _colony = GetComponentInParent<Colony>();
-        _level = 1;
-        _levelIncrement = 1;
-        _time = 0d;
-        _resourceAmount = 0d;
+        //AutoCollect();
     }
 
     private void Update()
@@ -84,9 +77,40 @@ public class Collector : MonoBehaviour, IUpgradeable, ISellable
         }
         if (_isAutoCollecting)
         {
-            Debug.Log("Collector: Auto-collecting resources...");
-            // Simulate auto-collection logic here
-            // Keep isAutoCollecting true for continuous auto-collection
+            _time += Time.deltaTime;
+
+            EventBus.Publish(new ProgressBarUpdateEvent
+            {
+                Value = Mathf.Clamp01((float)(_time / _speed)),
+                RemainingTime = _speed - _time,
+                Collector = this
+            });
+
+            if (_time >= _speed)
+            {
+                _time = 0d;
+                AddResource();
+
+                EventBus.Publish(new ProgressBarUpdateEvent
+                {
+                    Value = 0f,
+                    RemainingTime = 0d,
+                    Collector = this
+                });
+
+                EventBus.Publish(new CollectorFinishedEvent
+                {
+                    Collector = this
+                });
+            }
+        }
+
+        if (_isShowingInfo)
+        {
+            EventBus.Publish(new SellResourceButtonUpdateEvent()
+            {
+                Collector = this
+            });
         }
     }
 
@@ -282,6 +306,11 @@ public class Collector : MonoBehaviour, IUpgradeable, ISellable
         ShowInfo();
     }
 
+    private void OnSellResourceButtonHide(SellResourceButtonHideEvent @event)
+    {
+        HideInfo();
+    }
+
     private void OnEnable()
     {
         Subscribe();
@@ -298,7 +327,10 @@ public class Collector : MonoBehaviour, IUpgradeable, ISellable
         EventBus.Subscribe<CollectorUpgradeEvent>(OnCollectorUpgrade);
         EventBus.Subscribe<CollectorUpgradeAmountChangedEvent>(OnCollectorUpgradeAmountChanged);
         EventBus.Subscribe<SellTabButtonClicked>(OnSellTabButtonClicked);
+        EventBus.Subscribe<SellResourceButtonHideEvent>(OnSellResourceButtonHide);
     }
+
+    
 
     private void UnSubscribe()
     {
@@ -306,6 +338,7 @@ public class Collector : MonoBehaviour, IUpgradeable, ISellable
         EventBus.Unsubscribe<CollectorUpgradeEvent>(OnCollectorUpgrade);
         EventBus.Unsubscribe<CollectorUpgradeAmountChangedEvent>(OnCollectorUpgradeAmountChanged);
         EventBus.Unsubscribe<SellTabButtonClicked>(OnSellTabButtonClicked);
+        EventBus.Unsubscribe<SellResourceButtonHideEvent>(OnSellResourceButtonHide);
     }
 
     #endregion

@@ -57,10 +57,16 @@ public struct SellResourceButtonUpdateEvent
     public Collector Collector;
 }
 
+public struct SellResourceButtonHideEvent
+{
+
+}
+
 public struct SellTabButtonClicked
 {
 
 }
+
 
 #endregion
 

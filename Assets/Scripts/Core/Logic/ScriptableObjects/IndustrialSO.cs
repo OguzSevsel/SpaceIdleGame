@@ -1,7 +1,5 @@
 using System;
-using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.InputSystem.iOS;
 
 public enum CollectorType
 {
@@ -19,15 +17,15 @@ public enum CollectorType
 [CreateAssetMenuAttribute(menuName = "ScriptableObjects/Collector", fileName = "New Collector")]
 public class CollectorSO : ScriptableObject
 {
-    //[HideInInspector] public string _guid;
+    [HideInInspector] public string _guid;
 
-    //private void OnEnable()
-    //{
-    //    if (string.IsNullOrEmpty(_guid))
-    //        _guid = System.Guid.NewGuid().ToString();
-    //}
+    private void OnEnable()
+    {
+        if (string.IsNullOrEmpty(_guid))
+            _guid = System.Guid.NewGuid().ToString();
+    }
 
-    //public string CollectorGUID => _guid;
+    public string CollectorGUID => _guid;
     public CollectorType CollectorType;
     public ResourceSO GeneratedResource;
 }
@@ -35,29 +33,29 @@ public class CollectorSO : ScriptableObject
 [CreateAssetMenuAttribute(menuName = "ScriptableObjects/Transport Hub", fileName = "New Transport Hub")]
 public class TransportHubSO : ScriptableObject
 {
-    //[HideInInspector] public string _guid;
+    [HideInInspector] public string _guid;
 
-    //private void OnEnable()
-    //{
-    //    if (string.IsNullOrEmpty(_guid))
-    //        _guid = System.Guid.NewGuid().ToString();
-    //}
+    private void OnEnable()
+    {
+        if (string.IsNullOrEmpty(_guid))
+            _guid = System.Guid.NewGuid().ToString();
+    }
 
-    //public string TransportHubGUID => _guid;
+    public string TransportHubGUID => _guid;
 }
 
 [CreateAssetMenuAttribute(menuName = "ScriptableObjects/Marketplace", fileName = "New Marketplace")]
 public class MarketplaceSO : ScriptableObject
 {
-    //[HideInInspector] public string _guid;
+    [HideInInspector] public string _guid;
 
-    //private void OnEnable()
-    //{
-    //    if (string.IsNullOrEmpty(_guid))
-    //        _guid = System.Guid.NewGuid().ToString();
-    //}
+    private void OnEnable()
+    {
+        if (string.IsNullOrEmpty(_guid))
+            _guid = System.Guid.NewGuid().ToString();
+    }
 
-    //public string MarketplaceGUID => _guid;
+    public string MarketplaceGUID => _guid;
 }
 
 [System.Serializable]
@@ -68,7 +66,6 @@ public class CostResource
     [SerializeField] private double _baseCostAmount;
     [SerializeField] private double _costMultiplier = 1.05;
 
-#nullable enable
     public void AdjustAmountAndMultiplier(int level, double? overrideCostMultiplier = null)
     {
         if (overrideCostMultiplier != null)

@@ -1,6 +1,5 @@
 using System;
 using TMPro;
-using Unity.VisualScripting;
 using UnityEngine;
 
 public class ConvertButton : MonoBehaviour
@@ -19,26 +18,9 @@ public class ConvertButton : MonoBehaviour
         this.GetComponent<UnityEngine.UI.Button>().onClick.AddListener(OnConvertButtonClicked);
     }
 
-    private void OnConvertButtonClicked()
-    {
-        _convertPanel.UpdateUI(_resourceUnit, _resourceName, _moneyAmount, _resourceAmount);
-    }
+    
 
-    private void OnSellResourceButtonUpdate(SellResourceButtonUpdateEvent e)
-    {
-        var collector = e.Collector;
-
-        if (collector != null && collector.CollectorData.CollectorType == GetCollectorType(this.gameObject.name) && e.Collector.GetColonyType() == _convertPanel.ColonyType)
-        {
-            _resourceAmount = collector.GetResourceAmount();
-            _moneyAmount = collector.GetSellMoneyAmount();
-            _resourceName = collector.CollectorData.GeneratedResource.resourceType.ToString();
-            _resourceUnit = collector.CollectorData.GeneratedResource.ResourceUnit;
-
-            _textResource.text = $"{_resourceName} {_resourceUnit}";
-            _textMoney.text = $"{_moneyAmount} $";
-        }
-    }
+    
 
     private CollectorType GetCollectorType(string name)
     {
@@ -81,6 +63,24 @@ public class ConvertButton : MonoBehaviour
         return collectorType;
     }
 
+    private void OnConvertButtonClicked()
+    {
+        _convertPanel.UpdateUI(_resourceUnit, _resourceName, _moneyAmount, _resourceAmount);
+    }
+
+    private void OnSellResourceButtonUpdate(SellResourceButtonUpdateEvent @event)
+    {
+        if (@event.Collector != null && @event.Collector.CollectorData.CollectorType == GetCollectorType(this.gameObject.name) && @event.Collector.GetColonyType() == _convertPanel.ColonyType)
+        {
+            _resourceAmount = @event.Collector.GetResourceAmount();
+            _moneyAmount = @event.Collector.GetSellMoneyAmount();
+            _resourceName = @event.Collector.CollectorData.GeneratedResource.resourceType.ToString();
+            _resourceUnit = @event.Collector.CollectorData.GeneratedResource.ResourceUnit;
+
+            _textResource.text = $"{_resourceName} {_resourceUnit}";
+            _textMoney.text = $"{_moneyAmount} $";
+        }
+    }
 
     private void OnEnable()
     {
