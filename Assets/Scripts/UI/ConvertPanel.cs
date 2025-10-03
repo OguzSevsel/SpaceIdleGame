@@ -9,10 +9,12 @@ public class ConvertPanel : MonoBehaviour
     [SerializeField] private List<ConvertButton> _convertButtons;
     [SerializeField] private Button _buttonSell;
     [SerializeField] private TextMeshProUGUI _textSell;
+    public ColonyType ColonyType;
 
     private void Start()
     {
         _buttonSell.onClick.AddListener(OnSellButtonClicked);
+        ColonyType = GetComponentInParent<ColonyPanel>().ColonyType;
     }
 
     private void OnSellButtonClicked()

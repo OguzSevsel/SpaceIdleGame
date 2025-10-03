@@ -102,7 +102,11 @@ public class CollectorPanel : MonoBehaviour
 
     private void OnCollectorPanelClicked()
     {
-        EventBus.Publish(new CollectorEvent());
+        EventBus.Publish(new CollectorEvent
+        {
+            CollectorType = GetCollectorType(this.gameObject.name),
+            ColonyType = ColonyPanel.ColonyType
+        });
     }
 
     private void OnCollectorUpgradeButtonClick()

@@ -16,25 +16,29 @@ public class Collector : MonoBehaviour, IUpgradeable, ISellable
 
     // private fields
     // Resource Amount Field
-    private double _resourceAmount = 0.0;
+    [SerializeField] private double _resourceAmount = 0.0;
+    [Range(0f, 2f)] [SerializeField] private double _sellRate = 1d;
+    [Range(0f, 2f)] [SerializeField] private double _sellMultiplier = 1.1d;
 
     // Collecting Bools
     private bool _isCollecting = false;
     private bool _isAutoCollecting = false;
+    private bool _isShowingInfo = false;
 
     //Collection Rate Fields
-    private double _collectionRate = 1.0;
-    private double _baseCollectionRate = 1.0;
-    private double _collectionRateMultiplier = 1.05;
+    [Range(0f, 2f)] [SerializeField] private double _collectionRate = 1.0;
+    [Range(0f, 2f)] [SerializeField] private double _baseCollectionRate = 1.0;
+    [Range(0f, 2f)] [SerializeField] private double _collectionRateMultiplier = 1.05;
 
     //Collection Speed Fields
-    private double _speed = 1.0;
-    private double _speedMultiplier = 0.95;
+    [Range(0f, 2f)] [SerializeField] private double _speed = 1.0;
+    [Range(0f, 2f)] [SerializeField] private double _speedMultiplier = 0.95;
     private double _time = 0.0;
 
     //Collector Level Fields
     private int _level = 1;
     private int _levelIncrement = 1;
+
 
     private void Start()
     {
@@ -98,6 +102,16 @@ public class Collector : MonoBehaviour, IUpgradeable, ISellable
     private void AddResource()
     {
         _resourceAmount += _collectionRate;
+    }
+
+    private void ShowInfo()
+    {
+        _isShowingInfo = true;
+    }
+
+    private void HideInfo()
+    {
+        _isShowingInfo = false;
     }
 
 
@@ -230,13 +244,21 @@ public class Collector : MonoBehaviour, IUpgradeable, ISellable
         return _colony.colonyData.ColonyType;
     }
 
+    public double GetSellMoneyAmount()
+    {
+        return _resourceAmount *= _sellRate;
+    }
+
     #endregion
 
     #region Events
 
     private void OnCollectorButtonClicked(CollectorEvent @event)
     {
-        Collect();
+        if (@event.CollectorType == this.CollectorData.CollectorType && @event.ColonyType == _colony.colonyData.ColonyType)
+        {
+            Collect();
+        }
     }
 
     private void OnCollectorUpgradeAmountChanged(CollectorUpgradeAmountChangedEvent @event)
@@ -248,6 +270,11 @@ public class Collector : MonoBehaviour, IUpgradeable, ISellable
     {
         Upgrade(@event.Upgrade, @event.CollectorType, @event.ColonyType);
         EventBus.Publish(new CollectorUpgradeFinishedEvent { Collector = this });
+    }
+
+    private void OnSellTabButtonClicked(SellTabButtonClicked clicked)
+    {
+        ShowInfo();
     }
 
     private void OnEnable()
@@ -265,6 +292,7 @@ public class Collector : MonoBehaviour, IUpgradeable, ISellable
         EventBus.Subscribe<CollectorEvent>(OnCollectorButtonClicked);
         EventBus.Subscribe<CollectorUpgradeEvent>(OnCollectorUpgrade);
         EventBus.Subscribe<CollectorUpgradeAmountChangedEvent>(OnCollectorUpgradeAmountChanged);
+        EventBus.Subscribe<SellTabButtonClicked>(OnSellTabButtonClicked);
     }
 
     private void UnSubscribe()
@@ -272,6 +300,7 @@ public class Collector : MonoBehaviour, IUpgradeable, ISellable
         EventBus.Unsubscribe<CollectorEvent>(OnCollectorButtonClicked);
         EventBus.Unsubscribe<CollectorUpgradeEvent>(OnCollectorUpgrade);
         EventBus.Unsubscribe<CollectorUpgradeAmountChangedEvent>(OnCollectorUpgradeAmountChanged);
+        EventBus.Unsubscribe<SellTabButtonClicked>(OnSellTabButtonClicked);
     }
 
     #endregion

@@ -1,0 +1,17 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 88a3c94c8207db943aff26f715d578ef, type: 3}
+  m_Name: 2-IronCollector
+  m_EditorClassIdentifier: Assembly-CSharp::CollectorSO
+  _guid: 2dbd6eb0-67bc-41b2-baaf-4d1e66d14c91
+  CollectorType: 1
+  GeneratedResource: {fileID: 11400000, guid: a07f3d0886c24a747a2b71d4ae8c1d8b, type: 2}
