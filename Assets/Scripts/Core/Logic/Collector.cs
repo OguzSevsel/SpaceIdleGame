@@ -13,9 +13,9 @@ public class Collector : MonoBehaviour, IUpgradeable, ISellable
 
     // private fields
     // Resource Amount Field
-    private double _resourceAmount = 0d;
-    private double _sellRate = 1d;
-    private double _sellMultiplier = 1.1d;
+    [SerializeField] [Range(0f, 2f)] private double _resourceAmount = 0d;
+    [SerializeField][Range(0f, 2f)] private double _sellRate = 1d;
+    [SerializeField][Range(0f, 2f)] private double _sellMultiplier = 1.1d;
 
     // Collecting Bools
     private bool _isCollecting = false;
@@ -23,14 +23,14 @@ public class Collector : MonoBehaviour, IUpgradeable, ISellable
     private bool _isShowingInfo = false;
 
     //Collection Rate Fields
-    private double _collectionRate = 1d;
-    private double _baseCollectionRate = 1d;
-    private double _collectionRateMultiplier = 1.1d;
+    [SerializeField][Range(0f, 2f)] private double _collectionRate = 1d;
+    [SerializeField][Range(0f, 2f)] private double _baseCollectionRate = 1d;
+    [SerializeField][Range(0f, 2f)] private double _collectionRateMultiplier = 1.1d;
 
     //Collection Speed Fields
-    private double _speed = 1d;
-    private double _speedMultiplier = 0.95d;
-    private double _time = 1d;
+    [SerializeField][Range(0f, 2f)] private double _speed = 1d;
+    [SerializeField][Range(0f, 2f)] private double _speedMultiplier = 0.95d;
+    private double _time = 0d;
 
     //Collector Level Fields
     private int _level = 1;
