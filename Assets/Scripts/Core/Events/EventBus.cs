@@ -1,10 +1,9 @@
 using System;
 using System.Collections.Generic;
-using UnityEngine;
 
 public static class EventBus
 {
-    private static readonly Dictionary<Type, Delegate> _eventTable = new();
+    private static readonly Dictionary<Type, Delegate> _eventTable = new Dictionary<Type, Delegate>();
 
     // Subscribe to an event
     public static void Subscribe<T>(Action<T> listener)

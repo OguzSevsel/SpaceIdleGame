@@ -19,15 +19,15 @@ public enum CollectorType
 [CreateAssetMenuAttribute(menuName = "ScriptableObjects/Collector", fileName = "New Collector")]
 public class CollectorSO : ScriptableObject
 {
-    [HideInInspector] public string _guid;
+    //[HideInInspector] public string _guid;
 
-    private void OnEnable()
-    {
-        if (string.IsNullOrEmpty(_guid))
-            _guid = System.Guid.NewGuid().ToString();
-    }
+    //private void OnEnable()
+    //{
+    //    if (string.IsNullOrEmpty(_guid))
+    //        _guid = System.Guid.NewGuid().ToString();
+    //}
 
-    public string CollectorGUID => _guid;
+    //public string CollectorGUID => _guid;
     public CollectorType CollectorType;
     public ResourceSO GeneratedResource;
 }
@@ -35,29 +35,29 @@ public class CollectorSO : ScriptableObject
 [CreateAssetMenuAttribute(menuName = "ScriptableObjects/Transport Hub", fileName = "New Transport Hub")]
 public class TransportHubSO : ScriptableObject
 {
-    [HideInInspector] public string _guid;
+    //[HideInInspector] public string _guid;
 
-    private void OnEnable()
-    {
-        if (string.IsNullOrEmpty(_guid))
-            _guid = System.Guid.NewGuid().ToString();
-    }
+    //private void OnEnable()
+    //{
+    //    if (string.IsNullOrEmpty(_guid))
+    //        _guid = System.Guid.NewGuid().ToString();
+    //}
 
-    public string TransportHubGUID => _guid;
+    //public string TransportHubGUID => _guid;
 }
 
 [CreateAssetMenuAttribute(menuName = "ScriptableObjects/Marketplace", fileName = "New Marketplace")]
 public class MarketplaceSO : ScriptableObject
 {
-    [HideInInspector] public string _guid;
+    //[HideInInspector] public string _guid;
 
-    private void OnEnable()
-    {
-        if (string.IsNullOrEmpty(_guid))
-            _guid = System.Guid.NewGuid().ToString();
-    }
+    //private void OnEnable()
+    //{
+    //    if (string.IsNullOrEmpty(_guid))
+    //        _guid = System.Guid.NewGuid().ToString();
+    //}
 
-    public string MarketplaceGUID => _guid;
+    //public string MarketplaceGUID => _guid;
 }
 
 [System.Serializable]

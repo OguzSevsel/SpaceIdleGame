@@ -5,7 +5,12 @@ using UnityEngine;
 public class SaveableRegistry : MonoBehaviour
 {
     public static SaveableRegistry Instance { get; private set; }
-    private readonly List<ISaveable> saveables = new List<ISaveable>();
+    private List<ISaveable> saveables;
+
+    private void Awake()
+    {
+        saveables = new List<ISaveable>();   
+    }
 
     private void OnEnable()
     {

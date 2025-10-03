@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Text.RegularExpressions;
+using Unity.VisualScripting;
 using UnityEditor.ShaderGraph.Internal;
 using UnityEngine;
 using UnityEngine.UIElements;
@@ -16,9 +17,9 @@ public class Collector : MonoBehaviour, IUpgradeable, ISellable
 
     // private fields
     // Resource Amount Field
-    [SerializeField] private double _resourceAmount = 0.0;
-    [Range(0f, 2f)] [SerializeField] private double _sellRate = 1d;
-    [Range(0f, 2f)] [SerializeField] private double _sellMultiplier = 1.1d;
+    [SerializeField] [Range(0f, 2f)] private double _resourceAmount;
+    [SerializeField] [Range(0f, 2f)] private double _sellRate;
+    [SerializeField] [Range(0f, 2f)] private double _sellMultiplier;
 
     // Collecting Bools
     private bool _isCollecting = false;
@@ -26,23 +27,27 @@ public class Collector : MonoBehaviour, IUpgradeable, ISellable
     private bool _isShowingInfo = false;
 
     //Collection Rate Fields
-    [Range(0f, 2f)] [SerializeField] private double _collectionRate = 1.0;
-    [Range(0f, 2f)] [SerializeField] private double _baseCollectionRate = 1.0;
-    [Range(0f, 2f)] [SerializeField] private double _collectionRateMultiplier = 1.05;
+    [SerializeField] [Range(0f, 2f)] private double _collectionRate;
+    [SerializeField] [Range(0f, 2f)] private double _baseCollectionRate;
+    [SerializeField] [Range(0f, 2f)] private double _collectionRateMultiplier;
 
     //Collection Speed Fields
-    [Range(0f, 2f)] [SerializeField] private double _speed = 1.0;
-    [Range(0f, 2f)] [SerializeField] private double _speedMultiplier = 0.95;
-    private double _time = 0.0;
+    [SerializeField] [Range(0f, 2f)] private double _speed;
+    [SerializeField] [Range(0f, 2f)] private double _speedMultiplier;
+    private double _time;
 
     //Collector Level Fields
-    private int _level = 1;
-    private int _levelIncrement = 1;
+    private int _level;
+    private int _levelIncrement;
 
 
     private void Start()
     {
         _colony = GetComponentInParent<Colony>();
+        _level = 1;
+        _levelIncrement = 1;
+        _time = 0d;
+        _resourceAmount = 0d;
     }
 
     private void Update()
@@ -272,7 +277,7 @@ public class Collector : MonoBehaviour, IUpgradeable, ISellable
         EventBus.Publish(new CollectorUpgradeFinishedEvent { Collector = this });
     }
 
-    private void OnSellTabButtonClicked(SellTabButtonClicked clicked)
+    private void OnSellTabButtonClicked(SellTabButtonClicked @event)
     {
         ShowInfo();
     }

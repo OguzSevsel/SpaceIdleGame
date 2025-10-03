@@ -128,7 +128,7 @@ public class CollectorPanel : MonoBehaviour
             }
             else
             {
-                Debug.LogWarning($"Please check Cost resources of this collector: {@event.Collector.name}");
+                Debug.LogWarning($"Please check Cost resources of this collector: {@event.Collector.gameObject.name}");
             }
         }
     }
