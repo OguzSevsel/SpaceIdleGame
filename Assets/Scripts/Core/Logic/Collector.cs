@@ -40,7 +40,7 @@ public class Collector : MonoBehaviour, IUpgradeable, ISellable
     private void Start()
     {
         _colony = GetComponentInParent<Colony>();
-        //AutoCollect();
+        AutoCollect();
     }
 
     private void Update()
@@ -107,7 +107,7 @@ public class Collector : MonoBehaviour, IUpgradeable, ISellable
 
         if (_isShowingInfo)
         {
-            EventBus.Publish(new SellResourceButtonUpdateEvent()
+            EventBus.Publish(new SellResourceButtonUpdateEvent
             {
                 Collector = this
             });

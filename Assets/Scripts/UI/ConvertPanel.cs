@@ -10,7 +10,7 @@ public class ConvertPanel : MonoBehaviour
     [SerializeField] private TextMeshProUGUI _textSell;
     public ColonyType ColonyType;
 
-    private void Start()
+    private void Awake()
     {
         _buttonSell.onClick.AddListener(OnSellButtonClicked);
         ColonyType = GetComponentInParent<ColonyPanel>().ColonyType;

@@ -18,15 +18,11 @@ public class ConvertButton : MonoBehaviour
         this.GetComponent<UnityEngine.UI.Button>().onClick.AddListener(OnConvertButtonClicked);
     }
 
-    
-
-    
-
-    private CollectorType GetCollectorType(string name)
+    private CollectorType GetCollectorType(string tag)
     {
         CollectorType collectorType = new CollectorType();
 
-        switch (name)
+        switch (tag)
         {
             case "Button_Energy":
                 collectorType = CollectorType.EnergyCollector;
@@ -70,15 +66,22 @@ public class ConvertButton : MonoBehaviour
 
     private void OnSellResourceButtonUpdate(SellResourceButtonUpdateEvent @event)
     {
-        if (@event.Collector != null && @event.Collector.CollectorData.CollectorType == GetCollectorType(this.gameObject.name) && @event.Collector.GetColonyType() == _convertPanel.ColonyType)
-        {
-            _resourceAmount = @event.Collector.GetResourceAmount();
-            _moneyAmount = @event.Collector.GetSellMoneyAmount();
-            _resourceName = @event.Collector.CollectorData.GeneratedResource.resourceType.ToString();
-            _resourceUnit = @event.Collector.CollectorData.GeneratedResource.ResourceUnit;
+        CollectorType thisCollectorType = GetCollectorType(this.gameObject.name);
+        ColonyType eventColonyType = @event.Collector.GetColonyType();
 
-            _textResource.text = $"{_resourceName} {_resourceUnit}";
-            _textMoney.text = $"{_moneyAmount} $";
+        if (_convertPanel != null)
+        {
+            if (@event.Collector.CollectorData.CollectorType == thisCollectorType
+            && eventColonyType == _convertPanel.ColonyType)
+            {
+                _resourceAmount = @event.Collector.GetResourceAmount();
+                _moneyAmount = @event.Collector.GetSellMoneyAmount();
+                _resourceName = @event.Collector.CollectorData.GeneratedResource.resourceType.ToString();
+                _resourceUnit = @event.Collector.CollectorData.GeneratedResource.ResourceUnit;
+
+                _textResource.text = $"{_resourceAmount} {_resourceUnit}";
+                _textMoney.text = $"{_moneyAmount} $";
+            }
         }
     }
 
