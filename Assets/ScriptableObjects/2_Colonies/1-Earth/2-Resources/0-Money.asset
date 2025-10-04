@@ -13,5 +13,6 @@ MonoBehaviour:
   m_Name: 0-Money
   m_EditorClassIdentifier: Assembly-CSharp::ResourceSO
   guid: 929e3888-44f7-4aaf-9a25-bfd8317fd901
+  ResourceIcon: {fileID: 21300000, guid: d466fc9b83765724fbdbbe058bce53b2, type: 3}
   resourceType: 0
   ResourceUnit: $

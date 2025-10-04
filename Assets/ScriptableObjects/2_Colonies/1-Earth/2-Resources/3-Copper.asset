@@ -13,5 +13,6 @@ MonoBehaviour:
   m_Name: 3-Copper
   m_EditorClassIdentifier: Assembly-CSharp::ResourceSO
   guid: 1bdf6c92-2265-43c7-9aaf-d52429dbb1d9
+  ResourceIcon: {fileID: 21300000, guid: ff4886d2af805994a9d52c23dc439276, type: 3}
   resourceType: 3
   ResourceUnit: KG

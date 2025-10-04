@@ -13,5 +13,6 @@ MonoBehaviour:
   m_Name: 1-Energy
   m_EditorClassIdentifier: Assembly-CSharp::ResourceSO
   guid: 1bdf6c92-2265-43c7-9aaf-d52429dbb1d9
+  ResourceIcon: {fileID: 21300000, guid: deb27b0a8100c324d9d21e72c27135d3, type: 3}
   resourceType: 1
   ResourceUnit: WATT

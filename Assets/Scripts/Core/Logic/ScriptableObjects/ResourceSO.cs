@@ -26,6 +26,7 @@ public class ResourceSO : ScriptableObject
     }
 
     public string ResourceGUID => guid;
+    public Sprite ResourceIcon;
     public ResourceType resourceType;
     public string ResourceUnit;
 }

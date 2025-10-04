@@ -13,5 +13,6 @@ MonoBehaviour:
   m_Name: 4-Silicon
   m_EditorClassIdentifier: Assembly-CSharp::ResourceSO
   guid: 1bdf6c92-2265-43c7-9aaf-d52429dbb1d9
+  ResourceIcon: {fileID: 21300000, guid: bf4afd872f96dcb499762fafcbe44c4b, type: 3}
   resourceType: 4
   ResourceUnit: KG

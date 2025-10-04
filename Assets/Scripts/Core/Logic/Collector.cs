@@ -8,6 +8,8 @@ public class Collector : MonoBehaviour, IUpgradeable, ISellable
     public CollectorSO CollectorData;
     public List<CostResource> CostResources;
 
+    public static event Action<ProgressBarUpdateArgs> ProgressBarUpdateEvent;
+
     //private types
     private Colony _colony;
 
@@ -40,7 +42,7 @@ public class Collector : MonoBehaviour, IUpgradeable, ISellable
     private void Start()
     {
         _colony = GetComponentInParent<Colony>();
-        AutoCollect();
+        //AutoCollect();
     }
 
     private void Update()
@@ -49,11 +51,16 @@ public class Collector : MonoBehaviour, IUpgradeable, ISellable
         {
             _time += Time.deltaTime;
 
-            EventBus.Publish(new ProgressBarUpdateEvent
+            EventBus.Publish(new ProgressBarUpdateArgs
             {
                 Value = Mathf.Clamp01((float)(_time / _speed)),
                 RemainingTime = _speed - _time,
                 Collector = this
+            });
+
+            ProgressBarUpdateEvent.Invoke(new ProgressBarUpdateArgs 
+            { 
+                Collector = this, 
             });
 
             if (_time >= _speed)
@@ -62,7 +69,7 @@ public class Collector : MonoBehaviour, IUpgradeable, ISellable
                 _time = 0d;
                 AddResource();
 
-                EventBus.Publish(new ProgressBarUpdateEvent
+                EventBus.Publish(new ProgressBarUpdateArgs
                 {
                     Value = 0f,
                     RemainingTime = 0d,
@@ -79,7 +86,7 @@ public class Collector : MonoBehaviour, IUpgradeable, ISellable
         {
             _time += Time.deltaTime;
 
-            EventBus.Publish(new ProgressBarUpdateEvent
+            EventBus.Publish(new ProgressBarUpdateArgs
             {
                 Value = Mathf.Clamp01((float)(_time / _speed)),
                 RemainingTime = _speed - _time,
@@ -91,7 +98,7 @@ public class Collector : MonoBehaviour, IUpgradeable, ISellable
                 _time = 0d;
                 AddResource();
 
-                EventBus.Publish(new ProgressBarUpdateEvent
+                EventBus.Publish(new ProgressBarUpdateArgs
                 {
                     Value = 0f,
                     RemainingTime = 0d,

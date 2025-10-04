@@ -2,7 +2,7 @@
 
 using NUnit.Framework.Constraints;
 
-public struct ProgressBarUpdateEvent
+public struct ProgressBarUpdateArgs
 {
     public Collector Collector;
     public float Value;

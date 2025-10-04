@@ -13,5 +13,6 @@ MonoBehaviour:
   m_Name: 9-Diamond
   m_EditorClassIdentifier: Assembly-CSharp::ResourceSO
   guid: 1bdf6c92-2265-43c7-9aaf-d52429dbb1d9
+  ResourceIcon: {fileID: 21300000, guid: bcfb6aa476f284f49be673edcb307f5b, type: 3}
   resourceType: 9
   ResourceUnit: KG

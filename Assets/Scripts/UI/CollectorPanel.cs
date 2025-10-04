@@ -3,15 +3,29 @@ using UnityEngine.UI;
 using TMPro;
 using System;
 using System.Collections.Generic;
+using Mono.Cecil.Cil;
+using Unity.Properties;
+using System.Linq;
 
 public class CollectorPanel : MonoBehaviour
 {
+    [Header("Related Type")]
+    [SerializeField] private Collector _collector;
+
+
+    [Header("Collector UI Elements")]
+    [SerializeField] private Image _iconImage;
+    [SerializeField] private TextMeshProUGUI _name;
+    [SerializeField] private TextMeshProUGUI _level;
+    [SerializeField] private TextMeshProUGUI _upgradeEffect;
+
+
     [Header("Upgrade Elements")]
     [SerializeField] private Button _button_Upgrade;
     [SerializeField] private TextMeshProUGUI _textUpgradeButton;
-    [SerializeField] private List<TextMeshProUGUI> _textUpgradeCosts;
-    [SerializeField] private TextMeshProUGUI _textUpgradeEffect;
-    [SerializeField] private TextMeshProUGUI _textUpgradeLevel;
+    [SerializeField] private List<GameObject> _upgradeCosts;
+
+
 
     [Header("Progress Bar Elements")]
     [SerializeField] private ProgressBar _progressBar;
@@ -25,10 +39,81 @@ public class CollectorPanel : MonoBehaviour
 
     private void Start()
     {
+        Initialize();
+    }
+
+    private void Initialize()
+    {
         _buttonCollectorPanel = GetComponent<Button>();
         _buttonCollectorPanel.onClick.AddListener(OnCollectorPanelClicked);
         _button_Upgrade.onClick.AddListener(OnCollectorUpgradeButtonClick);
         ColonyPanel = GetComponentInParent<ColonyPanel>();
+
+        if (_collector == null)
+        {
+            Debug.LogError($"{this.gameObject.name} needs a reference to a Collector");
+        }
+        else
+        {
+            InitializeUI();
+        }
+    }
+
+    private void InitializeUI()
+    {
+        _iconImage.sprite = _collector.CollectorData.GeneratedResource.ResourceIcon;
+        double upgradeEffect = _collector.GetCollectionRateMultiplier();
+        _upgradeEffect.text = $"x{upgradeEffect}";
+        _textUpgradeButton.text = "LVL UP +1";
+        _name.text = $"{_collector.CollectorData.CollectorName}";
+        _level.text = $"LVL {_collector.GetLevel()}";
+        _textOutput.text = $"{_collector.GetCollectionRate()} {_collector.CollectorData.GeneratedResource.ResourceUnit}";
+
+        List<GameObject> costResources = GetCostResources(number: _collector.CostResources.Count);
+
+        foreach (GameObject resource in costResources)
+        {
+            int index = costResources.IndexOf(resource);
+
+            TextMeshProUGUI costResourceText = resource.GetComponentInChildren<TextMeshProUGUI>();
+            Image icon = resource.GetComponentInChildren<Image>();
+
+            costResourceText.text = $"{_collector.CostResources[index].GetCostAmount()} {_collector.CostResources[index].Resource.ResourceUnit}";
+            icon.sprite = _collector.CostResources[index].Resource.ResourceIcon;
+        }
+    }
+
+    private List<GameObject> GetCostResources(int? number = null)
+    {
+        List<GameObject> upgradeCosts = new List<GameObject>();
+
+        if (number.HasValue)
+        {
+            if (number.Value < _upgradeCosts.Count())
+            {
+                foreach (GameObject resource in _upgradeCosts)
+                {
+                    if (_upgradeCosts.IndexOf(resource) < number.Value)
+                    {
+                        upgradeCosts.Add(resource);
+                    }
+                    else
+                    {
+                        resource.SetActive(false);
+                    }
+                }
+            }
+            else
+            {
+                upgradeCosts = _upgradeCosts.Take(number.Value).ToList();
+            }
+        }
+        else
+        {
+            upgradeCosts = _upgradeCosts.Take(_collector.CostResources.Count).ToList();
+        }
+
+        return upgradeCosts;
     }
 
     public void UpdateUpgradeAmountUI(int collectAmount)
@@ -42,13 +127,13 @@ public class CollectorPanel : MonoBehaviour
         for (int i = 0; i < costResources.Count; i++)
         {
             CostResource resource = costResources[i];
-            TextMeshProUGUI text = _textUpgradeCosts[i];
+            TextMeshProUGUI text = _upgradeCosts[i].GetComponentInChildren<TextMeshProUGUI>();
 
             text.text = $"{resource.GetCostAmount()} {resource.Resource.ResourceUnit}";
         }
 
-        _textUpgradeEffect.text = $"{upgradeEffect}";
-        _textUpgradeLevel.text = $"LVL {upgradeLevel}";
+        _upgradeEffect.text = $"{upgradeEffect}";
+        _level.text = $"LVL {upgradeLevel}";
     }
 
     private void UpdateProgressBarUIElements(float value, float time)
@@ -91,7 +176,7 @@ public class CollectorPanel : MonoBehaviour
         }
     }
 
-    private void OnProgressBarUpdated(ProgressBarUpdateEvent @event)
+    private void OnProgressBarUpdated(ProgressBarUpdateArgs @event)
     {
         bool isMatch = isTypesMatching(@event.Collector.CollectorData.CollectorType, @event.Collector.GetColonyType());
         if (isMatch)
@@ -145,19 +230,15 @@ public class CollectorPanel : MonoBehaviour
 
     private void UnSubscribe()
     {
-        EventBus.Unsubscribe<ProgressBarUpdateEvent>(OnProgressBarUpdated);
+        EventBus.Unsubscribe<ProgressBarUpdateArgs>(OnProgressBarUpdated);
         EventBus.Unsubscribe<CollectorUpgradeFinishedEvent>(OnCollectorUpgradeFinished);
     }
 
     private void Subscribe()
     {
-        EventBus.Subscribe<ProgressBarUpdateEvent>(OnProgressBarUpdated);
+        EventBus.Subscribe<ProgressBarUpdateArgs>(OnProgressBarUpdated);
         EventBus.Subscribe<CollectorUpgradeFinishedEvent>(OnCollectorUpgradeFinished);
     }
-
-
-
-
 
     private CollectorType GetCollectorType(string name)
     {

@@ -13,5 +13,7 @@ MonoBehaviour:
   m_Name: 2-IronCollector
   m_EditorClassIdentifier: Assembly-CSharp::CollectorSO
   _guid: 2dbd6eb0-67bc-41b2-baaf-4d1e66d14c91
+  CollectorName: IRON
   CollectorType: 1
   GeneratedResource: {fileID: 11400000, guid: a07f3d0886c24a747a2b71d4ae8c1d8b, type: 2}
+  CollectorIcon: {fileID: 21300000, guid: c67ccbd66dc6dcc48ab843e18bd3e9c2, type: 3}

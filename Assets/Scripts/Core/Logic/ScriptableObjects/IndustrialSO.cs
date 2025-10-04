@@ -26,6 +26,7 @@ public class CollectorSO : ScriptableObject
     }
 
     public string CollectorGUID => _guid;
+    public string CollectorName;
     public CollectorType CollectorType;
     public ResourceSO GeneratedResource;
 }

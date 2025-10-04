@@ -13,5 +13,6 @@ MonoBehaviour:
   m_Name: 5-LimeStone
   m_EditorClassIdentifier: Assembly-CSharp::ResourceSO
   guid: 1bdf6c92-2265-43c7-9aaf-d52429dbb1d9
+  ResourceIcon: {fileID: 21300000, guid: be446ac565d0a804fbc28ef63ee2edf1, type: 3}
   resourceType: 5
   ResourceUnit: KG
