@@ -9,6 +9,9 @@ public class Collector : MonoBehaviour, IUpgradeable, ISellable
     public List<CostResource> CostResources;
 
     public static event Action<ProgressBarUpdateArgs> ProgressBarUpdateEvent;
+    public static event Action<CollectorFinishedEventArgs> CollectorFinishedEvent;
+    public static event Action<SellResourceButtonUpdateEventArgs> SellResourceButtonUpdateEvent;
+    public static event Action<CollectorUpgradeFinishedEventArgs> CollectorUpgradeFinishedEvent;
 
     //private types
     private Colony _colony;
@@ -38,11 +41,14 @@ public class Collector : MonoBehaviour, IUpgradeable, ISellable
     private int _level = 1;
     private int _levelIncrement = 1;
 
+    private string _guid;
+    public string CollectorGUID => _guid;
+
 
     private void Start()
     {
         _colony = GetComponentInParent<Colony>();
-        //AutoCollect();
+        AutoCollect();
     }
 
     private void Update()
@@ -51,17 +57,13 @@ public class Collector : MonoBehaviour, IUpgradeable, ISellable
         {
             _time += Time.deltaTime;
 
-            EventBus.Publish(new ProgressBarUpdateArgs
+            ProgressBarUpdateEvent?.Invoke(new ProgressBarUpdateArgs
             {
+                Collector = this,
                 Value = Mathf.Clamp01((float)(_time / _speed)),
-                RemainingTime = _speed - _time,
-                Collector = this
+                RemainingTime = _speed - _time
             });
 
-            ProgressBarUpdateEvent.Invoke(new ProgressBarUpdateArgs 
-            { 
-                Collector = this, 
-            });
 
             if (_time >= _speed)
             {
@@ -69,28 +71,29 @@ public class Collector : MonoBehaviour, IUpgradeable, ISellable
                 _time = 0d;
                 AddResource();
 
-                EventBus.Publish(new ProgressBarUpdateArgs
+                ProgressBarUpdateEvent?.Invoke(new ProgressBarUpdateArgs
                 {
+                    Collector = this,
                     Value = 0f,
-                    RemainingTime = 0d,
+                    RemainingTime = 0d
+                });
+
+                CollectorFinishedEvent?.Invoke(new CollectorFinishedEventArgs
+                {
                     Collector = this
                 });
 
-                EventBus.Publish(new CollectorFinishedEvent
-                {
-                    Collector = this
-                });
             }
         }
         if (_isAutoCollecting)
         {
             _time += Time.deltaTime;
 
-            EventBus.Publish(new ProgressBarUpdateArgs
+            ProgressBarUpdateEvent?.Invoke(new ProgressBarUpdateArgs
             {
+                Collector = this,
                 Value = Mathf.Clamp01((float)(_time / _speed)),
-                RemainingTime = _speed - _time,
-                Collector = this
+                RemainingTime = _speed - _time
             });
 
             if (_time >= _speed)
@@ -98,14 +101,14 @@ public class Collector : MonoBehaviour, IUpgradeable, ISellable
                 _time = 0d;
                 AddResource();
 
-                EventBus.Publish(new ProgressBarUpdateArgs
-                {
+                ProgressBarUpdateEvent?.Invoke(new ProgressBarUpdateArgs 
+                { 
+                    Collector = this,
                     Value = 0f,
-                    RemainingTime = 0d,
-                    Collector = this
+                    RemainingTime = 0d
                 });
 
-                EventBus.Publish(new CollectorFinishedEvent
+                CollectorFinishedEvent?.Invoke(new CollectorFinishedEventArgs
                 {
                     Collector = this
                 });
@@ -114,10 +117,7 @@ public class Collector : MonoBehaviour, IUpgradeable, ISellable
 
         if (_isShowingInfo)
         {
-            EventBus.Publish(new SellResourceButtonUpdateEvent
-            {
-                Collector = this
-            });
+            SellResourceButtonUpdateEvent?.Invoke(new SellResourceButtonUpdateEventArgs { Collector = this });
         }
     }
 
@@ -164,13 +164,13 @@ public class Collector : MonoBehaviour, IUpgradeable, ISellable
     #region Interface Implementations
 
 #nullable enable
-    public void Upgrade(Upgrades upgrade, CollectorType collectorType, ColonyType colonyType)
+    public void Upgrade(Upgrades upgrade, Collector collector)
     {
         bool isColonyHasEnoughResource = _colony.CheckIfColonyHasEnoughResources(CostResources);
 
         if (isColonyHasEnoughResource)
         {
-            if (collectorType == this.CollectorData.CollectorType && colonyType == _colony.colonyData.ColonyType)
+            if (this == collector)
             {
                 switch (upgrade)
                 {
@@ -180,7 +180,7 @@ public class Collector : MonoBehaviour, IUpgradeable, ISellable
 
                     case Upgrades.CollectorLevel:
                         _level += _levelIncrement;
-                        _collectionRate = _baseCollectionRate * (_level + _collectionRateMultiplier);
+                        _collectionRate = _baseCollectionRate * (_level * _collectionRateMultiplier);
                         _colony.SpendResources(CostResources);
                         IncreaseCost(_level, overrideCostMultiplier: null);
                         break;
@@ -289,37 +289,40 @@ public class Collector : MonoBehaviour, IUpgradeable, ISellable
 
     #region Events
 
-    private void OnCollectorButtonClicked(CollectorEvent @event)
+    private void OnCollectorButtonClicked(CollectorEventArgs @event)
     {
-        if (@event.CollectorType == this.CollectorData.CollectorType && @event.ColonyType == _colony.colonyData.ColonyType)
+        if (@event.collector == this)
         {
             Collect();
         }
     }
 
-    private void OnCollectorUpgradeAmountChanged(CollectorUpgradeAmountChangedEvent @event)
+    private void OnCollectorUpgradeAmountChanged(CollectorUpgradeAmountChangedEventArgs @event)
     {
         this._levelIncrement = @event.Value;
     }
 
-    private void OnCollectorUpgrade(CollectorUpgradeEvent @event)
+    private void OnCollectorUpgrade(CollectorUpgradeEventArgs @event)
     {
-        Upgrade(@event.Upgrade, @event.CollectorType, @event.ColonyType);
-        EventBus.Publish(new CollectorUpgradeFinishedEvent { Collector = this });
+        Upgrade(@event.Upgrade, @event.Collector);
+        CollectorUpgradeFinishedEvent?.Invoke(new CollectorUpgradeFinishedEventArgs { Collector = this});
     }
 
-    private void OnSellTabButtonClicked(SellTabButtonClicked @event)
+    private void OnSellResourceShow()
     {
         ShowInfo();
     }
 
-    private void OnSellResourceButtonHide(SellResourceButtonHideEvent @event)
+    private void OnSellResourceHide()
     {
         HideInfo();
     }
 
     private void OnEnable()
     {
+        if (string.IsNullOrEmpty(_guid))
+            _guid = System.Guid.NewGuid().ToString();
+
         Subscribe();
     }
 
@@ -330,22 +333,20 @@ public class Collector : MonoBehaviour, IUpgradeable, ISellable
 
     private void Subscribe()
     {
-        EventBus.Subscribe<CollectorEvent>(OnCollectorButtonClicked);
-        EventBus.Subscribe<CollectorUpgradeEvent>(OnCollectorUpgrade);
-        EventBus.Subscribe<CollectorUpgradeAmountChangedEvent>(OnCollectorUpgradeAmountChanged);
-        EventBus.Subscribe<SellTabButtonClicked>(OnSellTabButtonClicked);
-        EventBus.Subscribe<SellResourceButtonHideEvent>(OnSellResourceButtonHide);
+        CollectorPanel.CollectorButtonClickEvent += OnCollectorButtonClicked;
+        TabGroup.SellResourceHideEvent += OnSellResourceHide;
+        TabGroup.SellResourceShowEvent += OnSellResourceShow;
+        CollectorPanel.CollectorUpgradeButtonClickEvent += OnCollectorUpgrade;
+        CollectorPanel.CollectorUpgradeAmountChanged += OnCollectorUpgradeAmountChanged;
     }
-
-    
 
     private void UnSubscribe()
     {
-        EventBus.Unsubscribe<CollectorEvent>(OnCollectorButtonClicked);
-        EventBus.Unsubscribe<CollectorUpgradeEvent>(OnCollectorUpgrade);
-        EventBus.Unsubscribe<CollectorUpgradeAmountChangedEvent>(OnCollectorUpgradeAmountChanged);
-        EventBus.Unsubscribe<SellTabButtonClicked>(OnSellTabButtonClicked);
-        EventBus.Unsubscribe<SellResourceButtonHideEvent>(OnSellResourceButtonHide);
+        CollectorPanel.CollectorButtonClickEvent -= OnCollectorButtonClicked;
+        TabGroup.SellResourceHideEvent -= OnSellResourceHide;
+        TabGroup.SellResourceShowEvent -= OnSellResourceShow;
+        CollectorPanel.CollectorUpgradeButtonClickEvent -= OnCollectorUpgrade;
+        CollectorPanel.CollectorUpgradeAmountChanged -= OnCollectorUpgradeAmountChanged;
     }
 
     #endregion

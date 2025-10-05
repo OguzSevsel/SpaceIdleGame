@@ -21,5 +21,5 @@ public enum UpgradeType
 public interface IUpgradeable
 {
 #nullable enable
-    public void Upgrade(Upgrades upgrade, CollectorType collectorType, ColonyType colonyType);
+    public void Upgrade(Upgrades upgrade, Collector collector);
 }

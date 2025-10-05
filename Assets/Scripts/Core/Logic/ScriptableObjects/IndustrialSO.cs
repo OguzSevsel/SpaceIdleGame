@@ -17,15 +17,7 @@ public enum CollectorType
 [CreateAssetMenuAttribute(menuName = "ScriptableObjects/Collector", fileName = "New Collector")]
 public class CollectorSO : ScriptableObject
 {
-    [HideInInspector] public string _guid;
-
-    private void OnEnable()
-    {
-        if (string.IsNullOrEmpty(_guid))
-            _guid = System.Guid.NewGuid().ToString();
-    }
-
-    public string CollectorGUID => _guid;
+    
     public string CollectorName;
     public CollectorType CollectorType;
     public ResourceSO GeneratedResource;

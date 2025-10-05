@@ -36,6 +36,9 @@ public class CollectorPanel : MonoBehaviour
     private Button _buttonCollectorPanel;
     private ColonyPanel ColonyPanel;
 
+    public static event Action<CollectorEventArgs> CollectorButtonClickEvent;
+    public static event Action<CollectorUpgradeEventArgs> CollectorUpgradeButtonClickEvent;
+    public static event Action<CollectorUpgradeAmountChangedEventArgs> CollectorUpgradeAmountChanged;
 
     private void Start()
     {
@@ -56,6 +59,7 @@ public class CollectorPanel : MonoBehaviour
         else
         {
             InitializeUI();
+            //Subscribe();
         }
     }
 
@@ -63,11 +67,11 @@ public class CollectorPanel : MonoBehaviour
     {
         _iconImage.sprite = _collector.CollectorData.GeneratedResource.ResourceIcon;
         double upgradeEffect = _collector.GetCollectionRateMultiplier();
-        _upgradeEffect.text = $"x{upgradeEffect}";
+        _upgradeEffect.text = $"x{upgradeEffect.ToShortString()}";
         _textUpgradeButton.text = "LVL UP +1";
         _name.text = $"{_collector.CollectorData.CollectorName}";
         _level.text = $"LVL {_collector.GetLevel()}";
-        _textOutput.text = $"{_collector.GetCollectionRate()} {_collector.CollectorData.GeneratedResource.ResourceUnit}";
+        _textOutput.text = $"{_collector.GetCollectionRate().ToShortString()} {_collector.CollectorData.GeneratedResource.ResourceUnit}";
 
         List<GameObject> costResources = GetCostResources(number: _collector.CostResources.Count);
 
@@ -78,7 +82,7 @@ public class CollectorPanel : MonoBehaviour
             TextMeshProUGUI costResourceText = resource.GetComponentInChildren<TextMeshProUGUI>();
             Image icon = resource.GetComponentInChildren<Image>();
 
-            costResourceText.text = $"{_collector.CostResources[index].GetCostAmount()} {_collector.CostResources[index].Resource.ResourceUnit}";
+            costResourceText.text = $"{_collector.CostResources[index].GetCostAmount().ToShortString()} {_collector.CostResources[index].Resource.ResourceUnit}";
             icon.sprite = _collector.CostResources[index].Resource.ResourceIcon;
         }
     }
@@ -119,7 +123,7 @@ public class CollectorPanel : MonoBehaviour
     public void UpdateUpgradeAmountUI(int collectAmount)
     {
         _textUpgradeButton.text = $"LVL UP +{collectAmount}";
-        EventBus.Publish(new CollectorUpgradeAmountChangedEvent { Value = collectAmount });
+        CollectorUpgradeAmountChanged?.Invoke(new CollectorUpgradeAmountChangedEventArgs { Value = collectAmount });
     }
 
     private void UpdateUpgradeUIElements(List<CostResource> costResources, double upgradeEffect, int upgradeLevel)
@@ -129,10 +133,10 @@ public class CollectorPanel : MonoBehaviour
             CostResource resource = costResources[i];
             TextMeshProUGUI text = _upgradeCosts[i].GetComponentInChildren<TextMeshProUGUI>();
 
-            text.text = $"{resource.GetCostAmount()} {resource.Resource.ResourceUnit}";
+            text.text = $"{resource.GetCostAmount().ToShortString()} {resource.Resource.ResourceUnit}";
         }
 
-        _upgradeEffect.text = $"{upgradeEffect}";
+        _upgradeEffect.text = $"x{upgradeEffect.ToShortString()}";
         _level.text = $"LVL {upgradeLevel}";
     }
 
@@ -149,37 +153,17 @@ public class CollectorPanel : MonoBehaviour
         }
 
         _progressBar.progressValue = value;
-        _textProgressBarTime.text = time.ToString() + " Sec";
+        _textProgressBarTime.text = time.ToShortString() + " Sec";
     }
 
     private void UpdateOutputUIElements(double output, string unit)
     {
-        _textOutput.text = $"{output} {unit}"; 
-    }
-
-
-
-
-
-
-
-
-    private bool isTypesMatching(CollectorType collectorType, ColonyType colonyType)
-    {
-        if (colonyType == ColonyPanel.ColonyType && collectorType == GetCollectorType(this.gameObject.name))
-        {
-            return true;
-        }
-        else
-        {
-            return false;
-        }
+        _textOutput.text = $"{output.ToShortString()} {unit}"; 
     }
 
     private void OnProgressBarUpdated(ProgressBarUpdateArgs @event)
     {
-        bool isMatch = isTypesMatching(@event.Collector.CollectorData.CollectorType, @event.Collector.GetColonyType());
-        if (isMatch)
+        if (@event.Collector == this._collector)
         {
             UpdateProgressBarUIElements(@event.Value, (float)@event.RemainingTime);
         }
@@ -187,24 +171,23 @@ public class CollectorPanel : MonoBehaviour
 
     private void OnCollectorPanelClicked()
     {
-        EventBus.Publish(new CollectorEvent
-        {
-            CollectorType = GetCollectorType(this.gameObject.name),
-            ColonyType = ColonyPanel.ColonyType
-        });
+        CollectorButtonClickEvent?.Invoke(new CollectorEventArgs { collector = _collector});
     }
 
     private void OnCollectorUpgradeButtonClick()
     {
-        EventBus.Publish(new CollectorUpgradeEvent { CollectorType = GetCollectorType(this.gameObject.name), Upgrade = Upgrades.CollectorLevel, ColonyType = ColonyPanel.ColonyType });
+        CollectorUpgradeButtonClickEvent?.Invoke(new CollectorUpgradeEventArgs
+        {
+            Collector = _collector,
+            Upgrade = Upgrades.CollectorLevel,
+        });
     }
 
-    private void OnCollectorUpgradeFinished(CollectorUpgradeFinishedEvent @event)
+    private void OnCollectorUpgradeFinished(CollectorUpgradeFinishedEventArgs @event)
     {
         List<CostResource> costResources = @event.Collector.GetCostResources();
-        bool isMatch = isTypesMatching(@event.Collector.CollectorData.CollectorType, @event.Collector.GetColonyType());
 
-        if (isMatch)
+        if (@event.Collector == _collector)
         {
             if (costResources.Count <= 4 && costResources.Count >= 1)
             {
@@ -230,14 +213,14 @@ public class CollectorPanel : MonoBehaviour
 
     private void UnSubscribe()
     {
-        EventBus.Unsubscribe<ProgressBarUpdateArgs>(OnProgressBarUpdated);
-        EventBus.Unsubscribe<CollectorUpgradeFinishedEvent>(OnCollectorUpgradeFinished);
+        Collector.ProgressBarUpdateEvent -= OnProgressBarUpdated;
+        Collector.CollectorUpgradeFinishedEvent -= OnCollectorUpgradeFinished;
     }
 
     private void Subscribe()
     {
-        EventBus.Subscribe<ProgressBarUpdateArgs>(OnProgressBarUpdated);
-        EventBus.Subscribe<CollectorUpgradeFinishedEvent>(OnCollectorUpgradeFinished);
+        Collector.ProgressBarUpdateEvent += OnProgressBarUpdated;
+        Collector.CollectorUpgradeFinishedEvent += OnCollectorUpgradeFinished;
     }
 
     private CollectorType GetCollectorType(string name)

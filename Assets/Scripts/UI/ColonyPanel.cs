@@ -101,24 +101,26 @@ public class ColonyPanel : MonoBehaviour
         }
     }
 
-    private void OnCollectorFinished(CollectorFinishedEvent @event)
+    private void OnCollectorFinished(CollectorFinishedEventArgs @event)
     {
         _resourceText = GetResourceText(@event.Collector.CollectorData.CollectorType);
 
         if (_resourceText != null)
         {
-            _resourceText.text = $"{@event.Collector.GetResourceAmount()} {@event.Collector.GetResourceUnit()}";
+            _resourceText.text = $"{@event.Collector.GetResourceAmount().ToShortString()} {@event.Collector.GetResourceUnit()}";
         }
     }
 
     private void Subscribe()
     {
-        EventBus.Subscribe<CollectorFinishedEvent>(OnCollectorFinished);
+        //EventBus.Subscribe<CollectorFinishedEventArgs>(OnCollectorFinished);
+        Collector.CollectorFinishedEvent += OnCollectorFinished;
     }
 
     private void UnSubscribe()
     {
-        EventBus.Unsubscribe<CollectorFinishedEvent>(OnCollectorFinished);
+        //EventBus.Unsubscribe<CollectorFinishedEventArgs>(OnCollectorFinished);
+        Collector.CollectorFinishedEvent -= OnCollectorFinished;
     }
 
     private void OnEnable()

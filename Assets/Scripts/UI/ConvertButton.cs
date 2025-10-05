@@ -64,7 +64,7 @@ public class ConvertButton : MonoBehaviour
         _convertPanel.UpdateUI(_resourceUnit, _resourceName, _moneyAmount, _resourceAmount);
     }
 
-    private void OnSellResourceButtonUpdate(SellResourceButtonUpdateEvent @event)
+    private void OnSellResourceButtonUpdate(SellResourceButtonUpdateEventArgs @event)
     {
         CollectorType thisCollectorType = GetCollectorType(this.gameObject.name);
         ColonyType eventColonyType = @event.Collector.GetColonyType();
@@ -97,11 +97,11 @@ public class ConvertButton : MonoBehaviour
 
     private void Subscribe()
     {
-        EventBus.Subscribe<SellResourceButtonUpdateEvent>(OnSellResourceButtonUpdate);
+        Collector.SellResourceButtonUpdateEvent += OnSellResourceButtonUpdate;
     }
 
     private void UnSubscribe()
     {
-        EventBus.Unsubscribe<SellResourceButtonUpdateEvent>(OnSellResourceButtonUpdate);
+        Collector.SellResourceButtonUpdateEvent -= OnSellResourceButtonUpdate;
     }
 }
