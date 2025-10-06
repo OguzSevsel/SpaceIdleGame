@@ -24,6 +24,11 @@ public struct CollectorUpgradeAmountChangedEventArgs
     public int Value;
 }
 
+public struct CollectorUpgradeAmountChangedFinishedEventArgs
+{
+    public Collector Collector;
+}
+
 public struct CollectorUpgradeEventArgs
 {
     public Collector Collector;

@@ -12,20 +12,16 @@ public class CollectorPanel : MonoBehaviour
     [Header("Related Type")]
     [SerializeField] private Collector _collector;
 
-
     [Header("Collector UI Elements")]
     [SerializeField] private Image _iconImage;
     [SerializeField] private TextMeshProUGUI _name;
     [SerializeField] private TextMeshProUGUI _level;
     [SerializeField] private TextMeshProUGUI _upgradeEffect;
 
-
     [Header("Upgrade Elements")]
     [SerializeField] private Button _button_Upgrade;
     [SerializeField] private TextMeshProUGUI _textUpgradeButton;
     [SerializeField] private List<GameObject> _upgradeCosts;
-
-
 
     [Header("Progress Bar Elements")]
     [SerializeField] private ProgressBar _progressBar;
@@ -33,17 +29,28 @@ public class CollectorPanel : MonoBehaviour
 
     [Header("Output Text")]
     [SerializeField] private TextMeshProUGUI _textOutput;
+
+    //Private fields
     private Button _buttonCollectorPanel;
     private ColonyPanel ColonyPanel;
 
+    //Events
     public static event Action<CollectorEventArgs> CollectorButtonClickEvent;
     public static event Action<CollectorUpgradeEventArgs> CollectorUpgradeButtonClickEvent;
     public static event Action<CollectorUpgradeAmountChangedEventArgs> CollectorUpgradeAmountChanged;
+
+
+
+    #region Unity Functions
 
     private void Start()
     {
         Initialize();
     }
+
+    #endregion
+
+    #region Initialization Functions
 
     private void Initialize()
     {
@@ -59,7 +66,6 @@ public class CollectorPanel : MonoBehaviour
         else
         {
             InitializeUI();
-            //Subscribe();
         }
     }
 
@@ -86,6 +92,10 @@ public class CollectorPanel : MonoBehaviour
             icon.sprite = _collector.CostResources[index].Resource.ResourceIcon;
         }
     }
+
+    #endregion
+
+    #region Utility Functions
 
     private List<GameObject> GetCostResources(int? number = null)
     {
@@ -120,12 +130,18 @@ public class CollectorPanel : MonoBehaviour
         return upgradeCosts;
     }
 
+    #endregion
+
+    #region Update UI Functions
+
+    //Update Upgrade Button Text
     public void UpdateUpgradeAmountUI(int collectAmount)
     {
         _textUpgradeButton.text = $"LVL UP +{collectAmount}";
         CollectorUpgradeAmountChanged?.Invoke(new CollectorUpgradeAmountChangedEventArgs { Value = collectAmount });
     }
 
+    //Update Upgrade Effect, Cost Resources Texts, Level Text
     private void UpdateUpgradeUIElements(List<CostResource> costResources, double upgradeEffect, int upgradeLevel)
     {
         for (int i = 0; i < costResources.Count; i++)
@@ -140,6 +156,7 @@ public class CollectorPanel : MonoBehaviour
         _level.text = $"LVL {upgradeLevel}";
     }
 
+    //Update Progress Bar UI
     private void UpdateProgressBarUIElements(float value, float time)
     {
         if (value < 0f)
@@ -156,11 +173,17 @@ public class CollectorPanel : MonoBehaviour
         _textProgressBarTime.text = time.ToShortString() + " Sec";
     }
 
+    //Update Collector Output Text
     private void UpdateOutputUIElements(double output, string unit)
     {
-        _textOutput.text = $"{output.ToShortString()} {unit}"; 
+        _textOutput.text = $"{output.ToShortString()} {unit}";
     }
 
+    #endregion
+
+    #region Events
+
+    //Progress Bar Update Event
     private void OnProgressBarUpdated(ProgressBarUpdateArgs @event)
     {
         if (@event.Collector == this._collector)
@@ -169,11 +192,13 @@ public class CollectorPanel : MonoBehaviour
         }
     }
 
+    //This one will be called when player starts collector.
     private void OnCollectorPanelClicked()
     {
-        CollectorButtonClickEvent?.Invoke(new CollectorEventArgs { collector = _collector});
+        CollectorButtonClickEvent?.Invoke(new CollectorEventArgs { collector = _collector });
     }
 
+    //This one will be called when player clicks upgrade button on the collector.
     private void OnCollectorUpgradeButtonClick()
     {
         CollectorUpgradeButtonClickEvent?.Invoke(new CollectorUpgradeEventArgs
@@ -183,6 +208,7 @@ public class CollectorPanel : MonoBehaviour
         });
     }
 
+    //This one will be called after collector upgraded.
     private void OnCollectorUpgradeFinished(CollectorUpgradeFinishedEventArgs @event)
     {
         List<CostResource> costResources = @event.Collector.GetCostResources();
@@ -215,51 +241,20 @@ public class CollectorPanel : MonoBehaviour
     {
         Collector.ProgressBarUpdateEvent -= OnProgressBarUpdated;
         Collector.CollectorUpgradeFinishedEvent -= OnCollectorUpgradeFinished;
+        Collector.CollectorUpgradeAmountChanged -= OnCollectorUpgradeAmountChanged;
     }
 
     private void Subscribe()
     {
         Collector.ProgressBarUpdateEvent += OnProgressBarUpdated;
         Collector.CollectorUpgradeFinishedEvent += OnCollectorUpgradeFinished;
+        Collector.CollectorUpgradeAmountChanged += OnCollectorUpgradeAmountChanged;
     }
 
-    private CollectorType GetCollectorType(string name)
+    private void OnCollectorUpgradeAmountChanged(CollectorUpgradeAmountChangedFinishedEventArgs @event)
     {
-        CollectorType collectorType = new CollectorType();
-
-        switch (name)
-        {
-            case "1_Panel_Industry_Energy":
-                collectorType = CollectorType.EnergyCollector;
-                break;
-            case "2_Panel_Industry_Iron":
-                collectorType = CollectorType.IronCollector;
-                break;
-            case "3_Panel_Industry_Copper":
-                collectorType = CollectorType.CopperCollector;
-                break;
-            case "4_Panel_Industry_Silicon":
-                collectorType = CollectorType.SiliconCollector;
-                break;
-            case "5_Panel_Industry_LimeStone":
-                collectorType = CollectorType.LimeStoneCollector;
-                break;
-            case "6_Panel_Industry_Gold":
-                collectorType = CollectorType.GoldCollector;
-                break;
-            case "7_Panel_Industry_Aluminum":
-                collectorType = CollectorType.AluminumCollector;
-                break;
-            case "8_Panel_Industry_Carbon":
-                collectorType = CollectorType.CarbonCollector;
-                break;
-            case "9_Panel_Industry_Diamond":
-                collectorType = CollectorType.DiamondCollector;
-                break;
-            default:
-                break;
-        }
-        return collectorType;
+        UpdateUpgradeUIElements(@event.Collector.CostResources, @event.Collector.GetCollectionRateMultiplier(), @event.Collector.GetLevel());
     }
 
+    #endregion
 }

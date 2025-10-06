@@ -4,11 +4,16 @@ using UnityEngine;
 
 public class Colony : MonoBehaviour
 {
+    [Header("Colony Scriptable Object")]
     public ColonySO colonyData;
+    [Header("Collector List")]
     public List<Collector> Collectors;
+    [Header("Money Amount")]
     public double MoneyAmount = 0d;
+    
 
 
+    #region Sell Functions
 
     public bool CheckIfColonyHasEnoughResources(List<CostResource> costResources)
     {
@@ -63,4 +68,6 @@ public class Colony : MonoBehaviour
             }
         }
     }
+
+    #endregion
 }

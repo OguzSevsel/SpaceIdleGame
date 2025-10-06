@@ -1,4 +1,5 @@
 using System;
+using System.Transactions;
 using UnityEngine;
 
 public enum CollectorType
@@ -17,7 +18,6 @@ public enum CollectorType
 [CreateAssetMenuAttribute(menuName = "ScriptableObjects/Collector", fileName = "New Collector")]
 public class CollectorSO : ScriptableObject
 {
-    
     public string CollectorName;
     public CollectorType CollectorType;
     public ResourceSO GeneratedResource;
@@ -57,7 +57,7 @@ public class CostResource
     public ResourceSO Resource;
     [SerializeField] private double _costAmount;
     [SerializeField] private double _baseCostAmount;
-    [SerializeField] private double _costMultiplier = 1.05;
+    [SerializeField] private double _costMultiplier;
 
     public void AdjustAmountAndMultiplier(int level, double? overrideCostMultiplier = null)
     {
@@ -65,8 +65,43 @@ public class CostResource
         {
             _costMultiplier = (double)overrideCostMultiplier;
         }
-        
-        _costAmount = _baseCostAmount * Math.Pow(_costMultiplier, (double)level);
+
+        _costAmount = GetNextCost(level);
+    }
+
+    public double GetNextCost(int level)
+    {
+        return _baseCostAmount * Math.Pow(_costMultiplier, level);
+    }
+
+    public double GetTotalCost(int amount, int level)
+    {
+        return _baseCostAmount * (Math.Pow(_costMultiplier, level) * (Math.Pow(_costMultiplier, amount) - 1)) / (_costMultiplier - 1);
+    }
+
+    public void AdjustAmount(int levelIncrement, int currentLevel)
+    {
+        double totalCost = 0d;
+
+        switch (levelIncrement)
+        {
+            case 1:
+                totalCost = GetTotalCost(levelIncrement, currentLevel);
+                break;
+            case 5:
+                totalCost = GetTotalCost(levelIncrement, currentLevel);
+                break;
+            case 10:
+                totalCost = GetTotalCost(levelIncrement, currentLevel);
+                break;
+            case 100:
+                totalCost = GetTotalCost(levelIncrement, currentLevel);
+                break;
+            default:
+                break;
+        }
+
+        _costAmount = totalCost;
     }
 
     public double GetCostAmount() { return _costAmount; }
