@@ -11,13 +11,14 @@ public class CollectorPresenter
         _collectorModel = model;
         _collectorView = view;
 
+        //View Events
         _collectorView.Initialize(_collectorModel);
         _collectorView.OnUpgradeAmountChanged += UpgradeAmountChangedHandler;
         _collectorView.OnCollectorCollect += CollectorCollectHandler;
         _collectorView.OnCollectorUpgrade += CollectorUpgradeHandler;
 
 
-
+        //Model Events
         _collectorModel.OnCollectorUpgrade += CollectorUpgradedHandler;
         _collectorModel.OnCollectorUpgradeAmount += CollectorUpgradeAmountChangedHandler;
         _collectorModel.OnProgressBarUpdate += ProgressBarUpdatedHandler;

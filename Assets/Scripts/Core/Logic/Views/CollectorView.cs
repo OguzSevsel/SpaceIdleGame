@@ -29,8 +29,6 @@ public class CollectorView : MonoBehaviour
 
     //Private fields
     private Button _buttonCollectorPanel;
-    private ColonyView ColonyPanel;
-
 
     public event Action<int> OnUpgradeAmountChanged;
     public event Action OnCollectorCollect;
@@ -43,7 +41,6 @@ public class CollectorView : MonoBehaviour
         _buttonCollectorPanel = GetComponent<Button>();
         _buttonCollectorPanel.onClick.AddListener(OnCollectorPanelClickHandler);
         _button_Upgrade.onClick.AddListener(OnCollectorPanelUpgradeClickHandler);
-        ColonyPanel = GetComponentInParent<ColonyView>();
         InitializeUI(collectorModel);
     }
 
