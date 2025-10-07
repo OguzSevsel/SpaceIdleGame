@@ -1,14 +1,14 @@
 using System;
 using UnityEngine;
 
-public class Collector : MonoBehaviour, IUpgradeable, ISellable
+public class CollectorModel : MonoBehaviour, IUpgradeable, ISellable
 {
     [Header("Required Types")]
     public CollectorData Data;
     private double _elapsedTime = 0d;
 
     //private types
-    private Colony _colony;
+    private ColonyModel _colony;
 
     // Collecting Bools
     private bool _isCollecting = false;
@@ -16,12 +16,15 @@ public class Collector : MonoBehaviour, IUpgradeable, ISellable
     private bool _isShowingInfo = false;
 
     //Events
-    public static event Action<ProgressBarUpdateArgs> OnProgressBarUpdate;
-    public static event Action<CollectorEventArgs> OnCollectorFinished;
+    public event Action<ProgressBarUpdateArgs> OnProgressBarUpdate;
+
+
+
+    public event Action<CollectorEventArgs> OnCollectorFinished;
     public static event Action<CollectorEventArgs> OnSellResourceButtonUpdate;
-    public static event Action<CollectorEventArgs> OnCollectorUpgrade;
-    public static event Action<CollectorEventArgs> OnCollectorUpgradeAmount;
-    public static event Action<CollectorEventArgs> OnSold;
+    public event Action<CollectorEventArgs> OnCollectorUpgrade;
+    public event Action<CollectorEventArgs> OnCollectorUpgradeAmount;
+    public event Action<CollectorEventArgs> OnSold;
 
     //GUID Fields
     private string _guid;
@@ -33,7 +36,7 @@ public class Collector : MonoBehaviour, IUpgradeable, ISellable
 
     private void Start()
     {
-        _colony = GetComponentInParent<Colony>();
+        _colony = GetComponentInParent<ColonyModel>();
         //AutoCollect();
     }
 
@@ -45,7 +48,7 @@ public class Collector : MonoBehaviour, IUpgradeable, ISellable
 
             OnProgressBarUpdate?.Invoke(new ProgressBarUpdateArgs
             {
-                Collector = this,
+                CollectorModel = this,
                 Value = Mathf.Clamp01((float)(_elapsedTime / Data.GetSpeed())),
                 RemainingTime = Data.GetSpeed() - _elapsedTime
             });
@@ -55,11 +58,11 @@ public class Collector : MonoBehaviour, IUpgradeable, ISellable
             {
                 _isCollecting = false;
                 _elapsedTime = 0d;
-                AddResource();
+                AddResource(Data.GetCollectionRate());
 
                 OnProgressBarUpdate?.Invoke(new ProgressBarUpdateArgs
                 {
-                    Collector = this,
+                    CollectorModel = this,
                     Value = 0f,
                     RemainingTime = 0d
                 });
@@ -76,7 +79,7 @@ public class Collector : MonoBehaviour, IUpgradeable, ISellable
 
             OnProgressBarUpdate?.Invoke(new ProgressBarUpdateArgs
             {
-                Collector = this,
+                CollectorModel = this,
                 Value = Mathf.Clamp01((float)(_elapsedTime / Data.GetSpeed())),
                 RemainingTime = Data.GetSpeed() - _elapsedTime
             });
@@ -84,11 +87,11 @@ public class Collector : MonoBehaviour, IUpgradeable, ISellable
             if (_elapsedTime >= Data.GetSpeed())
             {
                 _elapsedTime = 0d;
-                AddResource();
+                AddResource(Data.GetCollectionRate());
 
                 OnProgressBarUpdate?.Invoke(new ProgressBarUpdateArgs
                 {
-                    Collector = this,
+                    CollectorModel = this,
                     Value = 0f,
                     RemainingTime = 0d
                 });
@@ -124,9 +127,9 @@ public class Collector : MonoBehaviour, IUpgradeable, ISellable
         _isAutoCollecting = true;
     }
 
-    private void AddResource()
+    private void AddResource(double amount)
     {
-        Data.SetResourceAmount(Data.GetResourceAmount() + Data.GetCollectionRate());
+        _colony.AddResource(Data.DataSO.GeneratedResource, amount);
     }
 
     private void ShowInfo()
@@ -144,9 +147,9 @@ public class Collector : MonoBehaviour, IUpgradeable, ISellable
     #region Interface Implementations
 
 #nullable enable
-    public void Upgrade(Upgrades upgrade, Collector collector)
+    public void Upgrade(Upgrades upgrade, CollectorModel collector)
     {
-        bool isColonyHasEnoughResource = _colony.CheckIfColonyHasEnoughResources(Data.CostResources);
+        bool isColonyHasEnoughResource = _colony.CheckResources(Data.CostResources);
 
         if (isColonyHasEnoughResource)
         {
@@ -182,12 +185,12 @@ public class Collector : MonoBehaviour, IUpgradeable, ISellable
     {
         if (colonyType == _colony.colonyData.ColonyType && collectorType == Data.DataSO.CollectorType)
         {
-            if (Data.GetResourceAmount() >= resourceAmount)
-            {
-                Data.SetResourceAmount(Data.GetResourceAmount() - resourceAmount);
-                GlobalResourceManager.Instance.AddMoney(moneyAmount);
-                OnSold?.Invoke(new CollectorEventArgs { Collector = this });
-            }
+            //if (Data.GetResourceAmount() >= resourceAmount)
+            //{
+            //    Data.SetResourceAmount(Data.GetResourceAmount() - resourceAmount);
+            //    GlobalResourceManager.Instance.AddMoney(moneyAmount);
+            //    OnSold?.Invoke(new CollectorEventArgs { Collector = this });
+            //}
         }
     }
 

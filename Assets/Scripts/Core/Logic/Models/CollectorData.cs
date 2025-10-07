@@ -7,11 +7,6 @@ public class CollectorData
     public CollectorSO DataSO;
     public List<CostResource> CostResources;
 
-    [Header("Resource Amount Rates")]
-    [SerializeField][Range(0f, 2f)] private double _resourceAmount;
-    [SerializeField][Range(0f, 2f)] private double _sellRate;
-    [SerializeField][Range(0f, 2f)] private double _sellMultiplier;
-
     [Header("Collection Rates")]
     [SerializeField][Range(0f, 2f)] private double _collectionRate;
     [SerializeField][Range(0f, 2f)] private double _collectionRateMultiplier;
@@ -32,10 +27,6 @@ public class CollectorData
     public void SetSpeedMultiplier(double value) { _speedMultiplier = value; }
 
 
-    public double GetResourceAmount() { return _resourceAmount; }
-    public void SetResourceAmount(double value) { _resourceAmount = value; }
-
-
     public string GetResourceUnit() { return DataSO.GeneratedResource.ResourceUnit; }
     public void SetResourceUnit(string value) { DataSO.GeneratedResource.ResourceUnit = value; }
 
@@ -54,7 +45,4 @@ public class CollectorData
 
     public int GetLevelIncrement() { return _levelIncrement; }
     public void SetLevelIncrement(int value) { _levelIncrement = value; }
-
-
-    public double GetSellMoneyAmount() { return _resourceAmount * _sellRate; }
 }

@@ -9,17 +9,8 @@ public enum Upgrades
     Marketplace
 }
 
-public enum UpgradeType
-{
-    Speed,
-    Rate,
-    AutoCollect,
-    TransportHub,
-    Marketplace
-}
-
 public interface IUpgradeable
 {
 #nullable enable
-    public void Upgrade(Upgrades upgrade, Collector collector);
+    public void Upgrade(Upgrades upgrade, CollectorModel collector);
 }

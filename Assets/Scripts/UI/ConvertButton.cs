@@ -77,8 +77,8 @@ public class ConvertButton : MonoBehaviour
             if (@event.Collector.Data.DataSO.CollectorType == thisCollectorType
             && eventColonyType == _convertPanel.ColonyType)
             {
-                _resourceAmount = @event.Collector.Data.GetResourceAmount();
-                _moneyAmount = @event.Collector.Data.GetSellMoneyAmount();
+                //_resourceAmount = @event.Collector.Data.GetResourceAmount();
+                //_moneyAmount = @event.Collector.Data.GetSellMoneyAmount();
                 _resourceName = @event.Collector.Data.DataSO.GeneratedResource.resourceType.ToString();
                 _resourceUnit = @event.Collector.Data.DataSO.GeneratedResource.ResourceUnit;
 
@@ -100,11 +100,11 @@ public class ConvertButton : MonoBehaviour
 
     private void Subscribe()
     {
-        Collector.OnSellResourceButtonUpdate += OnSellResourceButtonUpdate;
+        CollectorModel.OnSellResourceButtonUpdate += OnSellResourceButtonUpdate;
     }
 
     private void UnSubscribe()
     {
-        Collector.OnSellResourceButtonUpdate -= OnSellResourceButtonUpdate;
+        CollectorModel.OnSellResourceButtonUpdate -= OnSellResourceButtonUpdate;
     }
 }

@@ -17,7 +17,7 @@ public class ConvertPanel : MonoBehaviour
     private void Awake()
     {
         _buttonSell.onClick.AddListener(OnSellButtonClicked);
-        ColonyType = GetComponentInParent<ColonyPanel>().ColonyType;
+        ColonyType = GetComponentInParent<ColonyView>().ColonyType;
     }
 
     private void OnSellButtonClicked()

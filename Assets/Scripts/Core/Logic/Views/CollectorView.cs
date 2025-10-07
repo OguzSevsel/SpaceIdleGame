@@ -7,11 +7,8 @@ using Mono.Cecil.Cil;
 using Unity.Properties;
 using System.Linq;
 
-public class CollectorPanel : MonoBehaviour
+public class CollectorView : MonoBehaviour
 {
-    [Header("Related Type")]
-    [SerializeField] private Collector _collector;
-
     [Header("Collector UI Elements")]
     [SerializeField] private Image _iconImage;
     [SerializeField] private TextMeshProUGUI _name;
@@ -32,49 +29,35 @@ public class CollectorPanel : MonoBehaviour
 
     //Private fields
     private Button _buttonCollectorPanel;
-    private ColonyPanel ColonyPanel;
+    private ColonyView ColonyPanel;
 
 
-
-    #region Unity Functions
-
-    private void Start()
-    {
-        Initialize();
-    }
-
-    #endregion
+    public event Action<int> OnUpgradeAmountChanged;
+    public event Action OnCollectorCollect;
+    public event Action OnCollectorUpgrade;
 
     #region Initialization Functions
 
-    private void Initialize()
+    public void Initialize(CollectorModel collectorModel)
     {
         _buttonCollectorPanel = GetComponent<Button>();
         _buttonCollectorPanel.onClick.AddListener(OnCollectorPanelClickHandler);
         _button_Upgrade.onClick.AddListener(OnCollectorPanelUpgradeClickHandler);
-        ColonyPanel = GetComponentInParent<ColonyPanel>();
-
-        if (_collector == null)
-        {
-            Debug.LogError($"{this.gameObject.name} needs a reference to a Collector");
-        }
-        else
-        {
-            InitializeUI();
-        }
+        ColonyPanel = GetComponentInParent<ColonyView>();
+        InitializeUI(collectorModel);
     }
 
-    private void InitializeUI()
+    private void InitializeUI(CollectorModel collectorModel)
     {
-        _iconImage.sprite = _collector.Data.DataSO.GeneratedResource.ResourceIcon;
-        double upgradeEffect = _collector.Data.GetCollectionRateMultiplier();
+        _iconImage.sprite = collectorModel.Data.DataSO.GeneratedResource.ResourceIcon;
+        double upgradeEffect = collectorModel.Data.GetCollectionRateMultiplier();
         _upgradeEffect.text = $"x{upgradeEffect.ToShortString()}";
         _textUpgradeButton.text = "LVL UP +1";
-        _name.text = $"{_collector.Data.DataSO.CollectorName}";
-        _level.text = $"LVL {_collector.Data.GetLevel()}";
-        _textOutput.text = $"{_collector.Data.GetCollectionRate().ToShortString()} {_collector.Data.DataSO.GeneratedResource.ResourceUnit}";
+        _name.text = $"{collectorModel.Data.DataSO.CollectorName}";
+        _level.text = $"LVL {collectorModel.Data.GetLevel()}";
+        _textOutput.text = $"{collectorModel.Data.GetCollectionRate().ToShortString()} {collectorModel.Data.DataSO.GeneratedResource.ResourceUnit}";
 
-        List<GameObject> costResources = GetCostResources(number: _collector.Data.CostResources.Count);
+        List<GameObject> costResources = GetCostResources(collectorModel, number: collectorModel.Data.CostResources.Count);
 
         foreach (GameObject resource in costResources)
         {
@@ -83,8 +66,8 @@ public class CollectorPanel : MonoBehaviour
             TextMeshProUGUI costResourceText = resource.GetComponentInChildren<TextMeshProUGUI>();
             Image icon = resource.GetComponentInChildren<Image>();
 
-            costResourceText.text = $"{_collector.Data.CostResources[index].GetCostAmount().ToShortString()} {_collector.Data.CostResources[index].Resource.ResourceUnit}";
-            icon.sprite = _collector.Data.CostResources[index].Resource.ResourceIcon;
+            costResourceText.text = $"{collectorModel.Data.CostResources[index].GetCostAmount().ToShortString()} {collectorModel.Data.CostResources[index].Resource.ResourceUnit}";
+            icon.sprite = collectorModel.Data.CostResources[index].Resource.ResourceIcon;
         }
     }
 
@@ -92,7 +75,7 @@ public class CollectorPanel : MonoBehaviour
 
     #region Utility Functions
 
-    private List<GameObject> GetCostResources(int? number = null)
+    private List<GameObject> GetCostResources(CollectorModel collectorModel, int? number = null)
     {
         List<GameObject> upgradeCosts = new List<GameObject>();
 
@@ -119,7 +102,7 @@ public class CollectorPanel : MonoBehaviour
         }
         else
         {
-            upgradeCosts = _upgradeCosts.Take(_collector.Data.CostResources.Count).ToList();
+            upgradeCosts = _upgradeCosts.Take(collectorModel.Data.CostResources.Count).ToList();
         }
 
         return upgradeCosts;
@@ -133,7 +116,7 @@ public class CollectorPanel : MonoBehaviour
     public void UpdateUpgradeAmountUI(int collectAmount)
     {
         _textUpgradeButton.text = $"LVL UP +{collectAmount}";
-        _collector.ChangeUpgradeAmount(collectAmount);
+        OnUpgradeAmountChanged?.Invoke(collectAmount);
     }
 
     //Update Upgrade Effect, Cost Resources Texts, Level Text
@@ -179,76 +162,43 @@ public class CollectorPanel : MonoBehaviour
     #region Events
 
     //Progress Bar Update Event
-    private void OnProgressBarUpdatedHandler(ProgressBarUpdateArgs @event)
+    public void ProgressBarUpdate(ProgressBarUpdateArgs @event)
     {
-        if (@event.Collector == this._collector)
-        {
-            UpdateProgressBarUIElements(@event.Value, (float)@event.RemainingTime);
-        }
+        UpdateProgressBarUIElements(@event.Value, (float)@event.RemainingTime);
     }
 
     //Collector Button.
     private void OnCollectorPanelClickHandler()
     {
-        _collector.Collect();
+        OnCollectorCollect?.Invoke();
     }
 
     //Collector Upgrade Button.
     private void OnCollectorPanelUpgradeClickHandler()
     {
-        _collector.Upgrade(Upgrades.CollectorLevel, _collector);
+        OnCollectorUpgrade?.Invoke();
     }
 
     //This one will be called after collector upgraded.
-    private void OnCollectorUpgradedHandler(CollectorEventArgs @event)
+    public void CollectorUpgradedHandler(CollectorEventArgs @event)
     {
         List<CostResource> costResources = @event.Collector.Data.CostResources;
 
-        if (@event.Collector == _collector)
+        if (costResources.Count <= 4 && costResources.Count >= 1)
         {
-            if (costResources.Count <= 4 && costResources.Count >= 1)
-            {
-                UpdateUpgradeUIElements(@event.Collector.Data.CostResources, @event.Collector.Data.GetCollectionRateMultiplier(), @event.Collector.Data.GetLevel());
-                UpdateOutputUIElements(@event.Collector.Data.GetCollectionRate(), @event.Collector.Data.DataSO.GeneratedResource.ResourceUnit);
-            }
-            else
-            {
-                Debug.LogWarning($"Please check Cost resources of this collector: {@event.Collector.gameObject.name}");
-            }
+            UpdateUpgradeUIElements(@event.Collector.Data.CostResources, @event.Collector.Data.GetCollectionRateMultiplier(), @event.Collector.Data.GetLevel());
+            UpdateOutputUIElements(@event.Collector.Data.GetCollectionRate(), @event.Collector.Data.DataSO.GeneratedResource.ResourceUnit);
+        }
+        else
+        {
+            Debug.LogWarning($"Please check Cost resources of this collector: {@event.Collector.gameObject.name}");
         }
     }
 
     //This will be called after collector upgrade amount changed via colony panel
-    private void OnCollectorUpgradeAmountChangedHandler(CollectorEventArgs @event)
+    public void CollectorUpgradeAmountChanged(CollectorEventArgs @event)
     {
-        if (@event.Collector == _collector)
-        {
-            UpdateUpgradeUIElements(@event.Collector.Data.CostResources, @event.Collector.Data.GetCollectionRateMultiplier(), @event.Collector.Data.GetLevel());
-        }
-    }
-
-    private void OnEnable()
-    {
-        Subscribe();
-    }
-
-    private void OnDisable()
-    {
-        UnSubscribe();
-    }
-
-    private void UnSubscribe()
-    {
-        Collector.OnProgressBarUpdate -= OnProgressBarUpdatedHandler;
-        Collector.OnCollectorUpgrade -= OnCollectorUpgradedHandler;
-        Collector.OnCollectorUpgradeAmount -= OnCollectorUpgradeAmountChangedHandler;
-    }
-
-    private void Subscribe()
-    {
-        Collector.OnProgressBarUpdate += OnProgressBarUpdatedHandler;
-        Collector.OnCollectorUpgrade += OnCollectorUpgradedHandler;
-        Collector.OnCollectorUpgradeAmount += OnCollectorUpgradeAmountChangedHandler;
+        UpdateUpgradeUIElements(@event.Collector.Data.CostResources, @event.Collector.Data.GetCollectionRateMultiplier(), @event.Collector.Data.GetLevel());
     }
 
     #endregion

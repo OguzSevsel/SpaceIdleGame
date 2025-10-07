@@ -2,14 +2,14 @@
 
 public struct ProgressBarUpdateArgs
 {
-    public Collector Collector;
+    public CollectorModel CollectorModel;
     public float Value;
     public double RemainingTime;
 }
 
 public struct CollectorEventArgs
 {
-    public Collector Collector;
+    public CollectorModel Collector;
 }
 
 public struct SellButtonEventArgs
@@ -27,14 +27,14 @@ public struct CollectorUpgradeAmountChangedEventArgs
 
 public struct CollectorUpgradeEventArgs
 {
-    public Collector Collector;
+    public CollectorModel Collector;
     public Upgrades Upgrade;
 }
 
 public struct CostResourceEventArgs
 {
     public CostResource CostResource;
-    public Collector Collector;
+    public CollectorModel Collector;
 }
 
 public struct ResourceEventArgs
