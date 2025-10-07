@@ -1,4 +1,4 @@
-using Mono.Cecil.Cil;
+using System;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -8,8 +8,9 @@ public class Colony : MonoBehaviour
     public ColonySO colonyData;
     [Header("Collector List")]
     public List<Collector> Collectors;
-    [Header("Money Amount")]
-    public double MoneyAmount = 0d;
+
+    public static event Action<CostResourceEventArgs> OnCostResourcesSpend;
+    public static event Action<ResourceEventArgs> OnMoneySpend;
     
 
 
@@ -21,11 +22,11 @@ public class Colony : MonoBehaviour
 
         foreach (CostResource costResource in costResources)
         {
-            Collector collector = Collectors.Find(c => c.CollectorData.GeneratedResource.resourceType == costResource.Resource.resourceType);
+            Collector collector = Collectors.Find(c => c.Data.DataSO.GeneratedResource.resourceType == costResource.Resource.resourceType);
 
             if (collector != null)
             {
-                if (collector.GetResourceAmount() < costResource.GetCostAmount())
+                if (collector.Data.GetResourceAmount() < costResource.GetCostAmount())
                 {
                     isEnoughResources = false;
                 }
@@ -38,7 +39,7 @@ public class Colony : MonoBehaviour
                 }
                 else
                 {
-                    if (MoneyAmount < costResource.GetCostAmount())
+                    if (GlobalResourceManager.Instance.MoneyAmount < costResource.GetCostAmount())
                     {
                         isEnoughResources = false;
                     }
@@ -53,17 +54,22 @@ public class Colony : MonoBehaviour
     {
         foreach (CostResource costResource in costResources)
         {
-            Collector collector = Collectors.Find(c => c.CollectorData.GeneratedResource.resourceType == costResource.Resource.resourceType);
+            Collector collector = Collectors.Find(c => c.Data.DataSO.GeneratedResource.resourceType == costResource.Resource.resourceType);
 
             if (collector != null)
             {
-                collector.SetResourceAmount(collector.GetResourceAmount() - costResource.GetCostAmount());
+                collector.Data.SetResourceAmount(collector.Data.GetResourceAmount() - costResource.GetCostAmount());
+                OnCostResourcesSpend?.Invoke(new CostResourceEventArgs 
+                { 
+                    CostResource = costResource,
+                    Collector = collector
+                });
             }
             else
             {
                 if (costResource.Resource.resourceType is ResourceType.Money)
                 {
-                    MoneyAmount = MoneyAmount - costResource.GetCostAmount();
+                    GlobalResourceManager.Instance.SpendMoney(costResource.GetCostAmount());
                 }
             }
         }

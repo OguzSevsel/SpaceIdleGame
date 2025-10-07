@@ -1,0 +1,18 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 88a3c94c8207db943aff26f715d578ef, type: 3}
+  m_Name: 5_LimeStoneCollector
+  m_EditorClassIdentifier: Assembly-CSharp::CollectorSO
+  CollectorName: LIMESTONE
+  CollectorType: 4
+  GeneratedResource: {fileID: 11400000, guid: 59ed088fc56e70244ac779bd62df8252, type: 2}
+  _baseCollectionRate: 1.149999976158142

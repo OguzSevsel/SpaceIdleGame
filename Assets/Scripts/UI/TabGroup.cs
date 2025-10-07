@@ -12,8 +12,8 @@ public class TabGroup : MonoBehaviour
     private TabButtonn selectedTab;
     public List<GameObject> objectsToSwap;
 
-    public static event Action SellResourceHideEvent;
-    public static event Action SellResourceShowEvent;
+    public static event Action OnSellResourceHide;
+    public static event Action OnSellResourceShow;
 
     public void Subscribe(TabButtonn button)
     {
@@ -47,11 +47,11 @@ public class TabGroup : MonoBehaviour
 
         if (button.gameObject.name != "Button_Convert")
         {
-            SellResourceHideEvent?.Invoke();
+            OnSellResourceHide?.Invoke();
         }
         else
         {
-            SellResourceShowEvent?.Invoke();
+            OnSellResourceShow?.Invoke();
         }
 
         int index = button.transform.GetSiblingIndex();

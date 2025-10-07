@@ -101,26 +101,48 @@ public class ColonyPanel : MonoBehaviour
         }
     }
 
-    private void OnCollectorFinished(CollectorFinishedEventArgs @event)
+    private void OnCollectorFinishedHandler(CollectorEventArgs @event)
     {
-        _resourceText = GetResourceText(@event.Collector.CollectorData.CollectorType);
+        _resourceText = GetResourceText(@event.Collector.Data.DataSO.CollectorType);
 
         if (_resourceText != null)
         {
-            _resourceText.text = $"{@event.Collector.GetResourceAmount().ToShortString()} {@event.Collector.GetResourceUnit()}";
+            _resourceText.text = $"{@event.Collector.Data.GetResourceAmount().ToShortString()} {@event.Collector.Data.GetResourceUnit()}";
+        }
+    }
+
+    private void OnCostResourcesSpendHandler(CostResourceEventArgs @event)
+    {
+        _resourceText = GetResourceText(@event.Collector.Data.DataSO.CollectorType);
+
+        if (_resourceText != null)
+        {
+            _resourceText.text = $"{@event.Collector.Data.GetResourceAmount().ToShortString()} {@event.Collector.Data.GetResourceUnit()}";
+        }
+    }
+
+    private void OnSoldHandler(CollectorEventArgs @event)
+    {
+        _resourceText = GetResourceText(@event.Collector.Data.DataSO.CollectorType);
+
+        if (_resourceText != null)
+        {
+            _resourceText.text = $"{@event.Collector.Data.GetResourceAmount().ToShortString()} {@event.Collector.Data.GetResourceUnit()}";
         }
     }
 
     private void Subscribe()
     {
-        //EventBus.Subscribe<CollectorFinishedEventArgs>(OnCollectorFinished);
-        Collector.CollectorFinishedEvent += OnCollectorFinished;
+        Collector.OnCollectorFinished += OnCollectorFinishedHandler;
+        Colony.OnCostResourcesSpend += OnCostResourcesSpendHandler;
+        Collector.OnSold += OnSoldHandler;
     }
 
     private void UnSubscribe()
     {
-        //EventBus.Unsubscribe<CollectorFinishedEventArgs>(OnCollectorFinished);
-        Collector.CollectorFinishedEvent -= OnCollectorFinished;
+        Collector.OnCollectorFinished -= OnCollectorFinishedHandler;
+        Colony.OnCostResourcesSpend -= OnCostResourcesSpendHandler;
+        Collector.OnSold -= OnSoldHandler;
     }
 
     private void OnEnable()

@@ -18,11 +18,11 @@ public class ConvertButton : MonoBehaviour
         this.GetComponent<UnityEngine.UI.Button>().onClick.AddListener(OnConvertButtonClicked);
     }
 
-    private CollectorType GetCollectorType(string tag)
+    private CollectorType GetCollectorType(string name)
     {
         CollectorType collectorType = new CollectorType();
 
-        switch (tag)
+        switch (name)
         {
             case "Button_Energy":
                 collectorType = CollectorType.EnergyCollector;
@@ -62,25 +62,28 @@ public class ConvertButton : MonoBehaviour
     private void OnConvertButtonClicked()
     {
         _convertPanel.UpdateUI(_resourceUnit, _resourceName, _moneyAmount, _resourceAmount);
+        _convertPanel.LastSelectedCollectorType = GetCollectorType(this.gameObject.name);
+        _convertPanel.LastSelectedMoneyAmount = _moneyAmount;
+        _convertPanel.LastSelectedResourceAmount = _resourceAmount;
     }
 
-    private void OnSellResourceButtonUpdate(SellResourceButtonUpdateEventArgs @event)
+    private void OnSellResourceButtonUpdate(CollectorEventArgs @event)
     {
         CollectorType thisCollectorType = GetCollectorType(this.gameObject.name);
         ColonyType eventColonyType = @event.Collector.GetColonyType();
 
         if (_convertPanel != null)
         {
-            if (@event.Collector.CollectorData.CollectorType == thisCollectorType
+            if (@event.Collector.Data.DataSO.CollectorType == thisCollectorType
             && eventColonyType == _convertPanel.ColonyType)
             {
-                _resourceAmount = @event.Collector.GetResourceAmount();
-                _moneyAmount = @event.Collector.GetSellMoneyAmount();
-                _resourceName = @event.Collector.CollectorData.GeneratedResource.resourceType.ToString();
-                _resourceUnit = @event.Collector.CollectorData.GeneratedResource.ResourceUnit;
+                _resourceAmount = @event.Collector.Data.GetResourceAmount();
+                _moneyAmount = @event.Collector.Data.GetSellMoneyAmount();
+                _resourceName = @event.Collector.Data.DataSO.GeneratedResource.resourceType.ToString();
+                _resourceUnit = @event.Collector.Data.DataSO.GeneratedResource.ResourceUnit;
 
-                _textResource.text = $"{_resourceAmount} {_resourceUnit}";
-                _textMoney.text = $"{_moneyAmount} $";
+                _textResource.text = $"{_resourceAmount.ToShortString()} {_resourceUnit}";
+                _textMoney.text = $"{_moneyAmount.ToShortString()} $";
             }
         }
     }
@@ -97,11 +100,11 @@ public class ConvertButton : MonoBehaviour
 
     private void Subscribe()
     {
-        Collector.SellResourceButtonUpdateEvent += OnSellResourceButtonUpdate;
+        Collector.OnSellResourceButtonUpdate += OnSellResourceButtonUpdate;
     }
 
     private void UnSubscribe()
     {
-        Collector.SellResourceButtonUpdateEvent -= OnSellResourceButtonUpdate;
+        Collector.OnSellResourceButtonUpdate -= OnSellResourceButtonUpdate;
     }
 }

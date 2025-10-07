@@ -21,6 +21,7 @@ public class CollectorSO : ScriptableObject
     public string CollectorName;
     public CollectorType CollectorType;
     public ResourceSO GeneratedResource;
+    [Range(0f, 2f)] public double _baseCollectionRate;
 }
 
 [CreateAssetMenuAttribute(menuName = "ScriptableObjects/Transport Hub", fileName = "New Transport Hub")]
@@ -59,14 +60,21 @@ public class CostResource
     [SerializeField] private double _baseCostAmount;
     [SerializeField] private double _costMultiplier;
 
-    public void AdjustAmountAndMultiplier(int level, double? overrideCostMultiplier = null)
+    public void AdjustAmountAndMultiplier(int level, int levelIncrement, double? overrideCostMultiplier = null)
     {
         if (overrideCostMultiplier != null)
         {
             _costMultiplier = (double)overrideCostMultiplier;
         }
 
-        _costAmount = GetNextCost(level);
+        if (levelIncrement != 1)
+        {
+            _costAmount = GetTotalCost(level, levelIncrement);
+        }
+        else
+        {
+            _costAmount = GetNextCost(level);
+        }
     }
 
     public double GetNextCost(int level)
@@ -74,9 +82,9 @@ public class CostResource
         return _baseCostAmount * Math.Pow(_costMultiplier, level);
     }
 
-    public double GetTotalCost(int amount, int level)
+    public double GetTotalCost(int level, int levelIncrement)
     {
-        return _baseCostAmount * (Math.Pow(_costMultiplier, level) * (Math.Pow(_costMultiplier, amount) - 1)) / (_costMultiplier - 1);
+        return _baseCostAmount * (Math.Pow(_costMultiplier, level) * (Math.Pow(_costMultiplier, levelIncrement) - 1)) / (_costMultiplier - 1);
     }
 
     public void AdjustAmount(int levelIncrement, int currentLevel)
@@ -86,16 +94,16 @@ public class CostResource
         switch (levelIncrement)
         {
             case 1:
-                totalCost = GetTotalCost(levelIncrement, currentLevel);
+                totalCost = GetTotalCost(currentLevel, levelIncrement);
                 break;
             case 5:
-                totalCost = GetTotalCost(levelIncrement, currentLevel);
+                totalCost = GetTotalCost(currentLevel, levelIncrement);
                 break;
             case 10:
-                totalCost = GetTotalCost(levelIncrement, currentLevel);
+                totalCost = GetTotalCost(currentLevel, levelIncrement);
                 break;
             case 100:
-                totalCost = GetTotalCost(levelIncrement, currentLevel);
+                totalCost = GetTotalCost(currentLevel, levelIncrement);
                 break;
             default:
                 break;
