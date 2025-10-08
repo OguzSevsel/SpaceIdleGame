@@ -3,6 +3,7 @@ using UnityEngine.UI;
 using TMPro;
 using System.Collections.Generic;
 using System;
+using System.Linq;
 
 public class ColonyView : MonoBehaviour
 {
@@ -15,42 +16,19 @@ public class ColonyView : MonoBehaviour
 
     [Header("Convert Panel UI Elements")]
     [SerializeField] private GameObject _sellButtonPanel;
-    [SerializeField] private Button _sellButtonResource;
+    [SerializeField] private GameObject _sellButtonResource;
     [SerializeField] private Button _sellAllButton;
     [SerializeField] private TextMeshProUGUI _sellText;
     [SerializeField] private Button _sellButton;
+    private List<Button> _sellResourceButtons = new List<Button>();
+    private Resource _selectedResource;
 
+    public event Action<Resource> OnSelectedResourceSell;
 
-    private void AddSellButtonsToPanel(List<Resource> resources)
-    {
-        foreach (Resource resource in resources)
-        {
-            GameObject sellButtonObject = Instantiate(_sellButtonResource.gameObject, _sellButtonPanel.transform);
-
-            Button sellButton = sellButtonObject.GetComponent<Button>();
-
-            sellButton.onClick.AddListener(() => OnSellResourceButtonClicked(resource));
-        }
-    }
-
-    private void ChangeSellText()
-    {
-
-    }
-
-    private void OnSellResourceButtonClicked(Resource resource)
-    {
-        
-    }
-
-    private void OnSellButtonClicked()
-    {
-
-    }
 
     private void Awake()
     {
-        _sellButton.onClick.AddListener(OnSellButtonClicked);
+        _sellButton.onClick.AddListener(SellButtonClickHandler);
 
 
         SubscribeToLevelAmountButtons();
@@ -63,6 +41,36 @@ public class ColonyView : MonoBehaviour
         }
     }
 
+    public void InitializeSellButtons(List<Resource> resources)
+    {
+        foreach (Resource resource in resources)
+        {
+            if (resource.ResourceSO.resourceType != ResourceType.Money)
+            {
+                GameObject sellButtonObject = Instantiate(_sellButtonResource, _sellButtonPanel.transform);
+
+                Button sellButton = sellButtonObject.GetComponent<Button>();
+
+                sellButton.onClick.AddListener(() => SellResourceButtonClickHandler(resource));
+
+                string resourceText = $"{resource.ResourceAmount} {resource.ResourceSO.ResourceUnit}";
+                string moneyText = $"0 $";
+                sellButton.GetComponent<SellButton>().SetResource(resource);
+                sellButton.GetComponent<SellButton>().Initialize(resource.ResourceSO.ResourceIcon, resourceText, moneyText);
+                _sellResourceButtons.Add(sellButton);
+            }
+        }
+    }
+
+    public void ChangeSellButtonUI()
+    {
+        foreach (Button button in _sellResourceButtons)
+        {
+            SellButton sellButton = button.gameObject.GetComponent<SellButton>();
+            sellButton.SetButtonTexts();
+        }
+    }
+
     public void UpdateResourceText(ResourceSO resourceSO, double newAmount)
     {
         string key = resourceSO.resourceType.ToString().ToLower();
@@ -72,6 +80,39 @@ public class ColonyView : MonoBehaviour
         }
     }
 
+    private void CollectorAmountButtonClickHandler(int value)
+    {
+        foreach (CollectorView collectorView in CollectorPanels)
+        {
+            collectorView.UpdateUpgradeAmountUI(value);
+        }
+    }
+
+    private void SellResourceButtonClickHandler(Resource resource)
+    {
+        _selectedResource = resource;
+        SetSellText();
+    }
+
+    public void SetSellText()
+    {
+        if (_selectedResource != null)
+        {
+            _sellText.text = $"You will sell {_selectedResource.ResourceAmount.ToShortString()} {_selectedResource.ResourceSO.ResourceUnit} of {_selectedResource.ResourceSO.resourceType.ToString()} for {(_selectedResource.SellRate * _selectedResource.ResourceAmount).ToShortString()} $?";
+        }
+    }
+
+    private void SellButtonClickHandler()
+    {
+        if (_selectedResource != null)
+        {
+            OnSelectedResourceSell?.Invoke(_selectedResource);
+        }
+        else
+        {
+            _sellText.text = $"Please select a resource from left";
+        }
+    }
 
     private void SubscribeToLevelAmountButtons()
     {
@@ -80,28 +121,20 @@ public class ColonyView : MonoBehaviour
             switch (button.name)
             {
                 case "Button_X1":
-                    button.onClick.AddListener(() => OnCollectorAmountButtonClicked(1));
+                    button.onClick.AddListener(() => CollectorAmountButtonClickHandler(1));
                     break;
                 case "Button_X5":
-                    button.onClick.AddListener(() => OnCollectorAmountButtonClicked(5));
+                    button.onClick.AddListener(() => CollectorAmountButtonClickHandler(5));
                     break;
                 case "Button_X10":
-                    button.onClick.AddListener(() => OnCollectorAmountButtonClicked(10));
+                    button.onClick.AddListener(() => CollectorAmountButtonClickHandler(10));
                     break;
                 case "Button_X100":
-                    button.onClick.AddListener(() => OnCollectorAmountButtonClicked(100));
+                    button.onClick.AddListener(() => CollectorAmountButtonClickHandler(100));
                     break;
                 default:
                     break;
             }
-        }
-    }
-
-    private void OnCollectorAmountButtonClicked(int value)
-    {
-        foreach (CollectorView collectorView in CollectorPanels)
-        {
-            collectorView.UpdateUpgradeAmountUI(value);
         }
     }
 

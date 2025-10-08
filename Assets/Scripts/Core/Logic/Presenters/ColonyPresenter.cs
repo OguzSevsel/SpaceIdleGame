@@ -8,10 +8,26 @@ public class ColonyPresenter : MonoBehaviour
     private ColonyView _colonyView;
     private List<CollectorPresenter> _collectorPresenters = new();
 
+    private bool _isShowInfo;
+
+    private void Update()
+    {
+        if (_isShowInfo)
+        {
+            if (_colonyModel != null && _colonyView != null)
+            {
+                _colonyView.ChangeSellButtonUI();
+                _colonyView.SetSellText();
+            }
+        }
+    }
+
     public void Initialize(ColonyModel colonyModel, ColonyView colonyView)
     {
         _colonyModel = colonyModel;
         _colonyView = colonyView;
+
+        _colonyView.OnSelectedResourceSell += SelectedResourceSellHandler;
 
         for (int i = 0; i < _colonyModel.Collectors.Count; i++)
         {
@@ -20,6 +36,18 @@ public class ColonyPresenter : MonoBehaviour
             var collectorPresenter = new CollectorPresenter(collectorModel, collectorView);
             _collectorPresenters.Add(collectorPresenter);
         }
+
+        InitializeSellButtons(_colonyModel.Resources);
+    }
+
+    private void SelectedResourceSellHandler(Resource resource)
+    {
+        _colonyModel.SellResource(resource, resource.ResourceAmount);
+    }
+
+    private void InitializeSellButtons(List<Resource> resources)
+    {
+        _colonyView.InitializeSellButtons(resources);
     }
 
     private void ChangeResourceText(Resource resource)
@@ -44,6 +72,16 @@ public class ColonyPresenter : MonoBehaviour
         ChangeResourceText(resource);
     }
 
+    private void SellResourceShowHandler()
+    {
+        _isShowInfo = true;
+    }
+
+    private void SellResourceHideHandler()
+    {
+        _isShowInfo = false;
+    }
+
     private void OnEnable()
     {
         Subscribe();
@@ -57,10 +95,16 @@ public class ColonyPresenter : MonoBehaviour
     private void Subscribe()
     {
         ColonyModel.OnResourceAdded += OnResourceAddedHandler;
+        TabGroup.OnSellResourceHide += SellResourceHideHandler;
+        TabGroup.OnSellResourceShow += SellResourceShowHandler;
     }
 
     private void UnSubscribe()
     {
         ColonyModel.OnResourceAdded -= OnResourceAddedHandler;
+        TabGroup.OnSellResourceHide -= SellResourceHideHandler;
+        TabGroup.OnSellResourceShow -= SellResourceShowHandler;
     }
+
+    
 }

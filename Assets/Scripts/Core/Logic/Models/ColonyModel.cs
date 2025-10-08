@@ -4,14 +4,25 @@ using UnityEngine;
 
 public class ColonyModel : MonoBehaviour
 {
-    [Header("Colony Scriptable Object")]
     public ColonySO colonyData;
-    [Header("Collector List")]
     public List<CollectorModel> Collectors;
-    [Header("Resources")]
     public List<Resource> Resources;
+
     public static event Action<Resource>  OnResourceAdded;
 
+
+
+    public void SellResource(Resource resource, double amount)
+    {
+        foreach (Resource colonyResource in Resources)
+        {
+            if (resource == colonyResource)
+            {
+                resource.SpendResource(amount);
+                GlobalResourceManager.Instance.AddMoney(amount * resource.SellRate);
+            }
+        }
+    }
 
     public bool CheckResources(List<CostResource> costResources)
     {
