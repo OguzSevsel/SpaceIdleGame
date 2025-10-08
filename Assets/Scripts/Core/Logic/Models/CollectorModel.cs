@@ -13,18 +13,12 @@ public class CollectorModel : MonoBehaviour, IUpgradeable, ISellable
     // Collecting Bools
     private bool _isCollecting = false;
     private bool _isAutoCollecting = false;
-    private bool _isShowingInfo = false;
 
     //Events
     public event Action<ProgressBarUpdateArgs> OnProgressBarUpdate;
-
-
-
     public event Action<CollectorEventArgs> OnCollectorFinished;
-    public static event Action<CollectorEventArgs> OnSellResourceButtonUpdate;
     public event Action<CollectorEventArgs> OnCollectorUpgrade;
     public event Action<CollectorEventArgs> OnCollectorUpgradeAmount;
-    public event Action<CollectorEventArgs> OnSold;
 
     //GUID Fields
     private string _guid;
@@ -102,11 +96,6 @@ public class CollectorModel : MonoBehaviour, IUpgradeable, ISellable
                 });
             }
         }
-
-        if (_isShowingInfo)
-        {
-            OnSellResourceButtonUpdate?.Invoke(new CollectorEventArgs { Collector = this });
-        }
     }
 
     #endregion
@@ -130,16 +119,6 @@ public class CollectorModel : MonoBehaviour, IUpgradeable, ISellable
     private void AddResource(double amount)
     {
         _colony.AddResource(Data.DataSO.GeneratedResource, amount);
-    }
-
-    private void ShowInfo()
-    {
-        _isShowingInfo = true;
-    }
-
-    private void HideInfo()
-    {
-        _isShowingInfo = false;
     }
 
     #endregion
@@ -246,24 +225,6 @@ public class CollectorModel : MonoBehaviour, IUpgradeable, ISellable
 
     #region Events
 
-    //This one will be called after player clicks Sell Tab Button
-    private void OnSellResourceShowHandler()
-    {
-        ShowInfo();
-    }
-
-    //This one will be called after player clicks any tab button except Sell Tab Button
-    private void OnSellResourceHideHandler()
-    {
-        HideInfo();
-    }
-
-    //Sell Event
-    private void OnSellButtonClickHandler(SellButtonEventArgs @event)
-    {
-        Sell(@event.ColonyType, @event.CollectorType, @event.ResourceAmount, @event.MoneyAmount);
-    }
-
     private void OnEnable()
     {
         if (string.IsNullOrEmpty(_guid))
@@ -279,16 +240,10 @@ public class CollectorModel : MonoBehaviour, IUpgradeable, ISellable
 
     private void Subscribe()
     {
-        TabGroup.OnSellResourceHide += OnSellResourceHideHandler;
-        TabGroup.OnSellResourceShow += OnSellResourceShowHandler;
-        ConvertPanel.OnSellButtonClick += OnSellButtonClickHandler;
     }
 
     private void UnSubscribe()
     {
-        TabGroup.OnSellResourceHide -= OnSellResourceHideHandler;
-        TabGroup.OnSellResourceShow -= OnSellResourceShowHandler;
-        ConvertPanel.OnSellButtonClick -= OnSellButtonClickHandler;
     }
 
     #endregion

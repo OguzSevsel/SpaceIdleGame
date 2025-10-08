@@ -6,20 +6,56 @@ using System;
 
 public class ColonyView : MonoBehaviour
 {
-    //public ColonyTypeEnum colonyType;
-
     [Header("UI Elements")]
     public List<CollectorView> CollectorPanels;
     public List<TextMeshProUGUI> ColonyResourceTexts;
     public List<Button> CollectorAmountButtons;
-    private TextMeshProUGUI _resourceText;
     public ColonyType ColonyType;
-
-
     private Dictionary<string, TextMeshProUGUI> _resourceTextMap;
+
+    [Header("Convert Panel UI Elements")]
+    [SerializeField] private GameObject _sellButtonPanel;
+    [SerializeField] private Button _sellButtonResource;
+    [SerializeField] private Button _sellAllButton;
+    [SerializeField] private TextMeshProUGUI _sellText;
+    [SerializeField] private Button _sellButton;
+
+
+    private void AddSellButtonsToPanel(List<Resource> resources)
+    {
+        foreach (Resource resource in resources)
+        {
+            GameObject sellButtonObject = Instantiate(_sellButtonResource.gameObject, _sellButtonPanel.transform);
+
+            Button sellButton = sellButtonObject.GetComponent<Button>();
+
+            sellButton.onClick.AddListener(() => OnSellResourceButtonClicked(resource));
+        }
+    }
+
+    private void ChangeSellText()
+    {
+
+    }
+
+    private void OnSellResourceButtonClicked(Resource resource)
+    {
+        
+    }
+
+    private void OnSellButtonClicked()
+    {
+
+    }
+
     private void Awake()
     {
+        _sellButton.onClick.AddListener(OnSellButtonClicked);
+
+
         SubscribeToLevelAmountButtons();
+
+
         _resourceTextMap = new Dictionary<string, TextMeshProUGUI>();
         foreach (var text in ColonyResourceTexts)
         {
