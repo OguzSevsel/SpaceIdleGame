@@ -12,6 +12,7 @@ public enum ResourceType
     Aluminum,
     Carbon,
     Diamond,
+    Xeronium
 }
 
 [CreateAssetMenuAttribute(menuName = "ScriptableObjects/Resource", fileName = "New Resource")]

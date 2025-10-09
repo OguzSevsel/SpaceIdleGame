@@ -12,7 +12,8 @@ public enum CollectorType
     GoldCollector,
     AluminumCollector,
     CarbonCollector,
-    DiamondCollector
+    DiamondCollector,
+    XeroniumCollector,
 }
 
 [CreateAssetMenuAttribute(menuName = "ScriptableObjects/Collector", fileName = "New Collector")]
