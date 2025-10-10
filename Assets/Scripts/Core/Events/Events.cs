@@ -28,7 +28,7 @@ public struct CollectorUpgradeAmountChangedEventArgs
 public struct CollectorUpgradeEventArgs
 {
     public CollectorModel Collector;
-    public Upgrades Upgrade;
+    public UpgradeType Upgrade;
 }
 
 public struct CostResourceEventArgs

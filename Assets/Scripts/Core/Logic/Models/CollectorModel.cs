@@ -126,7 +126,7 @@ public class CollectorModel : MonoBehaviour, IUpgradeable, ISellable
     #region Interface Implementations
 
 #nullable enable
-    public void Upgrade(Upgrades upgrade, CollectorModel collector)
+    public void Upgrade(UpgradeType upgrade, CollectorModel collector)
     {
         bool isColonyHasEnoughResource = _colony.CheckResources(Data.CostResources);
 
@@ -136,11 +136,11 @@ public class CollectorModel : MonoBehaviour, IUpgradeable, ISellable
             {
                 switch (upgrade)
                 {
-                    case Upgrades.CollectorSpeed:
+                    case UpgradeType.CollectorSpeed:
                         Data.SetSpeed(Data.GetSpeed() * Data.GetSpeedMultiplier());
                         break;
 
-                    case Upgrades.CollectorLevel:
+                    case UpgradeType.CollectorLevel:
                         Data.SetLevel(Data.GetLevel() + Data.GetLevelIncrement());
                         Data.SetCollectionRate(Data.DataSO._baseCollectionRate * Math.Pow(Data.GetCollectionRateMultiplier(), Data.GetLevel()));
 
@@ -148,7 +148,7 @@ public class CollectorModel : MonoBehaviour, IUpgradeable, ISellable
                         IncreaseCost(Data.GetLevel(), overrideCostMultiplier: null);
                         break;
 
-                    case Upgrades.CollectorAutoCollect:
+                    case UpgradeType.CollectorAutoCollect:
                         AutoCollect();
                         break;
 

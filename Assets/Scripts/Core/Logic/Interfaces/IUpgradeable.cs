@@ -1,6 +1,6 @@
 using UnityEngine;
 
-public enum Upgrades
+public enum UpgradeType
 {
     CollectorSpeed,
     CollectorLevel,
@@ -12,5 +12,14 @@ public enum Upgrades
 public interface IUpgradeable
 {
 #nullable enable
-    public void Upgrade(Upgrades upgrade, CollectorModel collector);
+    public void Upgrade(UpgradeType upgrade, CollectorModel collector);
+}
+
+public class Upgrade : MonoBehaviour
+{
+    public UpgradeType upgradeType;
+
+
+
+
 }

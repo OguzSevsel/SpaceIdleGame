@@ -23,10 +23,10 @@ public class CollectorPresenter
         _collectorModel.OnCollectorUpgradeAmount += CollectorUpgradeAmountChangedHandler;
         _collectorModel.OnProgressBarUpdate += ProgressBarUpdatedHandler;
     }
-
+    
     private void CollectorUpgradeHandler()
     {
-        _collectorModel.Upgrade(Upgrades.CollectorLevel, _collectorModel);
+        _collectorModel.Upgrade(UpgradeType.CollectorLevel, _collectorModel);
     }
 
     private void CollectorCollectHandler()
