@@ -1,0 +1,128 @@
+#CollectorSOCard > #CollectorName > #unity-text-input {
+    margin-right: 5px;
+}
+
+#CollectorSOCard > #CollectorName > .unity-text-field__label {
+    width: 50%;
+    margin-left: 5px;
+}
+
+#CollectorSOCard > #CollectorType > .unity-enum-field__label {
+    -unity-text-align: upper-left;
+    width: 50%;
+    margin-left: 5px;
+}
+
+#CollectorSOCard > #CollectorType > .unity-enum-field__input {
+    width: auto;
+    min-width: auto;
+    max-width: none;
+    -unity-font-definition: url("project://database/Assets/UI/SimplePixelUI/fonts/Font1/pixelfont.ttf?fileID=12800000&guid=b6349d08a5335cd4aa534282435d11cc&type=3#pixelfont");
+    margin-top: 0;
+    margin-right: 5px;
+    margin-bottom: 0;
+    margin-left: 0;
+}
+
+#BaseCollectionRate > .unity-slider__label {
+    -unity-text-align: middle-left;
+    width: auto;
+    text-overflow: ellipsis;
+    white-space: pre-wrap;
+    height: 100%;
+    min-height: 100%;
+    max-height: 100%;
+    margin-left: 5px;
+}
+
+#BaseCollectionRate {
+    height: 20%;
+    min-height: 20%;
+    max-height: 20%;
+    width: 100%;
+    min-width: 100%;
+    max-width: 100%;
+    justify-content: center;
+    align-items: center;
+    align-self: center;
+    align-content: center;
+}
+
+.unity-slider__input > #unity-text-field {
+    width: auto;
+}
+
+.unity-slider__input > #unity-drag-container {
+}
+
+.unity-slider__input > #unity-text-field > #unity-text-input {
+    width: 100%;
+    min-width: 100%;
+    max-width: 100%;
+    -unity-text-align: middle-center;
+    justify-content: center;
+    align-items: center;
+    align-self: center;
+    align-content: center;
+}
+
+.unity-label {
+    -unity-font-definition: url("project://database/Assets/UI/SimplePixelUI/fonts/Font1/pixelfont.ttf?fileID=12800000&guid=b6349d08a5335cd4aa534282435d11cc&type=3#pixelfont");
+    -unity-font-style: normal;
+    -unity-text-align: middle-left;
+    margin-top: 5px;
+    margin-right: 5px;
+    margin-bottom: 5px;
+    margin-left: 5px;
+}
+
+.unity-slider__input > #unity-drag-container > #unity-dragger {
+    border-top-left-radius: 5px;
+    border-top-right-radius: 5px;
+    border-bottom-right-radius: 5px;
+    border-bottom-left-radius: 5px;
+    background-color: rgb(13, 255, 0);
+    border-left-color: rgb(13, 255, 0);
+    border-right-color: rgb(13, 255, 0);
+    border-top-color: rgb(13, 255, 0);
+    border-bottom-color: rgb(13, 255, 0);
+    width: 15px;
+}
+
+.unity-slider__input > #unity-drag-container > #unity-tracker > #unity-fill {
+    background-color: rgb(13, 255, 0);
+}
+
+.unity-slider__input > #unity-drag-container > #unity-tracker {
+    border-left-color: rgb(0, 190, 255);
+    border-right-color: rgb(0, 190, 255);
+    border-top-color: rgb(0, 190, 255);
+    border-bottom-color: rgb(0, 190, 255);
+    background-color: rgb(0, 198, 255);
+}
+
+.unity-slider__input > #unity-text-field {
+    margin-right: 5px;
+}
+
+#ResourceSOCard > #ResourceType > .unity-enum-field__label {
+}
+
+#ResourceSOCard > #ResourceType > .unity-enum-field__input {
+    margin-top: 0;
+    margin-right: 0;
+    margin-bottom: 0;
+    margin-left: 0;
+}
+
+#ResourceSOCard > #ResourceUnit > .unity-text-field__label {
+}
+
+#ResourceSOCard > #ResourceUnit > #unity-text-input {
+}
+
+#ResourceSOCard {
+}
+
+#CollectorCard > #CollectorSO > .unity-object-field__label {
+}

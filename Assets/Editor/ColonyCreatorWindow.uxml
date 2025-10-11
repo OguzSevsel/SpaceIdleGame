@@ -1,0 +1,25 @@
+<ui:UXML xmlns:ui="UnityEngine.UIElements" editor-extension-mode="False">
+    <Style src="project://database/Assets/Editor/ColonyCreatorWindow.uss?fileID=7433441132597879392&amp;guid=1d030984a5147094ab3ea1a205b8ebf4&amp;type=3#ColonyCreatorWindow" />
+    <ui:ScrollView style="flex-grow: 1; padding: 10px; display: flex;">
+        <ui:Label text="Colony Creator" class="header" />
+        <ui:EnumField label="Colony Type:" name="colonyType" />
+        <ui:TextField label="Colony Name:" name="colonyName" />
+        <ui:IntegerField label="Number of Collectors:" name="collectorCount" />
+        <ui:Button text="+ Add Collector" name="addCollectorButton" />
+        <ui:Foldout text="Collectors" name="collectorsFoldout" />
+        <ui:Button text="Create Colony" name="createColonyButton" class="createButton Button" />
+    </ui:ScrollView>
+    <ui:VisualElement name="ResourceSOCard" class="sizeWidth100 sizeWidth100Height50 sizeWidth90Height50" style="align-items: stretch; justify-content: center; align-self: stretch; align-content: center; background-image: none; border-top-left-radius: 10px; border-top-right-radius: 10px; border-bottom-right-radius: 10px; border-bottom-left-radius: 10px; border-left-color: rgb(120, 0, 0); border-right-color: rgb(120, 0, 0); border-top-color: rgb(120, 0, 0); border-bottom-color: rgb(120, 0, 0); border-top-width: 2px; border-right-width: 2px; border-bottom-width: 2px; border-left-width: 2px; -unity-background-image-tint-color: rgb(255, 255, 255); background-color: rgb(180, 92, 92); display: none;">
+        <ui:Label text="Create Resource SO" name="ResourceSOText" style="align-content: center; align-self: center; color: rgb(0, 255, 236); -unity-text-outline-width: 10px; -unity-text-outline-color: rgb(0, 0, 0); background-image: resource(&apos;UI/Progress Bars/Sprites/Rectangle  20r  00t  0s&apos;);" />
+        <SpriteObjectField name="ResourceIcon" />
+        <ui:EnumField label="Resource Type" value="Money" type="ResourceType, Assembly-CSharp" include-obsolete-values="false" name="ResourceType" />
+        <ui:TextField label="Resource Unit" placeholder-text="Unit" name="ResourceUnit" password="false" />
+    </ui:VisualElement>
+    <ui:VisualElement name="CollectorSOCard" class="sizeWidth100 sizeWidth100Height50 sizeWidth90Height50" style="flex-grow: 1; align-items: stretch; justify-content: center; align-self: center; align-content: center; background-image: none; border-top-left-radius: 10px; border-top-right-radius: 10px; border-bottom-right-radius: 10px; border-bottom-left-radius: 10px; border-left-color: rgb(120, 0, 0); border-right-color: rgb(120, 0, 0); border-top-color: rgb(120, 0, 0); border-bottom-color: rgb(120, 0, 0); border-top-width: 2px; border-right-width: 2px; border-bottom-width: 2px; border-left-width: 2px; -unity-background-image-tint-color: rgb(255, 255, 255); background-color: rgb(180, 92, 92); display: none;">
+        <ui:Label text="Create Collector SO" name="CollectorSOText" style="align-content: center; align-self: center; color: rgb(0, 255, 236); -unity-text-outline-width: 10px; -unity-text-outline-color: rgb(0, 0, 0); background-image: resource(&apos;UI/Progress Bars/Sprites/Rectangle  20r  00t  0s&apos;);" />
+        <ScriptableObjectField name="GeneratedResourceSO" label="Generated Resource" />
+        <ui:TextField label="Collector Name" placeholder-text="Name" name="CollectorName" password="false" style="height: 20%; min-height: 20%; max-height: 20%; align-self: stretch; justify-content: center; align-items: center; align-content: center; width: 100%; min-width: 100%; max-width: 100%; margin-top: 0; margin-right: 0; margin-bottom: 0; margin-left: 0; flex-shrink: 1; flex-grow: 1; padding-top: 0; padding-right: 0; padding-bottom: 0; padding-left: 0;" />
+        <ui:EnumField label="Collector Type" value="EnergyCollector" type="CollectorType, Assembly-CSharp" include-obsolete-values="false" name="CollectorType" style="height: 20%; min-height: 20%; max-height: 20%; justify-content: center; margin-top: 0; margin-right: 0; margin-bottom: 0; margin-left: 0; padding-top: 0; padding-right: 0; padding-bottom: 0; padding-left: 0; width: 100%; min-width: 100%; max-width: 100%; align-self: stretch; align-content: center; align-items: center;" />
+        <ui:Slider label="Base Rate" value="20" high-value="100" show-input-field="true" fill="true" name="BaseCollectionRate" style="margin-top: 0; margin-right: 0; margin-bottom: 0; margin-left: 0;" />
+    </ui:VisualElement>
+</ui:UXML>

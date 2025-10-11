@@ -78,82 +78,17 @@ public class CreationToolWindow : EditorWindow
         }
     }
 
-    private void OnEnable()
-    {
-        if (_colonySO == null)
-        {
-            _colonySO = ScriptableObject.CreateInstance<ColonySO>();
-        }
-
-        // Load all ResourceSO assets from project
-        string[] guids = AssetDatabase.FindAssets("t:ResourceSO");
-        availableResourceSOs.Clear();
-        foreach (string guid in guids)
-        {
-            string path = AssetDatabase.GUIDToAssetPath(guid);
-            ResourceSO resourceSO = AssetDatabase.LoadAssetAtPath<ResourceSO>(path);
-            if (resourceSO != null)
-                availableResourceSOs.Add(resourceSO);
-        }
-
-        string[] guidsCollectors = AssetDatabase.FindAssets("t:CollectorModel");
-        availableResourceSOs.Clear();
-        foreach (string guid in guidsCollectors)
-        {
-            string path = AssetDatabase.GUIDToAssetPath(guid);
-            CollectorModel collectorModel = AssetDatabase.LoadAssetAtPath<CollectorModel>(path);
-            if (collectorModel != null)
-                availableCollectorModels.Add(collectorModel);
-        }
-    }
-    private void AddResourcesToColony(ColonyModel colony)
-    {
-        if (colony.Resources == null)
-            colony.Resources = new List<Resource>();
-
-        foreach (var resourceSO in availableResourceSOs)
-        {
-            bool add = EditorGUILayout.ToggleLeft(resourceSO.name, availableResourceSOs.Contains(resourceSO));
-            if (add && !availableResourceSOs.Contains(resourceSO))
-                availableResourceSOs.Add(resourceSO);
-            else if (!add && availableResourceSOs.Contains(resourceSO))
-                availableResourceSOs.Remove(resourceSO);
-        }
-
-        EditorUtility.SetDirty(colony);
-        Debug.Log($"✅ Added {availableResourceSOs.Count} resources to colony {colony.name}");
-    }
-    private void AddCollectorsToColony(ColonyModel colony)
-    {
-        if (colony.Collectors == null)
-            colony.Collectors = new List<CollectorModel>();
-
-        foreach (var collectorModel in availableCollectorModels)
-        {
-            bool add = EditorGUILayout.ToggleLeft(collectorModel.name, availableCollectorModels.Contains(collectorModel));
-            if (add && !availableCollectorModels.Contains(collectorModel))
-                availableCollectorModels.Add(collectorModel);
-            else if (!add && availableCollectorModels.Contains(collectorModel))
-                availableCollectorModels.Remove(collectorModel);
-        }
-
-        EditorUtility.SetDirty(colony);
-        Debug.Log($"✅ Added {availableCollectorModels.Count} resources to colony {colony.name}");
-    }
-
-
-
 
     private void DrawColonyTab()
     {
         GUILayout.Label("Colony Creation", EditorStyles.boldLabel);
 
-        EditorGUILayout.BeginHorizontal();
-        GUILayout.Label("Select the type of colony you want to create.", EditorStyles.wordWrappedLabel);
-        GUILayout.FlexibleSpace();
-        _colonySO.ColonyType = (ColonyType)EditorGUILayout.EnumPopup(_colonySO.ColonyType);
-        _colonySO.name = _colonySO.ColonyType.ToString();
-        EditorGUILayout.EndHorizontal();
+        _colonySO = SelectObjectField<ColonySO>("Select Colony SO", _colonySO, false);
+
+        if (_colonySO == null)
+        {
+            return;
+        }
 
         scrollPos = EditorGUILayout.BeginScrollView(scrollPos);
         for (int i = 0; i < collectorConfigs.Count; i++)
@@ -162,7 +97,6 @@ public class CreationToolWindow : EditorWindow
             GUILayout.Label($"Collector {i + 1}", EditorStyles.boldLabel);
 
             collectorConfigs[i]._collectorSO = SelectObjectField<CollectorSO>("Select Collector", collectorConfigs[i]._collectorSO, false);
-            collectorConfigs[i]._collectionRate = EditorGUILayout.DoubleField("Collection Rate", collectorConfigs[i]._collectionRate);
             collectorConfigs[i]._collectionRateMultiplier = EditorGUILayout.DoubleField("Collection Rate Multiplier", collectorConfigs[i]._collectionRateMultiplier);
             collectorConfigs[i]._speed = EditorGUILayout.DoubleField("Collect Speed", collectorConfigs[i]._speed);
             collectorConfigs[i]._speedMultiplier = EditorGUILayout.DoubleField("Collect Speed Multiplier", collectorConfigs[i]._speedMultiplier);
@@ -191,6 +125,7 @@ public class CreationToolWindow : EditorWindow
             _colony = new GameObject($"{_colonySO.ColonyType.ToString()}_Colony");
             _colonyModel = _colony.AddComponent<ColonyModel>();
             _colonyModel.Collectors = new List<CollectorModel>();
+            _colonyModel.colonyData = _colonySO;
             CreateColonyWithCollectors();
         }
     }
