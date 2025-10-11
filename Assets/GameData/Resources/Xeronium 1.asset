@@ -9,8 +9,9 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: d5c9bdb24ce543e46b533b7fb01b6e9a, type: 3}
-  m_Name: The Moon
-  m_EditorClassIdentifier: Assembly-CSharp::ColonySO
-  ColonyType: 0
-  Money: {fileID: 11400000, guid: 3aae086886c65dc4fad739acad125448, type: 2}
+  m_Script: {fileID: 11500000, guid: 679aef0af119e734eb53e8534e7fccc1, type: 3}
+  m_Name: Xeronium 1
+  m_EditorClassIdentifier: Assembly-CSharp::ResourceSO
+  ResourceIcon: {fileID: 0}
+  resourceType: 10
+  ResourceUnit: unit

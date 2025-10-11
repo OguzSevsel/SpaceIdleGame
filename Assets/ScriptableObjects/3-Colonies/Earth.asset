@@ -12,6 +12,5 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d5c9bdb24ce543e46b533b7fb01b6e9a, type: 3}
   m_Name: Earth
   m_EditorClassIdentifier: Assembly-CSharp::ColonySO
-  _guid: 5ca02788-a9de-49dd-8266-3d4f74a8745e
   ColonyType: 0
   Money: {fileID: 11400000, guid: 3aae086886c65dc4fad739acad125448, type: 2}

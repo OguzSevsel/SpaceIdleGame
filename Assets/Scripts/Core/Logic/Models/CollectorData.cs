@@ -45,4 +45,4 @@ public class CollectorData
 
     public int GetLevelIncrement() { return _levelIncrement; }
     public void SetLevelIncrement(int value) { _levelIncrement = value; }
-}
+}   
