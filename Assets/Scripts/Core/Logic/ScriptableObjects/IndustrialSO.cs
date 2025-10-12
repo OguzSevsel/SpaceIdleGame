@@ -23,6 +23,11 @@ public class CollectorSO : ScriptableObject
     public CollectorType CollectorType;
     public ResourceSO GeneratedResource;
     [Range(0f, 2f)] public double _baseCollectionRate;
+
+    public override string ToString()
+    {
+        return CollectorName;
+    }
 }
 
 [CreateAssetMenuAttribute(menuName = "ScriptableObjects/Transport Hub", fileName = "New Transport Hub")]

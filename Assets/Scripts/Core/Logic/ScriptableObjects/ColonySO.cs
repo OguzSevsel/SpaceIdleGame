@@ -14,5 +14,4 @@ public enum ColonyType
 public class ColonySO : ScriptableObject
 {
     public ColonyType ColonyType;
-    public ResourceSO Money;
 }
