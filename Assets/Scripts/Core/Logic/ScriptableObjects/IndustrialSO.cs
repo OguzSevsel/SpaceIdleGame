@@ -119,4 +119,10 @@ public class CostResource
     }
 
     public double GetCostAmount() { return _costAmount; }
+    public double GetBaseCostAmount() { return _baseCostAmount; }
+    public double GetCostMultiplier() { return _costMultiplier; }
+
+    public void SetCostAmount (double amount) { _costAmount = amount; }
+    public void SetBaseCostAmount (double amount) { _baseCostAmount = amount; }
+    public void SetCostMultiplier (double multiplier) { _costMultiplier = multiplier; }
 }

@@ -54,6 +54,8 @@ public class Resource
         return true;
     }
 
+
+    public void ChangeResourceAmount (double amount) { ResourceAmount = amount; }
     public void ChangeSellRate (double value) {  SellRate = value; }
     public void ChangeSellRateMultiplier (double value) {  SellRateMultiplier = value; }
 }

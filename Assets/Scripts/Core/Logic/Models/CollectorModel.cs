@@ -31,7 +31,7 @@ public class CollectorModel : MonoBehaviour, IUpgradeable, ISellable
     private void Start()
     {
         _colony = GetComponentInParent<ColonyModel>();
-        //AutoCollect();
+        AutoCollect();
     }
 
     private void Update()

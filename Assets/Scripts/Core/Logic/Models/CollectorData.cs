@@ -19,6 +19,23 @@ public class CollectorData
     [SerializeField] private int _level = 1;
     [SerializeField] private int _levelIncrement = 1;
 
+    public CollectorData()
+    {
+
+    }
+
+    public CollectorData(CollectorSO SO, List<CostResource> costResources, double collectionRate, double collectionRateMult, double speed, double speedMult, int level, int levelIncrement)
+    {
+        this.DataSO = SO;
+        this.CostResources = costResources;
+        this._collectionRate = collectionRate;
+        this._collectionRateMultiplier = collectionRateMult;
+        this._speed = speed;
+        this._speedMultiplier = speedMult;
+        this._level = level;
+        this._levelIncrement = levelIncrement;
+    }
+
     public double GetSpeed() { return _speed; }
     public void SetSpeed(double value) { _speed = value; }
 

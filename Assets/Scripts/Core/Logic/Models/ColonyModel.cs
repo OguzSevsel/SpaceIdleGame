@@ -8,9 +8,7 @@ public class ColonyModel : MonoBehaviour
     public List<CollectorModel> Collectors;
     public List<Resource> Resources;
 
-    public static event Action<Resource>  OnResourceAdded;
-
-
+    public static event Action<Resource, int>  OnResourceAdded;
 
     public void SellResource(Resource resource, double amount)
     {
@@ -66,7 +64,7 @@ public class ColonyModel : MonoBehaviour
             if (resourceSO == resource.ResourceSO)
             {
                 resource.AddResource(amount);
-                OnResourceAdded?.Invoke(resource);
+                OnResourceAdded?.Invoke(resource, Resources.IndexOf(resource));
             }
         }
     }

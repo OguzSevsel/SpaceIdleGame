@@ -50,9 +50,9 @@ public class ColonyPresenter : MonoBehaviour
         _colonyView.InitializeSellButtons(resources);
     }
 
-    private void ChangeResourceText(Resource resource)
+    private void ChangeResourceText(Resource resource, int index)
     {
-        _colonyView.UpdateResourceText(resource.ResourceSO, resource.ResourceAmount);
+        _colonyView.UpdateResourceText(resource.ResourceSO, resource.ResourceAmount, index);
     }
 
 
@@ -67,9 +67,9 @@ public class ColonyPresenter : MonoBehaviour
 
 
 
-    private void OnResourceAddedHandler(Resource resource)
+    private void OnResourceAddedHandler(Resource resource, int index)
     {
-        ChangeResourceText(resource);
+        ChangeResourceText(resource, index);
     }
 
     private void SellResourceShowHandler()

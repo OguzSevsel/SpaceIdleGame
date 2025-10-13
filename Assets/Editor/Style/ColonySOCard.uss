@@ -10,4 +10,10 @@
 
 .unity-label {
     -unity-font-definition: url("project://database/Assets/UI/SimplePixelUI/fonts/Font1/pixelfont.ttf?fileID=12800000&guid=b6349d08a5335cd4aa534282435d11cc&type=3#pixelfont");
+    color: rgb(0, 0, 0);
+}
+
+.ButtonTexts {
+    color: rgb(0, 0, 0);
+    -unity-font-definition: url("project://database/Assets/UI/SimplePixelUI/fonts/Font1/pixelfont.ttf?fileID=12800000&guid=b6349d08a5335cd4aa534282435d11cc&type=3#pixelfont");
 }

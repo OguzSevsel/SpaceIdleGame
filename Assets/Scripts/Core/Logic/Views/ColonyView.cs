@@ -71,10 +71,10 @@ public class ColonyView : MonoBehaviour
         }
     }
 
-    public void UpdateResourceText(ResourceSO resourceSO, double newAmount)
+    public void UpdateResourceText(ResourceSO resourceSO, double newAmount, int index)
     {
         string key = resourceSO.resourceType.ToString().ToLower();
-        if (_resourceTextMap.TryGetValue($"text_{key}_resource", out var text))
+        if (_resourceTextMap.TryGetValue($"text_resource_{index}", out var text))
         {
             text.text = $"{newAmount.ToShortString()} {resourceSO.ResourceUnit}";
         }
