@@ -34,6 +34,7 @@ public class ResourceCreatorView
         SellRateSlider = Parent.Q<Slider>("SellRate");
         SellRateMultiplierSlider = Parent.Q<Slider>("SellRateMultiplier");
         CreateResourceButton = Parent.Q<Button>("Create");
+        MainPanel = Parent.Q<VisualElement>("ResourceSOCard");
     }
     private void BindTreeAsset(VisualElement root)
     {
