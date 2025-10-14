@@ -28,6 +28,7 @@ public class ColonyPresenter : MonoBehaviour
         _colonyView = colonyView;
 
         _colonyView.OnSelectedResourceSell += SelectedResourceSellHandler;
+        _colonyModel.OnResourceAdded += OnResourceAddedHandler;
 
         for (int i = 0; i < _colonyModel.Collectors.Count; i++)
         {
@@ -94,14 +95,12 @@ public class ColonyPresenter : MonoBehaviour
 
     private void Subscribe()
     {
-        ColonyModel.OnResourceAdded += OnResourceAddedHandler;
         TabGroup.OnSellResourceHide += SellResourceHideHandler;
         TabGroup.OnSellResourceShow += SellResourceShowHandler;
     }
 
     private void UnSubscribe()
     {
-        ColonyModel.OnResourceAdded -= OnResourceAddedHandler;
         TabGroup.OnSellResourceHide -= SellResourceHideHandler;
         TabGroup.OnSellResourceShow -= SellResourceShowHandler;
     }

@@ -16,4 +16,14 @@ public class ColonyManager : MonoBehaviour
             colonyPresenters.Add(presenter);
         }
     }
+
+    public void AddToColonyModels(ColonyModel modelToAdd)
+    {
+        colonyModels.Add(modelToAdd);
+    }
+
+    public void AddToColonyViews(ColonyView viewToAdd)
+    {
+        colonyViews.Add(viewToAdd);
+    }
 }

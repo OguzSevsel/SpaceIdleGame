@@ -153,10 +153,10 @@ RectTransform:
   - {fileID: 6223322951068821908}
   m_Father: {fileID: 5692779101005499431}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 1}
-  m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 300, y: -30}
-  m_SizeDelta: {x: 200, y: 60}
+  m_AnchorMin: {x: 0, y: 0}
+  m_AnchorMax: {x: 0, y: 0}
+  m_AnchoredPosition: {x: 0, y: 0}
+  m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &3785432962418094733
 CanvasRenderer:
@@ -1378,10 +1378,10 @@ RectTransform:
   - {fileID: 6069317313837717576}
   m_Father: {fileID: 5692779101005499431}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 1}
-  m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 100, y: -90}
-  m_SizeDelta: {x: 200, y: 60}
+  m_AnchorMin: {x: 0, y: 0}
+  m_AnchorMax: {x: 0, y: 0}
+  m_AnchoredPosition: {x: 0, y: 0}
+  m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &4434064353396880232
 CanvasRenderer:
@@ -1481,10 +1481,10 @@ RectTransform:
   - {fileID: 2221867493515555283}
   m_Father: {fileID: 5692779101005499431}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 1}
-  m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 300, y: -90}
-  m_SizeDelta: {x: 200, y: 60}
+  m_AnchorMin: {x: 0, y: 0}
+  m_AnchorMax: {x: 0, y: 0}
+  m_AnchoredPosition: {x: 0, y: 0}
+  m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &4662543576670516562
 CanvasRenderer:
@@ -2743,10 +2743,10 @@ RectTransform:
   - {fileID: 2005509504989684159}
   m_Father: {fileID: 5692779101005499431}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 1}
-  m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 100, y: -30}
-  m_SizeDelta: {x: 200, y: 60}
+  m_AnchorMin: {x: 0, y: 0}
+  m_AnchorMax: {x: 0, y: 0}
+  m_AnchoredPosition: {x: 0, y: 0}
+  m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &2499768127882602087
 CanvasRenderer:
@@ -3053,7 +3053,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b7622456b198da2438b3451abddaafaf, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::CollectorPanel
-  _collector: {fileID: 0}
   _iconImage: {fileID: 3145931233688772175}
   _name: {fileID: 781339039877970129}
   _level: {fileID: 2017255440562441677}

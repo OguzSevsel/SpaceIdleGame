@@ -18,8 +18,4 @@ public interface IUpgradeable
 public class Upgrade : MonoBehaviour
 {
     public UpgradeType upgradeType;
-
-
-
-
 }

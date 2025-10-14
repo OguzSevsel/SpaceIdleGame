@@ -1,9 +1,8 @@
 <ui:UXML xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements" noNamespaceSchemaLocation="../../../UIElementsSchema/UIElements.xsd" editor-extension-mode="False">
-    <Style src="project://database/Assets/Editor/Style/ColonySOCard.uss?fileID=7433441132597879392&amp;guid=a7dcf9fe03a31b444a210f8974532d1c&amp;type=3#ColonySOCard" />
+    <Style src="project://database/Assets/Editor/1-Style/ColonySOCard.uss?fileID=7433441132597879392&amp;guid=a7dcf9fe03a31b444a210f8974532d1c&amp;type=3#ColonySOCard" />
     <ui:VisualElement name="ColonySOCard" class="sizeWidth100 sizeWidth100Height50 sizeWidth90Height50" style="align-items: stretch; justify-content: center; align-self: stretch; align-content: center; background-image: none; border-top-left-radius: 10px; border-top-right-radius: 10px; border-bottom-right-radius: 10px; border-bottom-left-radius: 10px; border-left-color: rgb(120, 0, 0); border-right-color: rgb(120, 0, 0); border-top-color: rgb(120, 0, 0); border-bottom-color: rgb(120, 0, 0); border-top-width: 2px; border-right-width: 2px; border-bottom-width: 2px; border-left-width: 2px; -unity-background-image-tint-color: rgb(255, 255, 255); background-color: rgb(180, 92, 92); display: flex;">
         <ui:Label text="COLONY SCRIPTABLE OBJECT" name="ColonySOText" style="align-content: center; align-self: center; padding-left: 4px; color: rgb(255, 255, 255);" />
         <ui:EnumField label="Colony Type" value="Earth" type="ColonyType, Assembly-CSharp" include-obsolete-values="false" name="ColonyType" />
-        <ui:TextField label="Colony Name" placeholder-text="Name" name="ColonyName" password="false" />
         <ui:Button text="Create" name="Create" class="ButtonTexts" style="background-color: rgb(153, 234, 143); border-top-left-radius: 5px; border-top-right-radius: 5px; border-bottom-right-radius: 5px; border-bottom-left-radius: 5px; align-self: stretch; flex-shrink: 1; flex-grow: 1;" />
     </ui:VisualElement>
 </ui:UXML>

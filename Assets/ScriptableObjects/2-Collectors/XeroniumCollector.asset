@@ -10,9 +10,9 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 88a3c94c8207db943aff26f715d578ef, type: 3}
-  m_Name: EnergyCollector
+  m_Name: XeroniumCollector
   m_EditorClassIdentifier: Assembly-CSharp::CollectorSO
-  CollectorName: EnergyCollector
-  CollectorType: 0
-  GeneratedResource: {fileID: 11400000, guid: 47420a4557963084f8940d9775b579b3, type: 2}
-  _baseCollectionRate: 20
+  CollectorName: XeroniumCollector
+  CollectorType: 9
+  GeneratedResource: {fileID: 11400000, guid: e4305e17104564b408dce7be46358a07, type: 2}
+  _baseCollectionRate: 0.10000000149011612

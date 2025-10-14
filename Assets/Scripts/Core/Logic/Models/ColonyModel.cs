@@ -8,7 +8,7 @@ public class ColonyModel : MonoBehaviour
     public List<CollectorModel> Collectors;
     public List<Resource> Resources;
 
-    public static event Action<Resource, int>  OnResourceAdded;
+    public event Action<Resource, int>  OnResourceAdded;
 
     public void SellResource(Resource resource, double amount)
     {
@@ -85,7 +85,7 @@ public class ColonyModel : MonoBehaviour
                     }
                     else
                     {
-                        Debug.LogWarning($"Cant spend resources because there is not enough of {resource.Resource.resourceType}");
+                        Debug.LogWarning($"Cant spend resources because there is not enough of  {resource.Resource.resourceType}");
                     }
                 }
             }

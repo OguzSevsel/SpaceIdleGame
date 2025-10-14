@@ -73,10 +73,12 @@ public class ColonyView : MonoBehaviour
 
     public void UpdateResourceText(ResourceSO resourceSO, double newAmount, int index)
     {
-        string key = resourceSO.resourceType.ToString().ToLower();
-        if (_resourceTextMap.TryGetValue($"text_resource_{index}", out var text))
+        if (_resourceTextMap != null)
         {
-            text.text = $"{newAmount.ToShortString()} {resourceSO.ResourceUnit}";
+            if (_resourceTextMap.TryGetValue($"text_resource_{index}", out var text))
+            {
+                text.text = $"{newAmount.ToShortString()} {resourceSO.ResourceUnit}";
+            }
         }
     }
 
@@ -96,7 +98,7 @@ public class ColonyView : MonoBehaviour
 
     public void SetSellText()
     {
-        if (_selectedResource != null)
+        if (_selectedResource != null && _sellText != null)
         {
             _sellText.text = $"You will sell {_selectedResource.ResourceAmount.ToShortString()} {_selectedResource.ResourceSO.ResourceUnit} of {_selectedResource.ResourceSO.resourceType.ToString()} for {(_selectedResource.SellRate * _selectedResource.ResourceAmount).ToShortString()} $?";
         }

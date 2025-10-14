@@ -5,6 +5,9 @@
         <ScriptableObjectField name="GeneratedResourceSO" label="Generated Resource" style="margin-top: 0; margin-right: 0; margin-bottom: 0; margin-left: 0;" />
         <ui:EnumField label="Collector Type" value="EnergyCollector" type="CollectorType, Assembly-CSharp" include-obsolete-values="false" name="CollectorType" style="justify-content: center; margin-top: 0; margin-right: 0; margin-bottom: 0; margin-left: 0; padding-top: 0; padding-right: 0; padding-bottom: 0; padding-left: 0; align-self: stretch; align-content: center; align-items: center;" />
         <ui:Slider label="Base Rate" value="20" high-value="100" show-input-field="true" fill="true" name="BaseCollectionRate" style="margin-top: 0; margin-right: 0; margin-bottom: 0; margin-left: 0;" />
-        <ui:Button text="Create" name="Create" class="ButtonTexts" style="background-color: rgb(153, 234, 143); border-top-left-radius: 5px; border-top-right-radius: 5px; border-bottom-right-radius: 5px; border-bottom-left-radius: 5px; align-self: stretch; flex-shrink: 1; flex-grow: 1;" />
+        <ui:VisualElement name="CreateOrSelectPanel" style="flex-direction: row; align-items: stretch; align-content: stretch; justify-content: space-evenly;">
+            <ui:Button text="Create" name="Create" class="ButtonTexts" style="background-color: rgb(153, 234, 143); border-top-left-radius: 5px; border-top-right-radius: 5px; border-bottom-right-radius: 5px; border-bottom-left-radius: 5px; align-self: stretch; flex-shrink: 1; flex-grow: 1;" />
+            <ui:Button text="Select" name="Select" class="ButtonTexts" style="background-color: rgb(153, 234, 143); border-top-left-radius: 5px; border-top-right-radius: 5px; border-bottom-right-radius: 5px; border-bottom-left-radius: 5px; align-self: stretch; flex-shrink: 1; flex-grow: 1;" />
+        </ui:VisualElement>
     </ui:VisualElement>
 </ui:UXML>
