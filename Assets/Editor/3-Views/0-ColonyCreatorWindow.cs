@@ -19,6 +19,12 @@ public enum State
     CreateResourceSO,
     SelectResourceSO,
 
+    CreateResource,
+
+    CollectorSOSelection,
+    CreateCollectorSO,
+    SelectCollectorSO,
+
     OnlyCreateCollector,
 }
 
@@ -78,69 +84,41 @@ public class ColonyCreatorWindow : EditorWindow
 
     #region Views
 
-    private ColonyCreatorView _main;
-    private ColonySOCreatorView _colonySOCreator;
-    private ResourceSOCreatorView _resourceSOCreator;
-    private ResourceCreatorView _resourceCreator;
-    private CollectorSOCreatorView _collectorSOCreator;
-    private CollectorCreatorView _collectorCreator;
-    private CostResourceCreatorView _costResourceCreator;
+    private ColonyCreatorView main;
 
     #endregion
 
 
+    #region Panel Indexes
+
+    private int _colonySOIndex = 0;
+    private int _resourceSOIndex = 1;
+    private int _resourceIndex = 2;
+    private int _collectorSOIndex = 0;
+    private int _collectorIndex = 1;
+
+    #endregion
+
     public void CreateGUI()
     {
-        _stateController = new StateController();
-        _stateController.OnStateChanged += StateChangedHandler;
+        main = new ColonyCreatorView(rootVisualElement);
 
-        if (_stateController.State == State.CreateColonyFromZero)
-        {
-            _main = new ColonyCreatorView(rootVisualElement);
-            RegisterCallBacks();
-            RegisterSceneObjects();
-            _main.RemoveFromPanel(_main.AddComponentsButton);
-            _main.RemoveFromPanel(_main.AddColonyButton);
-            _main.RemoveFromPanel(_main.SelectColonySOField);
-            _stateController.ChangeState(State.ColonySOSelection);
-        }
+        RegisterSceneObjects();
+        RegisterCallBacks();
+
+        main.LeftPanel.Remove(main.ColonySoCard);
+        main.LeftPanel.Remove(main.ResourceSOCard);
+        main.LeftPanel.Remove(main.ResourceCard);
+        main.RightPanel.Remove(main.CollectorSOCard);
+        main.RightPanel.Remove(main.CollectorCard);
+        main.Parent.style.flexShrink = 0;
+        main.Parent.style.flexGrow = 1;
     }
 
     private void StateChangedHandler(State state)
     {
         switch (state)
         {
-            case State.CreateColonyFromZero:
-                break;
-
-            case State.ColonySOSelection:
-                break;
-
-            case State.CreateColonySO:
-                AddColonySOUI();
-                break;
-
-            case State.SelectColonySO:
-                _main.RemoveFromPanel(_main.SelectColonySOButton);
-                _main.RemoveFromPanel(_main.AddColonySOButton);
-                _main.AddToPanel(_main.SelectColonySOField);
-                break;
-
-            case State.ResourceSOSelection:
-                AddResourceSOUI();
-                break;
-
-            case State.CreateResourceSO:
-                break;
-
-            case State.SelectResourceSO:
-                break;
-
-            case State.OnlyCreateCollector:
-                _main.ClearTab(_main.CreateCollectorTab);
-                AddCollectorUI();
-                break;
-
             default:
                 break;
         }
@@ -168,36 +146,6 @@ public class ColonyCreatorWindow : EditorWindow
         }
         return null;
     }
-
-    private void RegisterCallBacks()
-    {
-        _main.AddColonyButton.clicked += () => AddColony();
-        _main.AddColonySOButton.clicked += () => StateChanged(State.CreateColonySO);
-        _main.AddComponentsButton.clicked += () => StateChanged(State.ResourceSOSelection);
-        _main.SelectColonySOButton.clicked += () => StateChanged(State.SelectColonySO);
-        _main.TabView.activeTabChanged += ActiveTabChangedHandler;
-        _main.SelectColonySOField.RegisterValueChangedCallback(RemoveSOField);
-    }
-
-    private void StateChanged(State newState)
-    {
-        _stateController.ChangeState(newState);
-    }
-
-    private void ActiveTabChangedHandler(Tab tab1, Tab tab2)
-    {
-        string tabName = _main.TabView.activeTab.name;
-
-        if (tabName == _main.CreateColonyTab.name)
-        {
-            _stateController.ChangeState(State.CreateColonyFromZero);
-        }
-        else if (tabName == _main.CreateCollectorTab.name)
-        {
-            _stateController.ChangeState(State.OnlyCreateCollector);
-        }
-    }
-
     private void RegisterSceneObjects()
     {
         _colonyManager = FindAnyObjectByType<ColonyManager>();
@@ -205,65 +153,170 @@ public class ColonyCreatorWindow : EditorWindow
         _colonyPrefab = AssetDatabase.LoadAssetAtPath<GameObject>("Assets/Prefabs/UI/Colony/Panel_Colony.prefab");
         _tabGroupObject = GameObject.Find("BottomLeftPanel");
     }
-
-    private void RemoveSOField(ChangeEvent<UnityEngine.Object> evt)
+    private void RegisterCallBacks()
     {
-        _colonySO = (ColonySO)evt.newValue;
-        _main.AddToPanel(_main.AddComponentsButton);
-        _main.RemoveFromPanel(_main.SelectColonySOField);
+        main.ColonyMenuBtn.clicked += ColonyMenuButtonClickHandler;
+
+        main.ColonySOMenuBtn.clicked += ColonySOMenuButtonClickHandler;
+        main.ColonySOCloseBtn.clicked += ColonySOCloseButtonClickHandler;
+        main.ColonySOSelectBtn.clicked += ColonySOSelectButtonClickHandler;
+        main.ColonySOCreateBtn.clicked += ColonySOCreateButtonClickHandler;
+
+        main.ResourceSOMenuBtn.clicked += ResourceSOMenuButtonClickHandler;
+        main.ResourceSOCloseBtn.clicked += ResourceSOCloseButtonClickHandler;
+        main.ResourceSOCreateBtn.clicked += ResourceSOCreateButtonClickHandler;
+
+        main.ResourceMenuBtn.clicked += ResourceMenuButtonClickHandler;
+        main.ResourceCloseBtn.clicked += ResourceCloseButtonClickHandler;
+        main.ResourceCreateBtn.clicked += ResourceCreateButtonClickHandler;
+
+        main.CollectorSOMenuBtn.clicked += CollectorSOMenuButtonClickHandler;
+        main.CollectorSOCloseBtn.clicked += CollectorSOCloseButtonClickHandler;
+        main.CollectorSOCreateBtn.clicked += CollectorSOCreateButtonClickHandler;
+
+        main.CollectorMenuBtn.clicked += CollectorMenuButtonClickHandler;
+        main.CollectorCloseBtn.clicked += CollectorCloseButtonClickHandler;
+        main.CollectorCreateBtn.clicked += CollectorCreateButtonClickHandler;
+        main.CostResourceCreateBtn.clicked += CostResourceCreateButtonClickHandler;
+    }
+
+    #endregion
+
+    #region Colony Button Handlers
+
+    private void ColonyMenuButtonClickHandler()
+    {
+        throw new NotImplementedException();
+    }
+
+    #endregion
+
+    #region ColonySO Button Handlers
+
+    private void ColonySOMenuButtonClickHandler()
+    {
+        //main.InsertToLeft(_colonySOIndex, main.ColonySoCard);
+        main.LeftPanel.Add(main.ColonySoCard);
+    }
+
+    private void ColonySOCloseButtonClickHandler()
+    {
+        throw new NotImplementedException();
+    }
+
+    private void ColonySOSelectButtonClickHandler()
+    {
+        throw new NotImplementedException();
+    }
+
+    private void ColonySOCreateButtonClickHandler()
+    {
+        throw new NotImplementedException();
+    }
+
+    #endregion
+
+    #region ResourceSO Button Handlers
+
+    private void ResourceSOMenuButtonClickHandler()
+    {
+        main.InsertToLeft(_resourceSOIndex, main.ResourceSOCard);
+    }
+
+    private void ResourceSOCloseButtonClickHandler()
+    {
+        throw new NotImplementedException();
+    }
+
+    private void ResourceSOCreateButtonClickHandler()
+    {
+        throw new NotImplementedException();
+    }
+
+    #endregion
+
+    #region Resource Button Handlers
+
+    private void ResourceMenuButtonClickHandler()
+    {
+        main.InsertToLeft(_resourceIndex, main.ResourceCard);
+    }
+
+    private void ResourceCloseButtonClickHandler()
+    {
+        throw new NotImplementedException();
+    }
+
+    private void ResourceCreateButtonClickHandler()
+    {
+        throw new NotImplementedException();
+    }
+
+    #endregion
+
+    #region CollectorSO Button Handlers
+
+    private void CollectorSOMenuButtonClickHandler()
+    {
+        main.InsertToRight(_collectorSOIndex, main.CollectorSOCard);
+    }
+
+    private void CollectorSOCloseButtonClickHandler()
+    {
+        throw new NotImplementedException();
+    }
+
+    private void CollectorSOCreateButtonClickHandler()
+    {
+        throw new NotImplementedException();
+    }
+
+    #endregion
+
+    #region Collector Button Handlers
+
+    private void CollectorMenuButtonClickHandler()
+    {
+        main.InsertToRight(_collectorIndex, main.CollectorCard);
+    }
+
+    private void CollectorCloseButtonClickHandler()
+    {
+        throw new NotImplementedException();
+    }
+
+    private void CostResourceCreateButtonClickHandler()
+    {
+        throw new NotImplementedException();
+    }
+
+    private void CollectorCreateButtonClickHandler()
+    {
+        throw new NotImplementedException();
     }
 
     #endregion
 
 
-    #region ColonyCreation
-
     private ColonySO AddColonySO(string colonyName, ColonyType colonyType)
     {
         string path = _SOFolder + "3-Colonies";
 
-        var colony = ScriptableObjectUtility.CreateAssetAtPath<ColonySO>(path, colonyName);
-        colony.ColonyType = colonyType;
+        bool isAssetExists = CheckAssetNamesAtPath(path, colonyType.ToString());
 
-        EditorUtility.SetDirty(colony);
-
-        return colony;
-    }
-
-    private void AddColonySOUI()
-    {
-        VisualElement colonySOUI = new VisualElement();
-        _colonySOCreator = new ColonySOCreatorView(colonySOUI);
-
-        _main.AddToPanel(_colonySOCreator.Parent);
-
-        _colonySOCreator.CreateColonySOButton.clicked += () =>
+        if (!isAssetExists)
         {
-            _colonySO = AddColonySO(_colonySOCreator.ColonyTypeEnumField.value.ToString(), (ColonyType)_colonySOCreator.ColonyTypeEnumField.value);
-            _colonySOCreator.MainPanel.Remove(_colonySOCreator.CreateColonySOButton);
-            _stateController.ChangeState(State.ResourceSOSelection);
-        };
-
-        _colonySOCreator.ColonyTypeEnumField.RegisterValueChangedCallback((ChangeEvent<System.Enum> evt) =>
+            var colony = ScriptableObjectUtility.CreateAssetAtPath<ColonySO>(path, colonyName);
+            colony.ColonyType = colonyType;
+            EditorUtility.SetDirty(colony);
+            return colony;
+        }
+        else
         {
-            if (_colonySO != null)
-            {
-                string path = _SOFolder + $"3-Colonies/{_colonySO.ColonyType.ToString()}.asset";
-
-                var colonySO = AssetDatabase.LoadAssetAtPath<ColonySO>(path);
-                _colonySO.ColonyType = (ColonyType)evt.newValue;
-                colonySO.ColonyType = (ColonyType)evt.newValue;
-
-                string error = AssetDatabase.RenameAsset(path, colonySO.ColonyType.ToString());
-                Debug.LogError(error);
-                AssetDatabase.SaveAssets();
-                AssetDatabase.Refresh();
-                
-                _colonySO.name = _colonySO.ColonyType.ToString();
-            }
-        });
+            EditorUtility.DisplayDialog("Asset Conflict!", "There is an asset with same kind", "OK");
+        }
+        return null;
     }
-
     private void AddColony()
     {
         GameObject colony = new GameObject($"{_colonySO.ColonyType}_Colony");
@@ -298,16 +351,39 @@ public class ColonyCreatorWindow : EditorWindow
             _colonyManager.AddToColonyModels(colonyModel);
             _colonyManager.AddToColonyViews(colonyPrefab.GetComponent<ColonyView>());
         }
-        
+
         _tabGroupObject.GetComponent<TabGroup>().objectsToSwap.Add(colonyPrefab);
 
         Debug.Log($"Created Colony '{colony.name}' with {_collectors.Count} collectors.");
     }
 
-    #endregion
+
+    private void AddResourceSO(string resourceName, ResourceType resourceType, string resourceUnit, Sprite icon)
+    {
+        string path = _SOFolder + "1-Resources";
+
+        var resource = ScriptableObjectUtility.CreateAssetAtPath<ResourceSO>(path, resourceName);
+        resource.resourceType = resourceType;
+        resource.ResourceUnit = resourceUnit;
+        resource.ResourceIcon = icon;
+        _resourceSO = resource;
+
+        EditorUtility.SetDirty(resource);
+    }
 
 
-    #region CollectorCreation
+    private void AddResource(ResourceSO resourceSO, double resourceAmount, double sellRate, double sellRateMultiplier)
+    {
+        Resource newResource = new Resource();
+
+        newResource.ResourceSO = resourceSO;
+        newResource.ChangeResourceAmount(resourceAmount);
+        newResource.ChangeSellRateMultiplier(sellRateMultiplier);
+        newResource.ChangeSellRate(sellRate);
+
+        _resources.Add(newResource);
+    }
+
 
     private void AddCollectorSO(string collectorName, CollectorType collectorType, ResourceSO resource, double baseCollectionRate)
     {
@@ -325,75 +401,20 @@ public class ColonyCreatorWindow : EditorWindow
         EditorUtility.SetDirty(collectorSO);
     }
 
-    private void AddCollectorSOUI()
-    {
-        VisualElement collectorSOUI = new VisualElement();
-        _collectorSOCreator = new CollectorSOCreatorView(collectorSOUI);
-
-        _collectorSOCreator.GeneratedResourceSOField.value = _resourceSO;
-
-        _collectorSOCreator.CollectorTypeEnumField.value = GetCollectorEnumValue(_resourceSO);
-
-        _collectorSOCreator.SelectCollectorSOButton.clicked += () =>
-        {
-
-        };
-
-        _collectorSOCreator.CreateCollectorSOButton.clicked += () =>
-        {
-            AddCollectorSO
-            (
-                _collectorSOCreator.CollectorTypeEnumField.value.ToString(),
-                (CollectorType)_collectorSOCreator.CollectorTypeEnumField.value,
-                (ResourceSO)_collectorSOCreator.GeneratedResourceSOField.value,
-                _collectorSOCreator.BaseCollectionRateSlider.value);
-
-            AddCollectorUI();
-        };
-    }
-
-    private void AddCollectorUI()
-    {
-        VisualElement collectorUI = new VisualElement();
-        _collectorCreator = new CollectorCreatorView(collectorUI);
-        List<CostResource> costResources = new List<CostResource>();
-        _main.CreateCollectorTab.Add(collectorUI);
-
-        _collectorCreator.CreateCostResourceButton.clicked += () =>
-        {
-            VisualElement costResourceUI = new VisualElement();
-            _costResourceCreator = new CostResourceCreatorView(costResourceUI);
-            int index = _collectorCreator.CollectorCardScrollView.IndexOf(_collectorCreator.CreateCostResourceButton);
-            _collectorCreator.CollectorCardScrollView.Remove(_collectorCreator.CreateCostResourceButton);
-            _collectorCreator.CollectorCardScrollView.Insert(index, costResourceUI);
-
-            _costResourceCreator.CreateCostResourceButton.clicked += () =>
-            {
-                AddCostResources(costResources, costResourceUI, index);
-            };
-        };
-
-        _collectorCreator.CollectorSO.value = _collectorSO;
-
-        _collectorCreator.CreateCollectorButton.clicked += () =>
-        {
-            AddCollector(costResources);
-        };
-    }
 
     private void AddCostResources(List<CostResource> costResources, VisualElement costResourceUI, int index)
     {
         CostResource newCostResource = new CostResource();
-        newCostResource.Resource = (ResourceSO)_costResourceCreator.ResourceSO.value;
-        newCostResource.SetCostMultiplier(_costResourceCreator.CostMultiplierSlider.value);
-        newCostResource.SetBaseCostAmount(_costResourceCreator.BaseCostAmountSlider.value);
-        newCostResource.SetCostAmount(_costResourceCreator.CostAmountSlider.value);
+        newCostResource.Resource = (ResourceSO)main.CostResourceObject.value;
+        newCostResource.SetCostMultiplier(main.CostResourceCostMultSlider.value);
+        newCostResource.SetBaseCostAmount(main.CostResourceBaseCostAmountSlider.value);
+        newCostResource.SetCostAmount(main.CostResourceCostAmountSlider.value);
 
         costResources.Add(newCostResource);
         Label label = new Label();
         label.text = "Cost_1" + newCostResource.Resource.resourceType.ToString();
 
-        _collectorCreator.CostResourceListView.makeItem = () =>
+        main.CollectorCostResourceListView.makeItem = () =>
         {
             var container = new VisualElement();
             container.style.flexDirection = FlexDirection.Row;
@@ -405,30 +426,29 @@ public class ColonyCreatorWindow : EditorWindow
             return container;
         };
 
-        _collectorCreator.CostResourceListView.bindItem = (element, i) =>
+        main.CollectorCostResourceListView.bindItem = (element, i) =>
         {
             var label = element.Q<Label>();
             var item = costResources[i];
             label.text = $"{item.Resource.name}";
         };
 
-        _collectorCreator.CollectorCardScrollView.Remove(costResourceUI);
-        _collectorCreator.CollectorCardScrollView.Insert(index, _collectorCreator.CreateCostResourceButton);
-        _collectorCreator.CostResourceListView.itemsSource = costResources;
-        _collectorCreator.CostResourceListView.fixedItemHeight = 20;
+        main.CollectorScrollView.Remove(costResourceUI);
+        main.CollectorScrollView.Insert(index, main.CostResourceCreateBtn);
+        main.CollectorCostResourceListView.itemsSource = costResources;
+        main.CollectorCostResourceListView.fixedItemHeight = 20;
     }
-
     private void AddCollector(List<CostResource> costResources)
     {
         CollectorData collectorData = new CollectorData
             (
-                (CollectorSO)_collectorCreator.CollectorSO.value,
-                costResources, _collectorCreator.CollectorRateSlider.value,
-                _collectorCreator.CollectorRateMultiplierSlider.value,
-                _collectorCreator.CollectorSpeedSlider.value,
-                _collectorCreator.CollectorSpeedMultiplierSlider.value,
-                (int)_collectorCreator.CollectorLevelSlider.value,
-                (int)_collectorCreator.CollectorLevelIncrementSlider.value
+                (CollectorSO)main.CollectorSOObject.value,
+                costResources, main.CollectorRateSlider.value,
+                main.CollectorRateMultSlider.value,
+                main.CollectorSpeedMultSlider.value,
+                main.CollectorSpeedMultSlider.value,
+                main.CollectorLevelSlider.value,
+                main.CollectorLevelIncrementSlider.value
             );
 
         CollectorModel collectorModel = new()
@@ -440,119 +460,75 @@ public class ColonyCreatorWindow : EditorWindow
         _collectors.Add(collectorModel);
     }
 
-    #endregion
 
 
-    #region ResourceCreation
 
-    private void AddResource(ResourceSO resourceSO, double resourceAmount, double sellRate, double sellRateMultiplier)
+
+
+
+
+
+    private void AddColonySOUI()
     {
-        Resource newResource = new Resource();
+        //_colonySOCreator.ColonyTypeEnumField.RegisterValueChangedCallback((ChangeEvent<System.Enum> evt) =>
+        //{
+        //    if (_colonySO != null)
+        //    {
+        //        string earlyPath = _SOFolder + "3-Colonies";
+        //        string path = _SOFolder + $"3-Colonies/{_colonySO.ColonyType.ToString()}.asset";
 
-        newResource.ResourceSO = resourceSO;
-        newResource.ChangeResourceAmount(resourceAmount);
-        newResource.ChangeSellRateMultiplier(sellRateMultiplier);
-        newResource.ChangeSellRate(sellRate);
+        //        var colonySO = AssetDatabase.LoadAssetAtPath<ColonySO>(path);
 
-        _resources.Add(newResource);
+        //        ColonyType newColonyType = (ColonyType)evt.newValue;
+
+        //        bool isAssetExists = CheckAssetNamesAtPath(earlyPath, newColonyType.ToString());
+
+        //        if (!isAssetExists)
+        //        {
+        //            _colonySO.ColonyType = (ColonyType)evt.newValue;
+        //            colonySO.ColonyType = (ColonyType)evt.newValue;
+
+        //            string error = AssetDatabase.RenameAsset(path, colonySO.ColonyType.ToString());
+        //            AssetDatabase.SaveAssets();
+        //            AssetDatabase.Refresh();
+
+        //            _colonySO.name = _colonySO.ColonyType.ToString();
+        //        }
+        //        else
+        //        {
+        //            EditorUtility.DisplayDialog("Asset Conflict", "There is an asset with the same kind operation is not completed", "OK");
+        //        }
+        //    }
+        //});
     }
 
-    private void AddResourceSO(string resourceName, ResourceType resourceType, string resourceUnit, Sprite icon)
+    private void HandleResourceSelect()
     {
-        string path = _SOFolder + "1-Resources";
+        //_resourceSOCreator.ResourceIconObjectField.RegisterValueChangedCallback((evt) => {
+        //    _resourceSO = (ResourceSO)evt.newValue;
 
-        var resource = ScriptableObjectUtility.CreateAssetAtPath<ResourceSO>(path, resourceName);
-        resource.resourceType = resourceType;
-        resource.ResourceUnit = resourceUnit;
-        resource.ResourceIcon = icon;
-        _resourceSO = resource;
+        //    _resourceSOCreator.ResourceTypeEnumField.value = null;
+        //    _resourceSOCreator.ResourceUnitTextField.value = null;
 
-        EditorUtility.SetDirty(resource);
+        //    _stateController.ChangeState(State.CreateResource);
+        //});
     }
-
-    private void AddResourceSOUI()
+    private bool CheckAssetNamesAtPath(string folderPath, string assetName)
     {
-        VisualElement resourceSOUI = new VisualElement();
-        _resourceSOCreator = new ResourceSOCreatorView(resourceSOUI);
+        string[] guids = AssetDatabase.FindAssets(assetName, new[] { folderPath });
 
-        _resourceSOCreator.MainPanel.Remove(_resourceSOCreator.ResourceIconObjectField);
-        _resourceSOCreator.MainPanel.Remove(_resourceSOCreator.ResourceTypeEnumField);
-        _resourceSOCreator.MainPanel.Remove(_resourceSOCreator.ResourceUnitTextField);
-        _main.CreateColonyTab.Add(_resourceSOCreator.Parent);
+        bool isAssetExists = false;
 
-        if (_resourceSOCreator.SelectResourceSOButton.visible)
+        foreach (string guid in guids)
         {
-            _resourceSOCreator.SelectResourceSOButton.clicked += () =>
-            {
-                if (_resourceSOCreator.CreateResourceSOButton.visible)
-                {
-                    _resourceSOCreator.ButtonPanel.Remove(_resourceSOCreator.CreateResourceSOButton);
-
-                    _resourceSOCreator.CreateResourceSOButton.visible = false;
-                    _resourceSOCreator.SelectResourceSOButton.visible = false;
-
-                    _resourceSOCreator.MainPanel.Insert(1, _resourceSOCreator.ResourceIconObjectField);
-
-                    _resourceSOCreator.ResourceIconObjectField.label = "Resource SO";
-                    _resourceSOCreator.SetObjectFieldType(isSprite: false);
-
-                    _resourceSOCreator.ResourceIconObjectField.RegisterValueChangedCallback((evt) => {
-                        _resourceSO = (ResourceSO)evt.newValue;
-
-                        _resourceSOCreator.ResourceIconObjectField.value = null;
-                        _resourceSOCreator.ResourceTypeEnumField.value = null;
-                        _resourceSOCreator.ResourceUnitTextField.value = null;
-
-                        _resourceSOCreator.ResourceIconObjectField.label = "Sprite";
-                        _resourceSOCreator.SetObjectFieldType(isSprite: true);
-
-                        AddResourceUI(_resourceSO);
-                    });
-                }
-            };
+            string assetPath = AssetDatabase.GUIDToAssetPath(guid);
+            var asset = AssetDatabase.LoadAssetAtPath<UnityEngine.Object>(assetPath);
+            if (asset != null && asset.name == assetName)
+                isAssetExists = true;
         }
 
-        _resourceSOCreator.CreateResourceSOButton.clicked += () =>
-        {
-            if (_resourceSOCreator.SelectResourceSOButton.visible)
-            {
-                _resourceSOCreator.ButtonPanel.Remove(_resourceSOCreator.SelectResourceSOButton);
-
-                _resourceSOCreator.MainPanel.Insert(1, _resourceSOCreator.ResourceIconObjectField);
-                _resourceSOCreator.MainPanel.Insert(2, _resourceSOCreator.ResourceTypeEnumField);
-                _resourceSOCreator.MainPanel.Insert(3, _resourceSOCreator.ResourceUnitTextField);
-                return;
-            }
-
-            AddResourceSO(_resourceSOCreator.ResourceTypeEnumField.value.ToString(), (ResourceType)_resourceSOCreator.ResourceTypeEnumField.value, _resourceSOCreator.ResourceUnitTextField.value, (Sprite)_resourceSOCreator.ResourceIconObjectField.value);
-
-            _resourceSOCreator.ResourceIconObjectField.value = null;
-            _resourceSOCreator.ResourceTypeEnumField.value = null;
-            _resourceSOCreator.ResourceUnitTextField.value = null;
-            AddResourceUI(_resourceSO);
-        };
+        return isAssetExists;
     }
-
-    private void AddResourceUI(ResourceSO newResourceSO)
-    {
-        VisualElement resourceUI = new VisualElement();
-        _resourceCreator = new ResourceCreatorView(resourceUI);
-
-        _resourceCreator.ResourceSOObjectField.value = newResourceSO;
-
-        _resourceCreator.CreateResourceButton.clicked += () =>
-        {
-            AddResource
-            (
-                (ResourceSO)_resourceCreator.ResourceSOObjectField.value,
-                _resourceCreator.ResourceAmountSlider.value, _resourceCreator.SellRateSlider.value,
-                _resourceCreator.SellRateMultiplierSlider.value
-            );
-            AddCollectorSOUI();
-        };
-    }
-
-    #endregion
 }
 
 #region Util Classes

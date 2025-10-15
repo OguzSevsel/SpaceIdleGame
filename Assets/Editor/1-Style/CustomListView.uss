@@ -1,0 +1,21 @@
+:root {
+}
+
+.NodeButton {
+    border-top-left-radius: 5px;
+    border-top-right-radius: 5px;
+    border-bottom-right-radius: 5px;
+    border-bottom-left-radius: 5px;
+    background-color: rgb(141, 95, 140);
+    color: rgb(221, 195, 195);
+    -unity-font-definition: url("project://database/Assets/UI/SimplePixelUI/fonts/Font1/pixelfont.ttf?fileID=12800000&guid=b6349d08a5335cd4aa534282435d11cc&type=3#pixelfont");
+    -unity-text-align: middle-center;
+    border-top-width: 1px;
+    border-right-width: 1px;
+    border-bottom-width: 1px;
+    border-left-width: 1px;
+    border-left-color: rgb(163, 118, 162);
+    border-right-color: rgb(163, 118, 162);
+    border-top-color: rgb(163, 118, 162);
+    border-bottom-color: rgb(163, 118, 162);
+}
