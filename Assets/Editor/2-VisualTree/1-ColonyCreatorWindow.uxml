@@ -2,7 +2,7 @@
     <Style src="project://database/Assets/Editor/1-Style/ColonyCreatorWindow.uss?fileID=7433441132597879392&amp;guid=1d030984a5147094ab3ea1a205b8ebf4&amp;type=3#ColonyCreatorWindow" />
     <ui:VisualElement name="Root" style="height: 1080px;">
         <ui:VisualElement style="flex-direction: row; flex-grow: 1;">
-            <ui:VisualElement name="MainPanel">
+            <ui:VisualElement name="MainPanel" style="width: 70%;">
                 <ui:VisualElement name="Header" style="height: 10%;">
                     <ui:VisualElement name="ButtonPanel" style="justify-content: space-evenly; flex-direction: row; flex-grow: 1;">
                         <ui:Button text="Colony SO" name="CreateColonySO" class="ButtonTexts Button menuButtons" />
@@ -10,24 +10,24 @@
                         <ui:Button text="Resource" name="CreateResource" class="ButtonTexts Button menuButtons" />
                         <ui:Button text="Collector SO" name="CreateCollectorSO" class="ButtonTexts Button menuButtons" />
                         <ui:Button text="Collector" name="CreateCollector" class="ButtonTexts Button menuButtons" />
-                        <ui:Button text="Colony" name="CreateColony" class="ButtonTexts Button menuButtons" />
                     </ui:VisualElement>
                 </ui:VisualElement>
                 <ui:VisualElement name="Body" style="min-height: 20px;">
                     <ui:VisualElement name="LeftPanel" style="flex-grow: 0.2; visibility: visible; display: flex; flex-shrink: 0;">
                         <ui:VisualElement name="ColonySOCard" class="sizeWidth100 sizeWidth100Height50 sizeWidth90Height50 CardBG" style="display: flex;">
-                            <ui:VisualElement name="HeaderPanel" style="width: 100%; justify-content: center; flex-direction: row; align-self: center; align-content: center; align-items: center;">
+                            <ui:VisualElement name="HeaderPanel" style="width: 100%; justify-content: space-between; flex-direction: row; align-self: center; align-content: center; align-items: center;">
                                 <ui:Label text="COLONY SCRIPTABLE OBJECT" name="ColonySOText" class="Title" />
                                 <ui:Button name="ColonySOCloseButton" class="ButtonTexts Button closeButtons" style="align-self: stretch;" />
                             </ui:VisualElement>
-                            <ui:EnumField label="Colony Type" value="Earth" type="ColonyType, Assembly-CSharp" include-obsolete-values="false" name="ColonyType" />
+                            <SpriteObjectField name="ColonySOSelect" label="Sprite" />
+                            <ui:EnumField label="Colony Type" value="Earth" type="ColonyType, Assembly-CSharp" include-obsolete-values="false" name="ColonySOTypeEnum" />
                             <ui:VisualElement name="ColonySOButtonPanel" style="flex-direction: row; align-items: stretch; align-content: stretch; justify-content: space-evenly;">
                                 <ui:Button text="Create" name="ColonySOCreateButton" class="ButtonTexts Button" />
                                 <ui:Button text="Select" name="ColonySOSelectButton" class="ButtonTexts Button" />
                             </ui:VisualElement>
                         </ui:VisualElement>
                         <ui:VisualElement name="ResourceSOCard" class="sizeWidth100 sizeWidth100Height50 sizeWidth90Height50 CardBG" style="display: flex;">
-                            <ui:VisualElement name="HeaderPanel" style="flex-direction: row; width: 100%;">
+                            <ui:VisualElement name="HeaderPanel" style="flex-direction: row; width: 100%; justify-content: space-between;">
                                 <ui:Label text="Resource Scriptable Object" name="ResourceSOText" class="Title" />
                                 <ui:Button name="ResourceSOCloseButton" class="ButtonTexts closeButtons Button" />
                             </ui:VisualElement>
@@ -68,6 +68,7 @@
                                     <ui:Button name="CollectorCloseButton" class="ButtonTexts Button closeButtons" />
                                 </ui:VisualElement>
                                 <ScriptableObjectField name="CollectorSO" label="Collector SO" style="margin-top: 0; margin-right: 0; margin-bottom: 10px; margin-left: 0;" />
+                                <ui:Label text="Cost Resources" style="align-self: center;" />
                                 <ui:ListView name="CostResourceListView" />
                                 <ui:VisualElement name="CostResourceCard" class="sizeWidth100 sizeWidth100Height50 sizeWidth90Height50 CardBG" style="background-color: rgb(93, 47, 119);">
                                     <ui:Label text="Cost Resource" name="CostResourceText" style="align-content: center; align-self: center; padding-left: 4px;" />
@@ -94,7 +95,21 @@
                     <ui:Label text="INFO" name="RightLabel" />
                 </ui:VisualElement>
             </ui:VisualElement>
-            <ui:TreeView name="Hierarchy" reorderable="true" fixed-item-height="30" virtualization-method="DynamicHeight" show-border="true" show-alternating-row-backgrounds="All" auto-expand="true" style="border-top-left-radius: 10px; border-top-right-radius: 10px; border-bottom-right-radius: 10px; border-bottom-left-radius: 10px; border-top-width: 1px; border-right-width: 1px; border-bottom-width: 1px; border-left-width: 1px; border-left-color: rgb(255, 0, 0); border-right-color: rgb(255, 0, 0); border-top-color: rgb(255, 0, 0); border-bottom-color: rgb(255, 0, 0); width: 30%;" />
+            <ui:VisualElement style="flex-grow: 1; width: 30%;">
+                <ui:TabView style="flex-grow: 1;">
+                    <ui:Tab label="Created Assets" name="Created" style="justify-content: space-between; flex-grow: 1;">
+                        <ui:Label text="Created Assets" name="Label" style="-unity-text-align: middle-center; font-size: 20px;" />
+                        <ui:TreeView name="Hierarchy" reorderable="true" fixed-item-height="30" virtualization-method="DynamicHeight" show-border="false" show-alternating-row-backgrounds="None" auto-expand="true" style="border-left-color: rgb(255, 0, 0); border-right-color: rgb(255, 0, 0); border-top-color: rgb(255, 0, 0); border-bottom-color: rgb(255, 0, 0); border-top-width: 2px; border-right-width: 2px; border-bottom-width: 2px; border-left-width: 2px; background-color: rgb(62, 30, 104);" />
+                        <ui:Button text="Add Root" name="AddRoot" class="ButtonTexts Button" />
+                        <ui:Button text="Add Child" name="AddChild" enable-rich-text="true" class="ButtonTexts Button" />
+                    </ui:Tab>
+                    <ui:Tab label="Scene View" name="SceneView">
+                        <ui:Label text="Scene View" />
+                        <ui:Button text="Create" name="Button" class="ButtonTexts Button" />
+                        <ui:Button text="Create" name="Button" class="ButtonTexts Button" />
+                    </ui:Tab>
+                </ui:TabView>
+            </ui:VisualElement>
         </ui:VisualElement>
     </ui:VisualElement>
 </ui:UXML>
