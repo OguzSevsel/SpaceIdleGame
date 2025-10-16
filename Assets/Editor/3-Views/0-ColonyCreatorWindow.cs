@@ -484,13 +484,15 @@ public class ColonyCreatorWindow : EditorWindow
                 main.CollectorLevelIncrementSlider.value
             );
 
-        CollectorModel collectorModel = new()
-        {
-            Data = new CollectorData()
-        };
-        collectorModel.Data = collectorData;
+        CollectorModel collectorModel = new() { Data = collectorData };
 
-        _collectors.Add(collectorModel);
+        if (main.TreeView.selectedItem is TreeItem<UnityEngine.Object> item)
+        {
+            if (item.reference is ColonySO SO)
+            {
+                main.AddCollectorModelToColonySO(collectorModel, SO);
+            }
+        }
     }
 
     #endregion

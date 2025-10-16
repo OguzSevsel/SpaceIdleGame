@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.CodeDom;
 using System.Collections.Generic;
 using System.Linq;
@@ -225,6 +225,15 @@ public class ColonyCreatorView
     }
 
 
+
+
+
+
+
+
+
+    #region TreeView Drag Drop Functionality
+
     private DragVisualMode HandleDrop(HandleDragAndDropArgs args)
     {
         // Retrieve dragged item
@@ -232,10 +241,11 @@ public class ColonyCreatorView
 
         draggedItem = (TreeViewItemData<TreeItem<UnityEngine.Object>>)args.dragAndDropData.GetGenericData("DraggedItem");
 
-        TreeViewItemData<TreeItem<UnityEngine.Object>> parent = new TreeViewItemData<TreeItem<UnityEngine.Object>>();
+        TreeViewItemData<TreeItem<UnityEngine.Object>>? parent = new TreeViewItemData<TreeItem<UnityEngine.Object>>();
 
         TreeView.ClearSelection();
-        Debug.Log($"{args.insertAtIndex}");
+        Debug.Log($"insert {args.insertAtIndex}");
+        Debug.Log($"childIndex {args.childIndex}");
 
         if (args.dropPosition == DragAndDropPosition.BetweenItems) //sibling
         {
@@ -244,13 +254,86 @@ public class ColonyCreatorView
             if (HasParent(draggedItem))
             {
                 parent = GetParent(draggedItem);
-                RemoveFromParent(parent, draggedItem);
-                _rootItems.Insert(args.insertAtIndex, draggedItem);
+
+                if (parent != null)
+                {
+                    if (parent.Value.id == args.parentId)
+                    {
+                        int parentIndex = _rootItems.IndexOf(parent.Value);
+
+                        RemoveFromParent(parent.Value, draggedItem, parentIndex);
+                        ReplaceParent(parent.Value, draggedItem, parentIndex, args.childIndex);
+                    }
+                    else
+                    {
+                        RemoveFromParent(parent.Value, draggedItem, _rootItems.IndexOf(parent.Value));
+                        int rootInsertIndex = GetRootInsertIndex(args);
+                        if (rootInsertIndex == -1)
+                        {
+                            if (args.insertAtIndex < _rootItems.Count)
+                            {
+                                _rootItems.Insert(args.insertAtIndex, draggedItem);
+                            }
+                            else
+                            {
+                                _rootItems.Insert(0, draggedItem);
+                            }
+                        }
+                        else
+                        {
+                            _rootItems.Insert(rootInsertIndex, draggedItem);
+                        }
+                    }
+                }
             }
             else
             {
-                _rootItems.Remove(draggedItem);
-                _rootItems.Insert(args.insertAtIndex, draggedItem);
+                int rootInsertIndex = GetRootInsertIndex(args);
+                if (rootInsertIndex == -1)
+                {
+                    TreeViewItemData<TreeItem<UnityEngine.Object>>? newParent = FindTreeItem(args.parentId);
+                    int parentIndex = _rootItems.IndexOf(newParent.Value);
+
+                    if (draggedItem.data.reference.GetType() == newParent.Value.data.reference.GetType())
+                    {
+                        EditorUtility.DisplayDialog("Conflict", "You cant do that", "OK");
+                    }
+                    else
+                    {
+                        object draggedItemType = draggedItem.data.reference.GetType();
+                        object parentType = newParent.Value.data.reference.GetType();
+
+                        if (draggedItemType is CollectorSO && parentType is CollectorSO)
+                        {
+                            EditorUtility.DisplayDialog("Conflict", "You cant do that", "OK");
+                        }
+                        else if (draggedItemType is ColonySO && parentType is ColonySO)
+                        {
+                            EditorUtility.DisplayDialog("Conflict", "You cant do that", "OK");
+                        }
+                        else if (draggedItemType is CollectorModel && parentType is CollectorModel)
+                        {
+                            EditorUtility.DisplayDialog("Conflict", "You cant do that", "OK");
+                        }
+                        else if (draggedItemType is Resource && parentType is CollectorModel)
+                        {
+                            EditorUtility.DisplayDialog("Conflict", "You cant do that", "OK");
+                        }
+                        else
+                        {
+                            if (newParent != null)
+                            {
+                                ReplaceParent((TreeViewItemData<TreeItem<UnityEngine.Object>>)newParent, draggedItem, parentIndex, args.childIndex);
+                            }
+                            _rootItems.Remove(draggedItem);
+                        }
+                    }
+                }
+                else
+                {
+                    _rootItems.Remove(draggedItem);
+                    _rootItems.Insert(rootInsertIndex, draggedItem);
+                }
             }
         }
         else if (args.dropPosition == DragAndDropPosition.OverItem) //child
@@ -260,20 +343,74 @@ public class ColonyCreatorView
             if (HasParent(draggedItem))
             {
                 parent = GetParent(draggedItem);
-                RemoveFromParent(parent, draggedItem);
-                int parentIndex = _rootItems.IndexOf(parent);
-                TreeViewItemData<TreeItem<UnityEngine.Object>>? newParent = FindTreeItem(args.parentId);
 
-                if (newParent != null)
+                if (parent != null)
                 {
-                    AddToParent((TreeViewItemData<TreeItem<UnityEngine.Object>>)newParent, draggedItem, parentIndex);
+                    int parentIndex = _rootItems.IndexOf(parent.Value);
+                    TreeViewItemData<TreeItem<UnityEngine.Object>>? newParent = FindTreeItem(args.parentId);
+
+                    TreeViewItemData<TreeItem<UnityEngine.Object>>? newSubParent = GetParent((TreeViewItemData<TreeItem<UnityEngine.Object>>)newParent);
+
+                    if (newSubParent != null)
+                    {
+                        EditorUtility.DisplayDialog("Invalid Request", "You cant do that", "OK");
+                    }
+                    else
+                    {
+                        if (newParent != null)
+                        {
+                            RemoveFromParent(parent.Value, draggedItem, _rootItems.IndexOf(parent.Value));
+
+                            AddToParent((TreeViewItemData<TreeItem<UnityEngine.Object>>)newParent, draggedItem, parentIndex, args.childIndex);
+                        }
+                    }
                 }
             }
             else
             {
-                _rootItems.Remove(draggedItem);
                 TreeViewItemData<TreeItem<UnityEngine.Object>>? newParent = (TreeViewItemData<TreeItem<UnityEngine.Object>>)FindTreeItem(args.parentId);
-                AddToParent((TreeViewItemData<TreeItem<UnityEngine.Object>>)newParent, draggedItem, _rootItems.IndexOf(newParent.Value));
+
+                TreeViewItemData<TreeItem<UnityEngine.Object>>? newSubParent = GetParent((TreeViewItemData<TreeItem<UnityEngine.Object>>)newParent);
+
+
+                if (draggedItem.data.reference.GetType() == newParent.Value.data.reference.GetType())
+                {
+                    EditorUtility.DisplayDialog("Conflict", "You cant do that", "OK");
+                }
+                else
+                {
+                    object draggedItemType = draggedItem.data.reference.GetType();
+                    object parentType = newParent.Value.data.reference.GetType();
+
+                    if (draggedItemType is CollectorSO && parentType is CollectorSO)
+                    {
+                        EditorUtility.DisplayDialog("Conflict", "You cant do that", "OK");
+                    }
+                    else if (draggedItemType is ColonySO && parentType is ColonySO)
+                    {
+                        EditorUtility.DisplayDialog("Conflict", "You cant do that", "OK");
+                    }
+                    else if (draggedItemType is CollectorModel && parentType is CollectorModel)
+                    {
+                        EditorUtility.DisplayDialog("Conflict", "You cant do that", "OK");
+                    }
+                    else if (draggedItemType is Resource && parentType is CollectorModel)
+                    {
+                        EditorUtility.DisplayDialog("Conflict", "You cant do that", "OK");
+                    }
+                    else
+                    {
+                        if (newSubParent != null)
+                        {
+                            EditorUtility.DisplayDialog("Invalid Request", "You cant do that", "OK");
+                        }
+                        else
+                        {
+                            AddToParent((TreeViewItemData<TreeItem<UnityEngine.Object>>)newParent, draggedItem, _rootItems.IndexOf(newParent.Value), args.childIndex);
+                            _rootItems.Remove(draggedItem);
+                        }
+                    }
+                }
             }
         }
         else if (args.dropPosition == DragAndDropPosition.OutsideItems) //first or last
@@ -283,15 +420,33 @@ public class ColonyCreatorView
             if (HasParent(draggedItem))
             {
                 parent = GetParent(draggedItem);
-                RemoveFromParent(parent, draggedItem);
 
-                _rootItems.Insert(args.insertAtIndex - 1, draggedItem);
-                _rootItems.Insert(args.insertAtIndex - 1, draggedItem);
+                if (parent != null)
+                {
+                    RemoveFromParent(parent.Value, draggedItem, _rootItems.IndexOf(parent.Value));
+
+                    if (args.insertAtIndex != 0)
+                    {
+                        _rootItems.Add(draggedItem);
+                    }
+                    else
+                    {
+                        _rootItems.Insert(0, draggedItem);
+                    }
+                }
             }
             else
             {
                 _rootItems.Remove(draggedItem);
-                _rootItems.Insert(args.insertAtIndex - 1, draggedItem);
+
+                if (args.insertAtIndex != 0)
+                {
+                    _rootItems.Add(draggedItem);
+                }
+                else
+                {
+                    _rootItems.Insert(0, draggedItem);
+                }
             }
         }
 
@@ -299,9 +454,47 @@ public class ColonyCreatorView
         TreeView.Rebuild();
         return DragVisualMode.Move;
     }
+    private int GetRootInsertIndex(HandleDragAndDropArgs args)
+    {
+        // Get the item being dropped *over* (if any)
+        var dropItemId = args.parentId;
 
+        // If dropping outside items, we can use args.insertAtIndex safely as 0 or end
+        if (args.dropPosition == DragAndDropPosition.OutsideItems)
+            return Mathf.Clamp(args.insertAtIndex, 0, _rootItems.Count);
 
+        // Otherwise, find the visible items up to the drop index
+        var visibleItems = _rootItems;
 
+        // Rebuild a mapping of visible row -> root index
+        var visibleRootIndexes = new Dictionary<int, int>();
+        int visibleIndex = 0;
+        int rootIndex = 0;
+
+        foreach (var root in _rootItems)
+        {
+            visibleRootIndexes[visibleIndex++] = rootIndex; // root row
+            if (root.children != null)
+                visibleIndex += CountVisibleChildren(root); // skip children
+            rootIndex++;
+        }
+
+        // Now find the nearest valid root index based on insertAtIndex
+        if (visibleRootIndexes.ContainsKey(args.insertAtIndex))
+            return visibleRootIndexes[args.insertAtIndex];
+        else
+        {
+            return -1;
+        }
+    }
+    private int CountVisibleChildren(TreeViewItemData<TreeItem<UnityEngine.Object>> item)
+    {
+        if (item.children == null) return 0;
+        int count = item.children.Count();
+        foreach (var child in item.children)
+            count += CountVisibleChildren(child);
+        return count;
+    }
     private bool StartDragHandler(CanStartDragArgs args)
     {
         return args.selectedIds.Count() == 1;
@@ -316,8 +509,7 @@ public class ColonyCreatorView
 
         return startDragArgs;
     }
-
-    private void AddToParent(TreeViewItemData<TreeItem<UnityEngine.Object>> parent, TreeViewItemData<TreeItem<UnityEngine.Object>> child, int parentIndex)
+    private void AddToParent(TreeViewItemData<TreeItem<UnityEngine.Object>> parent, TreeViewItemData<TreeItem<UnityEngine.Object>> child, int parentIndex, int childIndex)
     {
         List<TreeViewItemData<TreeItem<UnityEngine.Object>>> newChildren = new List<TreeViewItemData<TreeItem<UnityEngine.Object>>>();
 
@@ -326,33 +518,65 @@ public class ColonyCreatorView
             newChildren = new List<TreeViewItemData<TreeItem<UnityEngine.Object>>>(parent.children);
         }
 
-        newChildren.Add(child);
+        if (newChildren.Count == 0)
+        {
+            newChildren.Add(child);
+        }
+        else
+        {
+            if (childIndex == -1)
+            {
+                newChildren.Add(child);
+            }
+            else
+            {
+                newChildren.Insert(childIndex, child);
+            }
+        }
+
 
         TreeViewItemData<TreeItem<UnityEngine.Object>> newParent = new TreeViewItemData<TreeItem<UnityEngine.Object>>(id: parent.id, data: parent.data, children: newChildren);
 
         _rootItems.Remove(parent);
         _rootItems.Insert(parentIndex, newParent);
     }
+    private void ReplaceParent(TreeViewItemData<TreeItem<UnityEngine.Object>> parent, TreeViewItemData<TreeItem<UnityEngine.Object>> child, int parentIndex, int childIndex)
+    {
+        // Copy existing children safely
+        var newChildren = parent.children != null
+            ? new List<TreeViewItemData<TreeItem<UnityEngine.Object>>>(parent.children)
+            : new List<TreeViewItemData<TreeItem<UnityEngine.Object>>>();
 
-    private void RemoveFromParent(TreeViewItemData<TreeItem<UnityEngine.Object>> parent, TreeViewItemData<TreeItem<UnityEngine.Object>> child)
+        // Ensure unique (prevent duplicates)
+        newChildren.RemoveAll(c => c.id == child.id);
+
+        // Insert safely
+        childIndex = Mathf.Clamp(childIndex, 0, newChildren.Count);
+        newChildren.Insert(childIndex, child);
+
+        // Create a new parent with updated children
+        var newParent = new TreeViewItemData<TreeItem<UnityEngine.Object>>(
+            id: parent.id,
+            data: parent.data,
+            children: newChildren
+        );
+
+        // ✅ Replace in-place instead of remove+insert
+        if (parentIndex >= 0 && parentIndex < _rootItems.Count)
+            _rootItems[parentIndex] = newParent;
+    }
+    private void RemoveFromParent(TreeViewItemData<TreeItem<UnityEngine.Object>> parent, TreeViewItemData<TreeItem<UnityEngine.Object>> child, int parentIndex)
     {
         List<TreeViewItemData<TreeItem<UnityEngine.Object>>> newChildren = new List<TreeViewItemData<TreeItem<UnityEngine.Object>>>(parent.children);
 
         newChildren.Remove(child);
 
-        TreeViewItemData < TreeItem < UnityEngine.Object >> newParent = new TreeViewItemData<TreeItem<UnityEngine.Object>>(id: parent.id, data: parent.data, children: newChildren);
+        TreeViewItemData<TreeItem<UnityEngine.Object>> newParent = new TreeViewItemData<TreeItem<UnityEngine.Object>>(id: parent.id, data: parent.data, children: newChildren);
 
         _rootItems.Remove(parent);
-        _rootItems.Add(newParent);
+        _rootItems.Insert(parentIndex, newParent);
     }
-
-    private void AddAsRoot(TreeViewItemData<TreeItem<UnityEngine.Object>> item)
-    {
-        _rootItems.Add(item);
-    }
-    
-    
-    private TreeViewItemData<TreeItem<UnityEngine.Object>> GetParent(TreeViewItemData<TreeItem<UnityEngine.Object>> item)
+    private TreeViewItemData<TreeItem<UnityEngine.Object>>? GetParent(TreeViewItemData<TreeItem<UnityEngine.Object>> item)
     {
         TreeViewItemData<TreeItem<UnityEngine.Object>> newParent = new TreeViewItemData<TreeItem<UnityEngine.Object>>();
 
@@ -365,10 +589,13 @@ public class ColonyCreatorView
                     newParent = parent;
                 }
             }
+            else
+            {
+                return null;
+            }
         }
         return newParent;
     }
-
     private bool HasParent(TreeViewItemData<TreeItem<UnityEngine.Object>> item)
     {
         foreach (var parent in _rootItems)
@@ -383,15 +610,6 @@ public class ColonyCreatorView
         }
         return false;
     }
-
-    
-
-    
-
-    
-
-
-
     public TreeViewItemData<TreeItem<UnityEngine.Object>>? FindTreeItem(int id)
     {
         var item = new TreeViewItemData<TreeItem<UnityEngine.Object>>();
@@ -440,6 +658,12 @@ public class ColonyCreatorView
         return null;
     }
 
+    #endregion
+
+
+
+
+
 
 
 
@@ -462,7 +686,6 @@ public class ColonyCreatorView
         TreeView.SetRootItems(_rootItems);
         TreeView.RefreshItems();
     }
-
     public void AddChildToItemWithObjs(UnityEngine.Object child, UnityEngine.Object parent)
     {
         // 1. Find the parent TreeViewItemData
@@ -504,6 +727,52 @@ public class ColonyCreatorView
         TreeView.Rebuild();
     }
 
+
+
+    public void AddCollectorModelToColonySO(UnityEngine.Object child, UnityEngine.Object parent)
+    {
+        // 1. Find the parent TreeViewItemData
+        var parentNode = FindTreeItem(parent);
+        if (parentNode == null) return;
+
+        // 2. Create the child data
+        TreeItem<UnityEngine.Object> childData = new TreeItem<UnityEngine.Object>(
+            nextId++,
+            label: child.ToString(),
+            reference: child,
+            parentId: parentNode.Value.data.id
+        );
+
+        // 3. Create TreeViewItemData for the child
+        var childNode = new TreeViewItemData<TreeItem<UnityEngine.Object>>(childData.id, childData);
+
+        // 4. Rebuild the parent's children list
+        List<TreeViewItemData<TreeItem<UnityEngine.Object>>> newChildren;
+        if (parentNode.Value.children != null)
+            newChildren = new List<TreeViewItemData<TreeItem<UnityEngine.Object>>>(parentNode.Value.children);
+        else
+            newChildren = new List<TreeViewItemData<TreeItem<UnityEngine.Object>>>();
+
+        newChildren.Add(childNode);
+
+        // 5. Create a new parent node with updated children
+        var newParentNode = new TreeViewItemData<TreeItem<UnityEngine.Object>>(
+            parentNode.Value.id,
+            parentNode.Value.data,
+            newChildren
+        );
+
+        // 6. Replace the old parent in root items
+        ReplaceNodeInList(_rootItems, newParentNode);
+
+        // 7. Update TreeView
+        TreeView.SetRootItems(_rootItems);
+        TreeView.Rebuild();
+    }
+
+
+
+
     private bool ReplaceNodeInList(List<TreeViewItemData<TreeItem<UnityEngine.Object>>> nodes, TreeViewItemData<TreeItem<UnityEngine.Object>> newNode)
     {
         for (int i = 0; i < nodes.Count; i++)
@@ -522,7 +791,6 @@ public class ColonyCreatorView
         }
         return false;
     }
-
     private void SetupTreeView(UnityEngine.UIElements.TreeView treeView)
     {
         treeView.makeItem = () =>
@@ -564,11 +832,10 @@ public class ColonyCreatorView
             icon.image = AssetPreview.GetMiniThumbnail(itemData.reference);
         };
     }
-
 }
 
 [Serializable]
-public class TreeItem<T> where T : UnityEngine.Object
+public class TreeItem<T>
 {
     public T reference;      
     public int id;
@@ -576,7 +843,7 @@ public class TreeItem<T> where T : UnityEngine.Object
     public string label;
     public List<T> children;
 
-    public TreeItem(int id,  string label = null, T reference = null, int parentId = -1, List<T> children = null)
+    public TreeItem(int id,  string label = null, T reference = default, int parentId = -1, List<T> children = null)
     {
         this.id = id;
         this.label = label;
@@ -587,6 +854,6 @@ public class TreeItem<T> where T : UnityEngine.Object
 
     public override string ToString()
     {
-        return label ?? reference?.name ?? $"Item {id}";
+        return label ?? reference?.ToString() ?? $"Item {id}";
     }
 }
