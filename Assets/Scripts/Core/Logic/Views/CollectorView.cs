@@ -27,6 +27,7 @@ public class CollectorView : MonoBehaviour
     [Header("Output Text")]
     [SerializeField] private TextMeshProUGUI _textOutput;
 
+
     //Private fields
     private Button _buttonCollectorPanel;
 

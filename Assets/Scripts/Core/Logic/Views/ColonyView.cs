@@ -20,6 +20,9 @@ public class ColonyView : MonoBehaviour
     [SerializeField] private Button _sellAllButton;
     [SerializeField] private TextMeshProUGUI _sellText;
     [SerializeField] private Button _sellButton;
+    [SerializeField] private GameObject _resourceTextParent;
+    [SerializeField] private GameObject _resourceTextPrefab;
+
     private List<Button> _sellResourceButtons = new List<Button>();
     private Resource _selectedResource;
 
@@ -29,16 +32,7 @@ public class ColonyView : MonoBehaviour
     private void Awake()
     {
         _sellButton.onClick.AddListener(SellButtonClickHandler);
-
-
         SubscribeToLevelAmountButtons();
-
-
-        _resourceTextMap = new Dictionary<string, TextMeshProUGUI>();
-        foreach (var text in ColonyResourceTexts)
-        {
-            _resourceTextMap[text.name.ToLower()] = text;
-        }
     }
 
     public void InitializeSellButtons(List<Resource> resources)
@@ -59,6 +53,36 @@ public class ColonyView : MonoBehaviour
                 sellButton.GetComponent<SellButton>().Initialize(resource.ResourceSO.ResourceIcon, resourceText, moneyText);
                 _sellResourceButtons.Add(sellButton);
             }
+        }
+    }
+
+    public void InitializeResourceTexts(List<Resource> colonyResources)
+    {
+        foreach (Resource resource in colonyResources)
+        {
+            GameObject resourceObject = Instantiate(_resourceTextPrefab);
+            Transform iconTransform = resourceObject.transform.Find("Icon_Resource");
+            Transform textTransform = resourceObject.transform.Find("Text_Resource");
+            Image icon = iconTransform.GetComponent<Image>();
+            TextMeshProUGUI text = textTransform.GetComponent<TextMeshProUGUI>();
+            icon.sprite = resource.ResourceSO.ResourceIcon;
+            resourceObject.transform.SetParent(_resourceTextParent.transform);
+
+            RectTransform resourceRect = resourceObject.GetComponent<RectTransform>();
+            resourceRect.anchorMin = Vector2.zero;
+            resourceRect.anchorMax = Vector2.one;
+            resourceRect.offsetMin = Vector2.zero;
+            resourceRect.localScale = Vector3.one;
+            resourceRect.position = new Vector3(resourceRect.position.x, resourceRect.position.y, 1);
+
+            text.name = $"text_resource_{colonyResources.IndexOf(resource)}";
+            ColonyResourceTexts.Add(text);
+        }
+
+        _resourceTextMap = new Dictionary<string, TextMeshProUGUI>();
+        foreach (var textVar in ColonyResourceTexts)
+        {
+            _resourceTextMap[textVar.name.ToLower()] = textVar;
         }
     }
 
