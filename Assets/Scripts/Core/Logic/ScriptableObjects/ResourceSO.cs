@@ -58,4 +58,9 @@ public class Resource
     public void ChangeResourceAmount (double amount) { ResourceAmount = amount; }
     public void ChangeSellRate (double value) {  SellRate = value; }
     public void ChangeSellRateMultiplier (double value) {  SellRateMultiplier = value; }
+
+    public override string ToString()
+    {
+        return ResourceSO.resourceType.ToString();
+    }
 }

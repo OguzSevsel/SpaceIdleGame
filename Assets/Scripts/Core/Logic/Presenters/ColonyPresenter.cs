@@ -29,7 +29,7 @@ public class ColonyPresenter : MonoBehaviour
 
         _colonyView.OnSelectedResourceSell += SelectedResourceSellHandler;
         _colonyModel.OnResourceAdded += OnResourceAddedHandler;
-
+        
         for (int i = 0; i < _colonyModel.Collectors.Count; i++)
         {
             var collectorModel = _colonyModel.Collectors[i];

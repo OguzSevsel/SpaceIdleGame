@@ -19,7 +19,10 @@
                                 <ui:Label text="COLONY SCRIPTABLE OBJECT" name="ColonySOText" class="Title" />
                                 <ui:Button name="ColonySOCloseButton" class="ButtonTexts Button closeButtons" style="align-self: stretch;" />
                             </ui:VisualElement>
-                            <SpriteObjectField name="ColonySOSelect" label="Sprite" />
+                            <SpriteObjectField name="ColonySOSelect" label="Colony SO" />
+                            <SpriteObjectField name="ColonyUI" label="UI PREFAB" />
+                            <SpriteObjectField name="ColonyManager" label="Colony Manager" />
+                            <SpriteObjectField name="ColonyWhereToAdd" label="Where To Add UI" />
                             <ui:EnumField label="Colony Type" value="Earth" type="ColonyType, Assembly-CSharp" include-obsolete-values="false" name="ColonySOTypeEnum" />
                             <ui:VisualElement name="ColonySOButtonPanel" style="flex-direction: row; align-items: stretch; align-content: stretch; justify-content: space-evenly;">
                                 <ui:Button text="Create" name="ColonySOCreateButton" class="ButtonTexts Button" />
@@ -68,6 +71,7 @@
                                     <ui:Button name="CollectorCloseButton" class="ButtonTexts Button closeButtons" />
                                 </ui:VisualElement>
                                 <ScriptableObjectField name="CollectorSO" label="Collector SO" style="margin-top: 0; margin-right: 0; margin-bottom: 10px; margin-left: 0;" />
+                                <ScriptableObjectField name="CollectorUI" label="UI Prefab " style="margin-top: 0; margin-right: 0; margin-bottom: 10px; margin-left: 0;" />
                                 <ui:Label text="Cost Resources" style="align-self: center;" />
                                 <ui:ListView name="CostResourceListView" />
                                 <ui:VisualElement name="CostResourceCard" class="sizeWidth100 sizeWidth100Height50 sizeWidth90Height50 CardBG" style="background-color: rgb(93, 47, 119);">
@@ -80,8 +84,8 @@
                                 </ui:VisualElement>
                                 <ui:Slider label="Rate" value="1" high-value="10" show-input-field="true" fill="true" name="CollectorRate" low-value="0" style="margin-top: 0; margin-right: 0; margin-bottom: 0; margin-left: 0;" />
                                 <ui:Slider label="Rate Mult." value="1" high-value="10" show-input-field="true" fill="true" name="CollectorRateMultiplier" low-value="1" style="margin-top: 0; margin-right: 0; margin-bottom: 0; margin-left: 0;" />
-                                <ui:Slider label="Speed" value="0.95" high-value="1" show-input-field="true" fill="true" name="CollectorSpeed" low-value="0" style="margin-top: 0; margin-right: 0; margin-bottom: 0; margin-left: 0;" />
-                                <ui:Slider label="Speed Mult." value="1" high-value="10" show-input-field="true" fill="true" name="CollectorSpeedMultiplier" low-value="1" style="margin-top: 0; margin-right: 0; margin-bottom: 0; margin-left: 0;" />
+                                <ui:Slider label="Speed" value="1" high-value="10" show-input-field="true" fill="true" name="CollectorSpeed" low-value="0" style="margin-top: 0; margin-right: 0; margin-bottom: 0; margin-left: 0;" />
+                                <ui:Slider label="Speed Mult." value="0" high-value="1" show-input-field="true" fill="true" name="CollectorSpeedMultiplier" low-value="0" style="margin-top: 0; margin-right: 0; margin-bottom: 0; margin-left: 0;" />
                                 <ui:SliderInt label="Level" value="1" high-value="5" name="CollectorLevel" show-input-field="true" fill="true" />
                                 <ui:SliderInt label="Level Inc" value="1" high-value="5" name="CollectorLevelIncrement" fill="true" show-input-field="true" />
                                 <ui:Button text="Create" name="CollectorCreateButton" class="ButtonTexts Button" />
@@ -100,7 +104,7 @@
                     <ui:Tab label="Created Assets" name="Created" style="justify-content: space-between; flex-grow: 1;">
                         <ui:Label text="Created Assets" name="Label" style="-unity-text-align: middle-center; font-size: 20px;" />
                         <ui:TreeView name="Hierarchy" reorderable="true" fixed-item-height="30" virtualization-method="DynamicHeight" show-border="false" show-alternating-row-backgrounds="None" auto-expand="true" style="border-left-color: rgb(255, 0, 0); border-right-color: rgb(255, 0, 0); border-top-color: rgb(255, 0, 0); border-bottom-color: rgb(255, 0, 0); border-top-width: 2px; border-right-width: 2px; border-bottom-width: 2px; border-left-width: 2px; background-color: rgb(62, 30, 104);" />
-                        <ui:Button text="Add Root" name="AddRoot" class="ButtonTexts Button" />
+                        <ui:Button text="Generate UI" name="GenerateUI" class="ButtonTexts Button" />
                         <ui:Button text="Add Child" name="AddChild" enable-rich-text="true" class="ButtonTexts Button" />
                     </ui:Tab>
                     <ui:Tab label="Scene View" name="SceneView">

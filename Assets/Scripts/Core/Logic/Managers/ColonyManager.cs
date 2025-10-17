@@ -7,7 +7,7 @@ public class ColonyManager : MonoBehaviour
     [SerializeField] private List<ColonyView> colonyViews;
     private List<ColonyPresenter> colonyPresenters = new();
 
-    void Start()
+    private void Start()
     {
         for (int i = 0; i < colonyModels.Count; i++)
         {

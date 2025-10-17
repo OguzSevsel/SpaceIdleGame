@@ -13,6 +13,6 @@ MonoBehaviour:
   m_Name: 10_XeroniumCollector
   m_EditorClassIdentifier: Assembly-CSharp::CollectorSO
   CollectorName: Xenorium
-  CollectorType: 0
+  CollectorType: 9
   GeneratedResource: {fileID: 11400000, guid: e4305e17104564b408dce7be46358a07, type: 2}
   _baseCollectionRate: 0.5799999833106995

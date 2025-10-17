@@ -177,6 +177,11 @@ public class CollectorModel : MonoBehaviour, IUpgradeable, ISellable
 
     #region Utility Functions
 
+    public override string ToString()
+    {
+        return this.Data.DataSO.ToString();
+    }
+
     private void IncreaseCost(int level, double? overrideCostMultiplier = null, int? increaseLevelIncrement = null)
     {
         if (increaseLevelIncrement.HasValue)
