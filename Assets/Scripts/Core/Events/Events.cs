@@ -48,6 +48,13 @@ public struct UpgradeEventArgs
     public string TargetId;
 }
 
+public struct InfoUpgradeEventArgs
+{
+    public CostResource Resource;
+    public bool IsEnoughResource;
+    public string TargetId;
+}
+
 #endregion
 
 

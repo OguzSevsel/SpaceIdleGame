@@ -7,12 +7,12 @@ public class ColonyPresenter : MonoBehaviour
     private ColonyModel _colonyModel;
     private ColonyView _colonyView;
     private List<CollectorPresenter> _collectorPresenters = new();
-    private bool _isShowInfo;
+    private bool _isShowingSellInfo;
 
     //Actual logic that showing the sell panel info.
     private void Update()
     {
-        if (_isShowInfo)
+        if (_isShowingSellInfo)
         {
             if (_colonyModel != null && _colonyView != null)
             {
@@ -97,7 +97,7 @@ public class ColonyPresenter : MonoBehaviour
     /// </summary>
     private void SellResourceShowHandler()
     {
-        _isShowInfo = true;
+        _isShowingSellInfo = true;
     }
 
 
@@ -106,7 +106,7 @@ public class ColonyPresenter : MonoBehaviour
     /// </summary>
     private void SellResourceHideHandler()
     {
-        _isShowInfo = false;
+        _isShowingSellInfo = false;
     }
 
 

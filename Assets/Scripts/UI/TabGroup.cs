@@ -14,6 +14,8 @@ public class TabGroup : MonoBehaviour
 
     public static event Action OnSellResourceHide;
     public static event Action OnSellResourceShow;
+    public static event Action OnUpgradeInfoShow;
+    public static event Action OnUpgradeInfoHide;
 
     public void Subscribe(TabButtonn button)
     {
@@ -45,13 +47,18 @@ public class TabGroup : MonoBehaviour
         ResetTabs();
         button.backgroundImage.sprite = tabSelected;
 
-        if (button.gameObject.name != "Button_Convert")
+        if (button.gameObject.name == "Button_Convert")
         {
-            OnSellResourceHide?.Invoke();
+            OnSellResourceShow?.Invoke();
+        }
+        else if (button.gameObject.name == "Button_Upgrade")
+        {
+            OnUpgradeInfoShow?.Invoke();
         }
         else
         {
-            OnSellResourceShow?.Invoke();
+            OnSellResourceHide?.Invoke();
+            OnUpgradeInfoHide?.Invoke();
         }
 
         int index = button.transform.GetSiblingIndex();

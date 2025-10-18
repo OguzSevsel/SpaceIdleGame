@@ -9,12 +9,40 @@ public class UpgradePresenter : MonoBehaviour
     [SerializeField] private List<UpgradeView> _upgradeViews;
     [SerializeField] private GameObject _upgradeViewParent;
     [SerializeField] private GameObject _upgradeViewPrefab;
-
+    private ColonyModel _colonyModel;
+    private bool _isShowingUpgradeInfo;
     private List<IUpgradeable> upgradeables;
     public event Action<CollectorEventArgs> OnCollectorUpgrade;
+    public event Action<InfoUpgradeEventArgs> OnUpgradeInfoShow;
+
+    private void Update()
+    {
+        if (_isShowingUpgradeInfo && _colonyModel != null)
+        {
+            foreach (var model in _upgradeModels)
+            {
+                foreach (var costResource in model.upgradeCosts)
+                {
+                    OnUpgradeInfoShow?.Invoke(
+                        new InfoUpgradeEventArgs
+                        {
+                            Resource = costResource,
+                            IsEnoughResource = _colonyModel.CheckSingleResource(costResource),
+                            TargetId = model.TargetId
+                        });
+                }
+            }
+        }
+    }
+
+    public List<UpgradeModel> GetUpgrades()
+    {
+        return _upgradeModels;
+    }
 
     private void Awake()
     {
+        _colonyModel = GetComponentInParent<ColonyModel>();
         upgradeables = new List<IUpgradeable>();
         foreach (UpgradeModel upgradeModel in _upgradeModels)
         {
@@ -39,6 +67,7 @@ public class UpgradePresenter : MonoBehaviour
 
         view.OnUpgradeButtonClicked += UpgradeButtonClickHandler;
         OnCollectorUpgrade += view.UpgradePurchasedHandler;
+        OnUpgradeInfoShow += view.OnUpgradeInfoShowHandler;
     }
 
     private void UpgradeButtonClickHandler(UpgradeEventArgs args)
@@ -51,8 +80,8 @@ public class UpgradePresenter : MonoBehaviour
 
             if (args.UpgradeModel.TargetId == collector.CollectorGUID)
             {
-                collector.Upgrade(args.UpgradeModel);
                 collector.OnCollectorUpgrade += CollectorUpgradedHandler;
+                collector.Upgrade(args.UpgradeModel);
             }
         }
     }
@@ -72,6 +101,15 @@ public class UpgradePresenter : MonoBehaviour
         _upgradeViews.Add(view);
     }
 
+    private void ShowInfo()
+    {
+        _isShowingUpgradeInfo = true;
+    }
+
+    private void HideInfo()
+    {
+        _isShowingUpgradeInfo = false;
+    }
 
     private void OnEnable()
     {
@@ -86,10 +124,14 @@ public class UpgradePresenter : MonoBehaviour
     private void Subscribe()
     {
         CollectorModel.OnCollectorRegister += RegisterCollector;
+        TabGroup.OnUpgradeInfoShow += ShowInfo;
+        TabGroup.OnUpgradeInfoHide += HideInfo;
     }
 
     private void UnSubscribe()
     {
         CollectorModel.OnCollectorRegister -= RegisterCollector;
+        TabGroup.OnUpgradeInfoShow -= ShowInfo;
+        TabGroup.OnUpgradeInfoHide -= HideInfo;
     }
 }

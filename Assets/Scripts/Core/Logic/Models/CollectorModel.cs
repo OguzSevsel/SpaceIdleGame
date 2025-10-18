@@ -135,7 +135,7 @@ public class CollectorModel : MonoBehaviour, IUpgradeable
 #nullable enable
     public void Upgrade(UpgradeModel upgrade)
     {
-        bool isColonyHasEnoughResource = _colony.CheckResources(LevelUpgrade.upgradeCosts);
+        bool isColonyHasEnoughResource = _colony.CheckResources(upgrade.upgradeCosts);
 
         if (upgrade.TargetId == CollectorGUID)
         {

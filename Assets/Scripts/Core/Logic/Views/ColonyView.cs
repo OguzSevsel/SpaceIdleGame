@@ -152,7 +152,7 @@ public class ColonyView : MonoBehaviour
     /// </summary>
     public void SetSellText()
     {
-        if (_selectedResource != null && _sellText != null)
+        if (_selectedResource != null && _sellText != null && _selectedResource.ResourceSO != null)
         {
             _sellText.text = $"You will sell {_selectedResource.ResourceAmount.ToShortString()} {_selectedResource.ResourceSO.ResourceUnit} of {_selectedResource.ResourceSO.resourceType.ToString()} for {(_selectedResource.SellRate * _selectedResource.ResourceAmount).ToShortString()} $?";
         }
