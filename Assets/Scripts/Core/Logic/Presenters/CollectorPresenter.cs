@@ -26,7 +26,7 @@ public class CollectorPresenter
     
     private void CollectorUpgradeHandler()
     {
-        _collectorModel.Upgrade(UpgradeType.CollectorLevel, _collectorModel);
+        _collectorModel.Upgrade(_collectorModel.LevelUpgrade);
     }
 
     private void CollectorCollectHandler()

@@ -14,17 +14,17 @@
                 </ui:VisualElement>
                 <ui:VisualElement name="Body" style="min-height: 20px;">
                     <ui:VisualElement name="LeftPanel" style="flex-grow: 0.2; visibility: visible; display: flex; flex-shrink: 0;">
-                        <ui:VisualElement name="ColonySOCard" class="sizeWidth100 sizeWidth100Height50 sizeWidth90Height50 CardBG" style="display: flex;">
+                        <ui:VisualElement name="ColonySOCard" class="sizeWidth100 sizeWidth100Height50 sizeWidth90Height50 CardBG" style="display: flex; justify-content: space-between;">
                             <ui:VisualElement name="HeaderPanel" style="width: 100%; justify-content: space-between; flex-direction: row; align-self: center; align-content: center; align-items: center;">
                                 <ui:Label text="COLONY SCRIPTABLE OBJECT" name="ColonySOText" class="Title" />
                                 <ui:Button name="ColonySOCloseButton" class="ButtonTexts Button closeButtons" style="align-self: stretch;" />
                             </ui:VisualElement>
-                            <SpriteObjectField name="ColonySOSelect" label="Colony SO" />
-                            <SpriteObjectField name="ColonyUI" label="UI PREFAB" />
-                            <SpriteObjectField name="ColonyManager" label="Colony Manager" />
-                            <SpriteObjectField name="ColonyWhereToAdd" label="Where To Add UI" />
-                            <ui:EnumField label="Colony Type" value="Earth" type="ColonyType, Assembly-CSharp" include-obsolete-values="false" name="ColonySOTypeEnum" />
-                            <ui:VisualElement name="ColonySOButtonPanel" style="flex-direction: row; align-items: stretch; align-content: stretch; justify-content: space-evenly;">
+                            <SpriteObjectField name="ColonySOSelect" label="Colony SO" style="display: none;" />
+                            <SpriteObjectField name="ColonyUI" label="UI PREFAB" style="display: none;" />
+                            <SpriteObjectField name="ColonyManager" label="Colony Manager" style="display: none;" />
+                            <SpriteObjectField name="ColonyWhereToAdd" label="Where To Add UI" style="display: none;" />
+                            <ui:EnumField label="Colony Type" value="Earth" type="ColonyType, Assembly-CSharp" include-obsolete-values="false" name="ColonySOTypeEnum" style="display: none;" />
+                            <ui:VisualElement name="ColonySOButtonPanel" style="flex-direction: row; align-items: stretch; align-content: stretch; justify-content: space-evenly; align-self: auto; bottom: 40%;">
                                 <ui:Button text="Create" name="ColonySOCreateButton" class="ButtonTexts Button" />
                                 <ui:Button text="Select" name="ColonySOSelectButton" class="ButtonTexts Button" />
                             </ui:VisualElement>

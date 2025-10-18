@@ -5,7 +5,6 @@ using UnityEngine;
 public class CollectorData
 {
     public CollectorSO DataSO;
-    public List<CostResource> CostResources;
 
     [Header("Collection Rates")]
     [SerializeField][Range(0f, 2f)] private double _collectionRate;
@@ -22,7 +21,6 @@ public class CollectorData
     public CollectorData(CollectorSO SO, List<CostResource> costResources, double collectionRate, double collectionRateMult, double speed, double speedMult, int level, int levelIncrement)
     {
         this.DataSO = SO;
-        this.CostResources = new List<CostResource>(costResources);
         this._collectionRate = collectionRate;
         this._collectionRateMultiplier = collectionRateMult;
         this._speed = speed;

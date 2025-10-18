@@ -9,7 +9,13 @@ public class ColonyModel : MonoBehaviour
     public List<Resource> Resources;
 
     public event Action<Resource, int>  OnResourceAdded;
+    public event Action<Resource, int>  OnResourceSpend;
 
+    /// <summary>
+    /// Sells a specified amount of resource and converts it to money.    
+    /// </summary>
+    /// <param name="resource"></param>
+    /// <param name="amount"></param>
     public void SellResource(Resource resource, double amount)
     {
         foreach (Resource colonyResource in Resources)
@@ -22,6 +28,12 @@ public class ColonyModel : MonoBehaviour
         }
     }
 
+
+    /// <summary>
+    /// Checking Resources that colony has enough of them.
+    /// </summary>
+    /// <param name="costResources"> This is the cost, which function checks </param>
+    /// <returns></returns>
     public bool CheckResources(List<CostResource> costResources)
     {
         foreach (CostResource resource in costResources)
@@ -57,6 +69,12 @@ public class ColonyModel : MonoBehaviour
         return false;
     }
 
+
+    /// <summary>
+    /// Add resource to the colony which then colony view update its resource text UI.
+    /// </summary>
+    /// <param name="resourceSO"></param>
+    /// <param name="amount"></param>
     public void AddResource(ResourceSO resourceSO, double amount)
     {
         foreach (Resource resource in Resources)
@@ -69,35 +87,40 @@ public class ColonyModel : MonoBehaviour
         }
     }
 
+    /// <summary>
+    /// Spend resources from the colony.
+    /// </summary>
+    /// <param name="costResources"></param>
     public void SpendResources(List<CostResource> costResources)
     {
-        foreach (CostResource resource in costResources)
+        foreach (CostResource costResource in costResources)
         {
-            if (resource.Resource.resourceType != ResourceType.Money)
+            if (costResource.Resource.resourceType != ResourceType.Money)
             {
-                Resource newResource = Resources.Find(r => r.ResourceSO.resourceType == resource.Resource.resourceType);
+                Resource resource = Resources.Find(r => r.ResourceSO == costResource.Resource);
 
-                if (newResource != null)
+                if (resource != null)
                 {
-                    if (newResource.CheckEnoughResource(resource.GetCostAmount()))
+                    if (resource.CheckEnoughResource(costResource.GetCostAmount()))
                     {
-                        newResource.SpendResource(resource.GetCostAmount());
+                        resource.SpendResource(costResource.GetCostAmount());
+                        OnResourceSpend?.Invoke(resource, Resources.IndexOf(resource));
                     }
                     else
                     {
-                        Debug.LogWarning($"Cant spend resources because there is not enough of  {resource.Resource.resourceType}");
+                        Debug.LogWarning($"Cant spend resources because there is not enough of  {costResource.Resource.resourceType}");
                     }
                 }
             }
             else
             {
-                if (resource.GetCostAmount() < GlobalResourceManager.Instance.MoneyAmount)
+                if (costResource.GetCostAmount() < GlobalResourceManager.Instance.MoneyAmount)
                 {
-                    GlobalResourceManager.Instance.SpendMoney(resource.GetCostAmount());
+                    GlobalResourceManager.Instance.SpendMoney(costResource.GetCostAmount());
                 }
                 else
                 {
-                    Debug.LogWarning($"Cant spend resources because there is not enough of {resource.Resource.resourceType}");
+                    Debug.LogWarning($"Cant spend resources because there is not enough of {costResource.Resource.resourceType}");
                 }
             }
         }

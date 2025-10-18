@@ -42,6 +42,12 @@ public struct ResourceEventArgs
     public ResourceSO CostResource;
 }
 
+public struct UpgradeEventArgs
+{
+    public UpgradeModel UpgradeModel;
+    public string TargetId;
+}
+
 #endregion
 
 

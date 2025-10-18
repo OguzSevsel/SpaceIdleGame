@@ -1,7 +1,7 @@
 using System;
 using UnityEngine;
 
-public class CollectorModel : MonoBehaviour, IUpgradeable, ISellable
+public class CollectorModel : MonoBehaviour, IUpgradeable
 {
     [Header("Required Types")]
     public CollectorData Data;
@@ -19,19 +19,26 @@ public class CollectorModel : MonoBehaviour, IUpgradeable, ISellable
     public event Action<CollectorEventArgs> OnCollectorFinished;
     public event Action<CollectorEventArgs> OnCollectorUpgrade;
     public event Action<CollectorEventArgs> OnCollectorUpgradeAmount;
+    public static event Action<CollectorEventArgs> OnCollectorRegister;
 
     //GUID Fields
     private string _guid;
     public string CollectorGUID => _guid;
 
-
+    //This Collectors Upgrade
+    public UpgradeModel LevelUpgrade;
 
     #region Unity Functions
+
+    private void Awake()
+    {
+        _guid = Guid.NewGuid().ToString();
+    }
 
     private void Start()
     {
         _colony = GetComponentInParent<ColonyModel>();
-        AutoCollect();
+        OnCollectorRegister?.Invoke(new CollectorEventArgs { Collector = this });
     }
 
     private void Update()
@@ -126,30 +133,31 @@ public class CollectorModel : MonoBehaviour, IUpgradeable, ISellable
     #region Interface Implementations
 
 #nullable enable
-    public void Upgrade(UpgradeType upgrade, CollectorModel collector)
+    public void Upgrade(UpgradeModel upgrade)
     {
-        bool isColonyHasEnoughResource = _colony.CheckResources(Data.CostResources);
+        bool isColonyHasEnoughResource = _colony.CheckResources(LevelUpgrade.upgradeCosts);
 
-        if (isColonyHasEnoughResource)
+        if (upgrade.TargetId == CollectorGUID)
         {
-            if (this == collector)
+            if (isColonyHasEnoughResource)
             {
-                switch (upgrade)
+                switch (upgrade.upgradeSO.upgradeType)
                 {
-                    case UpgradeType.CollectorSpeed:
+                    case UpgradeType.Speed:
                         Data.SetSpeed(Data.GetSpeed() * Data.GetSpeedMultiplier());
                         break;
 
-                    case UpgradeType.CollectorLevel:
+                    case UpgradeType.Level:
                         Data.SetLevel(Data.GetLevel() + Data.GetLevelIncrement());
                         Data.SetCollectionRate(Data.DataSO._baseCollectionRate * Math.Pow(Data.GetCollectionRateMultiplier(), Data.GetLevel()));
 
-                        _colony.SpendResources(Data.CostResources);
+                        _colony.SpendResources(LevelUpgrade.upgradeCosts);
                         IncreaseCost(Data.GetLevel(), overrideCostMultiplier: null);
                         break;
 
-                    case UpgradeType.CollectorAutoCollect:
+                    case UpgradeType.AutoCollect:
                         AutoCollect();
+                        _colony.SpendResources(upgrade.upgradeCosts);
                         break;
 
                     default:
@@ -157,19 +165,6 @@ public class CollectorModel : MonoBehaviour, IUpgradeable, ISellable
                 }
                 OnCollectorUpgrade?.Invoke(new CollectorEventArgs { Collector = this });
             }
-        }
-    }
-
-    public void Sell(ColonyType colonyType, CollectorType collectorType, double resourceAmount, double moneyAmount)
-    {
-        if (colonyType == _colony.colonyData.ColonyType && collectorType == Data.DataSO.CollectorType)
-        {
-            //if (Data.GetResourceAmount() >= resourceAmount)
-            //{
-            //    Data.SetResourceAmount(Data.GetResourceAmount() - resourceAmount);
-            //    GlobalResourceManager.Instance.AddMoney(moneyAmount);
-            //    OnSold?.Invoke(new CollectorEventArgs { Collector = this });
-            //}
         }
     }
 
@@ -186,7 +181,7 @@ public class CollectorModel : MonoBehaviour, IUpgradeable, ISellable
     {
         if (increaseLevelIncrement.HasValue)
         {
-            foreach (CostResource resource in Data.CostResources)
+            foreach (CostResource resource in LevelUpgrade.upgradeCosts)
             {
                 resource.AdjustAmount(increaseLevelIncrement.Value, level);
             }
@@ -194,7 +189,7 @@ public class CollectorModel : MonoBehaviour, IUpgradeable, ISellable
 
         if (overrideCostMultiplier.HasValue)
         {
-            foreach (CostResource resource in Data.CostResources)
+            foreach (CostResource resource in LevelUpgrade.upgradeCosts)
             {
                 resource.AdjustAmountAndMultiplier(level, Data.GetLevelIncrement(), overrideCostMultiplier.Value);
             }
@@ -202,7 +197,7 @@ public class CollectorModel : MonoBehaviour, IUpgradeable, ISellable
 
         if (!increaseLevelIncrement.HasValue && !overrideCostMultiplier.HasValue)
         {
-            foreach (CostResource resource in Data.CostResources)
+            foreach (CostResource resource in LevelUpgrade.upgradeCosts)
             {
                 resource.AdjustAmountAndMultiplier(level, Data.GetLevelIncrement(), overrideCostMultiplier: null);
             }

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
 using UnityEditor;
+using UnityEditor.Graphs;
 using UnityEditor.UIElements;
 using UnityEngine;
 using UnityEngine.UIElements;
@@ -85,7 +86,8 @@ public class ColonyCreatorWindow : EditorWindow
     private GameObject _whereToAddColony;
     private GameObject _collectorPanel;
     private ColonyManager _colonyManager;
-
+    private bool _isColonySOSelect;
+    private bool _isColonySOCreate;
 
     #endregion
 
@@ -272,68 +274,106 @@ public class ColonyCreatorWindow : EditorWindow
 
     #region ColonySO Handlers
 
-    private void ColonySOSelectButtonClickHandler()
+    private void ShowColonySOCreateControls()
     {
-        ShowControl(main.ColonySOSelectObject);
-        HideControl(main.ColonySOTypeEnum);
-        HideControl(main.ColonySOCreateBtn);
+        main.ColonySOButtonPanel.style.bottom = StyleKeyword.Auto;
+        ShowControl(main.ColonySOManager);
+        ShowControl(main.ColonySOPrefab);
+        ShowControl(main.ColonySOTypeEnum);
+        ShowControl(main.ColonySOWhereToAdd);
         HideControl(main.ColonySOSelectBtn);
-        main.ColonySOSelectObject.RegisterValueChangedCallback(ColonySOObjectValueChangedHandler);
+    }
+    private void ShowColonySOSelectControls()
+    {
+        main.ColonySOButtonPanel.style.bottom = StyleKeyword.Auto;
+        ShowControl(main.ColonySOManager);
+        ShowControl(main.ColonySOPrefab);
+        ShowControl(main.ColonySOSelectObject);
+        ShowControl(main.ColonySOWhereToAdd);
+        HideControl(main.ColonySOSelectBtn);
+    }
+    private void HideColonySOControls()
+    {
+        HideControl(main.ColonySOSelectObject);
+        HideControl(main.ColonySOPrefab);
+        HideControl(main.ColonySOManager);
+        HideControl(main.ColonySOWhereToAdd);
+        HideControl(main.ColonySOTypeEnum);
+        ShowControl(main.ColonySOSelectBtn);
+        main.ColonySOButtonPanel.style.bottom = new Length(40, LengthUnit.Percent);
     }
 
-    private void ColonySOObjectValueChangedHandler(ChangeEvent<UnityEngine.Object> evt)
+    private void ColonySOSelectButtonClickHandler()
     {
-        if (main.ColonySOPrefab.value != null && main.ColonySOManager.value != null && main.ColonySOWhereToAdd.value != null)
-        {
-            _colonyPanel = (GameObject)main.ColonySOPrefab.value;
-            GameObject colonyManagerObj = (GameObject)main.ColonySOManager.value;
-            _colonyManager = colonyManagerObj.GetComponent<ColonyManager>();
-            _whereToAddColony = (GameObject)main.ColonySOWhereToAdd.value;
-
-            if (_colonyManager != null)
-            {
-                HideControl(main.ColonySoCard);
-                HideControl(main.ColonySOSelectObject);
-                ShowControl(main.ColonySOTypeEnum);
-                ShowControl(main.ColonySOCreateBtn);
-                ShowControl(main.ColonySOSelectBtn);
-                _colonySO = evt.newValue as ColonySO;
-                AddColony();
-            }
-            else
-            {
-                EditorUtility.DisplayDialog("ColonyManager is not correct", "Please select another colony manager", "OK");
-            }
-        }
-        else
-        {
-            EditorUtility.DisplayDialog("Fields are empty", "Please select UI and Manager", "OK");
-        }
-
+        _isColonySOSelect = true;
+        ShowColonySOSelectControls();
     }
 
     private void ColonySOCreateButtonClickHandler()
     {
-        if (main.ColonySOPrefab.value != null && main.ColonySOManager.value != null && main.ColonySOWhereToAdd.value != null)
+        if (_isColonySOSelect)
         {
-            _colonyPanel = (GameObject)main.ColonySOPrefab.value;
-            GameObject colonyManagerObj = (GameObject)main.ColonySOManager.value;
-            _colonyManager = colonyManagerObj.GetComponent<ColonyManager>();
-            _whereToAddColony = (GameObject)main.ColonySOWhereToAdd.value;
-
-            if (_colonyManager != null)
+            _isColonySOSelect = false;
+            _isColonySOCreate = false;
+            if (main.ColonySOPrefab.value != null && main.ColonySOManager.value != null && main.ColonySOWhereToAdd.value != null)
             {
-                _colonySO = AddColonySO(main.ColonySOTypeEnum.value.ToString(), (ColonyType)main.ColonySOTypeEnum.value);
-                AddColony();
+                _colonyPanel = (GameObject)main.ColonySOPrefab.value;
+                GameObject colonyManagerObj = (GameObject)main.ColonySOManager.value;
+                _colonyManager = colonyManagerObj.GetComponent<ColonyManager>();
+                _whereToAddColony = (GameObject)main.ColonySOWhereToAdd.value;
+
+                if (_colonyManager != null)
+                {
+                    HideControl(main.ColonySoCard);
+                    HideControl(main.ColonySOSelectObject);
+                    ShowControl(main.ColonySOTypeEnum);
+                    ShowControl(main.ColonySOCreateBtn);
+                    ShowControl(main.ColonySOSelectBtn);
+                    _colonySO = (ColonySO)main.ColonySOSelectObject.value;
+                    AddColony();
+                    HideColonySOControls();
+                }
+                else
+                {
+                    EditorUtility.DisplayDialog("ColonyManager is not correct", "Please select another colony manager", "OK");
+                }
             }
             else
             {
-                EditorUtility.DisplayDialog("ColonyManager is not correct", "Please select another colony manager", "OK");
+                EditorUtility.DisplayDialog("Fields are empty", "Please select UI and Manager", "OK");
+            }
+        }
+        else if (_isColonySOCreate)
+        {
+            _isColonySOSelect = false;
+            _isColonySOCreate = false;
+            if (main.ColonySOPrefab.value != null && main.ColonySOManager.value != null && main.ColonySOWhereToAdd.value != null)
+            {
+                _colonyPanel = (GameObject)main.ColonySOPrefab.value;
+                GameObject colonyManagerObj = (GameObject)main.ColonySOManager.value;
+                _colonyManager = colonyManagerObj.GetComponent<ColonyManager>();
+                _whereToAddColony = (GameObject)main.ColonySOWhereToAdd.value;
+
+                if (_colonyManager != null)
+                {
+                    _colonySO = AddColonySO(main.ColonySOTypeEnum.value.ToString(), (ColonyType)main.ColonySOTypeEnum.value);
+                    AddColony();
+                    HideColonySOControls();
+                }
+                else
+                {
+                    EditorUtility.DisplayDialog("ColonyManager is not correct", "Please select another colony manager", "OK");
+                }
+            }
+            else
+            {
+                EditorUtility.DisplayDialog("Fields are empty", "Please select UI and Manager", "OK");
             }
         }
         else
         {
-            EditorUtility.DisplayDialog("Fields are empty", "Please select UI and Manager", "OK");
+            _isColonySOCreate = true;
+            ShowColonySOCreateControls();
         }
     }
 
@@ -469,10 +509,6 @@ public class ColonyCreatorWindow : EditorWindow
     private void CostResourceCreateButtonClickHandler()
     {
         AddCostResources();
-        main.CostResourceObject.value = null;
-        main.CostResourceCostAmountSlider.value = 0;
-        main.CostResourceBaseCostAmountSlider.value = 0;
-        main.CostResourceCostMultSlider.value = 1;
     }
 
     private void CollectorCreateButtonClickHandler()
@@ -485,14 +521,6 @@ public class ColonyCreatorWindow : EditorWindow
 
         AddCollector();
         _costResources.Clear();
-        _collectorPanel = null;
-        main.CollectorSOObject.value = null;
-        main.CollectorRateSlider.value = 1;
-        main.CollectorRateMultSlider.value = 1;
-        main.CollectorSpeedSlider.value = 0.95f;
-        main.CollectorSpeedMultSlider.value = 1;
-        main.CollectorLevelSlider.value = 1;
-        main.CollectorLevelIncrementSlider.value = 1;
         main.CollectorScrollView.ScrollTo(main.CollectorCloseBtn);
     }
 
@@ -505,8 +533,6 @@ public class ColonyCreatorWindow : EditorWindow
         newCostResource.SetCostAmount(main.CostResourceCostAmountSlider.value);
 
         _costResources.Add(newCostResource);
-        Label label = new Label();
-        label.text = "Cost_1" + newCostResource.Resource.resourceType.ToString();
 
         main.CollectorCostResourceListView.makeItem = () =>
         {
@@ -515,6 +541,7 @@ public class ColonyCreatorWindow : EditorWindow
 
             var label = new Label();
             label.style.flexGrow = 1;
+            label.text = "Cost_1" + newCostResource.Resource.resourceType.ToString();
             container.Add(label);
 
             return container;
@@ -570,6 +597,10 @@ public class ColonyCreatorWindow : EditorWindow
             SetParent(collectorObject, _colonies.FirstOrDefault());
             ColonyModel colonyModel = _colonies.FirstOrDefault().GetComponent<ColonyModel>();
             colonyModel.Collectors.Add(model);
+        }
+        else
+        {
+            main.AddRootItemToTree(collectorObject, _collectorPanel, whereToAdd: null, label: model.Data.DataSO.CollectorType.ToString(), TypeEnum.Collector);
         }
     }
 

@@ -1,10 +1,12 @@
 using System.Collections.Generic;
 using UnityEngine;
 
+//This file is creating colony presenters from the lists it holds. Then colony presenters create other lower level presenters such as collector presenters.
 public class ColonyManager : MonoBehaviour
 {
     [SerializeField] private List<ColonyModel> colonyModels;
     [SerializeField] private List<ColonyView> colonyViews;
+
     private List<ColonyPresenter> colonyPresenters = new();
 
     private void Start()
