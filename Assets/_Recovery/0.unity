@@ -152,10 +152,10 @@ RectTransform:
   m_Children: []
   m_Father: {fileID: 1323936675}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 0}
-  m_AnchorMax: {x: 0, y: 0}
-  m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 0, y: 0}
+  m_AnchorMin: {x: 0, y: 1}
+  m_AnchorMax: {x: 0, y: 1}
+  m_AnchoredPosition: {x: 60, y: -14.344263}
+  m_SizeDelta: {x: 120, y: 28.688526}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &2803529
 MonoBehaviour:
@@ -4628,10 +4628,10 @@ RectTransform:
   m_Children: []
   m_Father: {fileID: 142056094}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 0}
-  m_AnchorMax: {x: 0, y: 0}
-  m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 0, y: 0}
+  m_AnchorMin: {x: 0, y: 1}
+  m_AnchorMax: {x: 0, y: 1}
+  m_AnchoredPosition: {x: 60, y: -49.344265}
+  m_SizeDelta: {x: 120, y: 41.311478}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &401905221
 MonoBehaviour:
@@ -5809,10 +5809,10 @@ RectTransform:
   m_Children: []
   m_Father: {fileID: 142056094}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 0}
-  m_AnchorMax: {x: 0, y: 0}
-  m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 0, y: 0}
+  m_AnchorMin: {x: 0, y: 1}
+  m_AnchorMax: {x: 0, y: 1}
+  m_AnchoredPosition: {x: 60, y: -14.344263}
+  m_SizeDelta: {x: 120, y: 28.688526}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &559073300
 MonoBehaviour:
@@ -13776,10 +13776,46 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: fe179cff929258b4f98039f40a18b729, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::UpgradePresenter
-  UpgradeModels: []
+  _upgradeModels:
+  - upgradeSO: {fileID: 11400000, guid: 1f442d114eb8ea2429323d8913188b0e, type: 2}
+    upgradeCosts:
+    - Resource: {fileID: 11400000, guid: a07f3d0886c24a747a2b71d4ae8c1d8b, type: 2}
+      _costAmount: 10
+      _baseCostAmount: 10
+      _costMultiplier: 0
+    - Resource: {fileID: 11400000, guid: 47420a4557963084f8940d9775b579b3, type: 2}
+      _costAmount: 10
+      _baseCostAmount: 10
+      _costMultiplier: 0
+    - Resource: {fileID: 11400000, guid: 3aae086886c65dc4fad739acad125448, type: 2}
+      _costAmount: 10
+      _baseCostAmount: 10
+      _costMultiplier: 0
+    upgradeDescription: Auto Collect Xeronium
+    target: {fileID: 403170211}
+  - upgradeSO: {fileID: 11400000, guid: 1f442d114eb8ea2429323d8913188b0e, type: 2}
+    upgradeCosts:
+    - Resource: {fileID: 11400000, guid: 3aae086886c65dc4fad739acad125448, type: 2}
+      _costAmount: 50
+      _baseCostAmount: 50
+      _costMultiplier: 0
+    upgradeDescription: Auto Collect Energy
+    target: {fileID: 700058332}
+  - upgradeSO: {fileID: 11400000, guid: 1f442d114eb8ea2429323d8913188b0e, type: 2}
+    upgradeCosts:
+    - Resource: {fileID: 11400000, guid: 3aae086886c65dc4fad739acad125448, type: 2}
+      _costAmount: 50
+      _baseCostAmount: 50
+      _costMultiplier: 0
+    - Resource: {fileID: 11400000, guid: 47420a4557963084f8940d9775b579b3, type: 2}
+      _costAmount: 200
+      _baseCostAmount: 200
+      _costMultiplier: 0
+    upgradeDescription: Auto Collect Iron
+    target: {fileID: 190531882}
   _upgradeViews: []
-  UpgradeViewParent: {fileID: 0}
-  UpgradeViewPrefab: {fileID: 0}
+  _upgradeViewParent: {fileID: 1733805840}
+  _upgradeViewPrefab: {fileID: 3204486113308337236, guid: 5a796248a5097bb40b1ba3650632cf15, type: 3}
 --- !u!1 &1504211854
 GameObject:
   m_ObjectHideFlags: 0
@@ -17574,10 +17610,10 @@ RectTransform:
   m_Children: []
   m_Father: {fileID: 2002717929}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 0}
-  m_AnchorMax: {x: 0, y: 0}
-  m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 0, y: 0}
+  m_AnchorMin: {x: 0, y: 1}
+  m_AnchorMax: {x: 0, y: 1}
+  m_AnchoredPosition: {x: 60, y: -14.344263}
+  m_SizeDelta: {x: 120, y: 28.688526}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1931603609
 MonoBehaviour:
@@ -17941,10 +17977,10 @@ RectTransform:
   m_Children: []
   m_Father: {fileID: 2002717929}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 0}
-  m_AnchorMax: {x: 0, y: 0}
-  m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 0, y: 0}
+  m_AnchorMin: {x: 0, y: 1}
+  m_AnchorMax: {x: 0, y: 1}
+  m_AnchoredPosition: {x: 60, y: -49.344265}
+  m_SizeDelta: {x: 120, y: 41.311478}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1940173004
 MonoBehaviour:
@@ -18829,10 +18865,10 @@ RectTransform:
   m_Children: []
   m_Father: {fileID: 1323936675}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 0}
-  m_AnchorMax: {x: 0, y: 0}
-  m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 0, y: 0}
+  m_AnchorMin: {x: 0, y: 1}
+  m_AnchorMax: {x: 0, y: 1}
+  m_AnchoredPosition: {x: 60, y: -49.344265}
+  m_SizeDelta: {x: 120, y: 41.311478}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1994438404
 MonoBehaviour:

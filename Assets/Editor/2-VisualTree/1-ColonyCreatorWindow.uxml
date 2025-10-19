@@ -2,117 +2,143 @@
     <Style src="project://database/Assets/Editor/1-Style/ColonyCreatorWindow.uss?fileID=7433441132597879392&amp;guid=1d030984a5147094ab3ea1a205b8ebf4&amp;type=3#ColonyCreatorWindow" />
     <ui:VisualElement name="Root" style="height: 1080px;">
         <ui:VisualElement style="flex-direction: row; flex-grow: 1;">
-            <ui:VisualElement name="MainPanel" style="width: 70%;">
-                <ui:VisualElement name="Header" style="height: 10%;">
-                    <ui:VisualElement name="ButtonPanel" style="justify-content: space-evenly; flex-direction: row; flex-grow: 1;">
-                        <ui:Button text="Colony SO" name="CreateColonySO" class="ButtonTexts Button menuButtons" />
-                        <ui:Button text="Resource SO" name="CreateResourceSO" class="ButtonTexts Button menuButtons" />
-                        <ui:Button text="Resource" name="CreateResource" class="ButtonTexts Button menuButtons" />
-                        <ui:Button text="Collector SO" name="CreateCollectorSO" class="ButtonTexts Button menuButtons" />
-                        <ui:Button text="Collector" name="CreateCollector" class="ButtonTexts Button menuButtons" />
-                    </ui:VisualElement>
-                </ui:VisualElement>
-                <ui:VisualElement name="Body" style="min-height: 20px;">
-                    <ui:VisualElement name="LeftPanel" style="flex-grow: 0.2; visibility: visible; display: flex; flex-shrink: 0;">
-                        <ui:VisualElement name="ColonySOCard" class="sizeWidth100 sizeWidth100Height50 sizeWidth90Height50 CardBG" style="display: flex; justify-content: space-between;">
-                            <ui:VisualElement name="HeaderPanel" style="width: 100%; justify-content: space-between; flex-direction: row; align-self: center; align-content: center; align-items: center;">
-                                <ui:Label text="COLONY SCRIPTABLE OBJECT" name="ColonySOText" class="Title" />
-                                <ui:Button name="ColonySOCloseButton" class="ButtonTexts Button closeButtons" style="align-self: stretch;" />
-                            </ui:VisualElement>
-                            <SpriteObjectField name="ColonySOSelect" label="Colony SO" style="display: none;" />
-                            <SpriteObjectField name="ColonyUI" label="UI PREFAB" style="display: none;" />
-                            <SpriteObjectField name="ColonyManager" label="Colony Manager" style="display: none;" />
-                            <SpriteObjectField name="ColonyWhereToAdd" label="Where To Add UI" style="display: none;" />
-                            <ui:EnumField label="Colony Type" value="Earth" type="ColonyType, Assembly-CSharp" include-obsolete-values="false" name="ColonySOTypeEnum" style="display: none;" />
-                            <ui:VisualElement name="ColonySOButtonPanel" style="flex-direction: row; align-items: stretch; align-content: stretch; justify-content: space-evenly; align-self: auto; bottom: 40%;">
-                                <ui:Button text="Create" name="ColonySOCreateButton" class="ButtonTexts Button" />
-                                <ui:Button text="Select" name="ColonySOSelectButton" class="ButtonTexts Button" />
-                            </ui:VisualElement>
-                        </ui:VisualElement>
-                        <ui:VisualElement name="ResourceSOCard" class="sizeWidth100 sizeWidth100Height50 sizeWidth90Height50 CardBG" style="display: flex;">
-                            <ui:VisualElement name="HeaderPanel" style="flex-direction: row; width: 100%; justify-content: space-between;">
-                                <ui:Label text="Resource Scriptable Object" name="ResourceSOText" class="Title" />
-                                <ui:Button name="ResourceSOCloseButton" class="ButtonTexts closeButtons Button" />
-                            </ui:VisualElement>
-                            <SpriteObjectField name="ResourceSOIcon" label="Sprite" />
-                            <ui:EnumField label="Resource Type" value="Money" type="ResourceType, Assembly-CSharp" include-obsolete-values="false" name="ResourceSOType" />
-                            <ui:TextField label="Resource Unit" placeholder-text="Unit" name="ResourceSOUnit" password="false" />
-                            <ui:Button text="Create" name="ResourceSOCreateButton" class="ButtonTexts Button" />
-                        </ui:VisualElement>
-                        <ui:VisualElement name="ResourceCard" class="sizeWidth100 sizeWidth100Height50 sizeWidth90Height50 CardBG" style="display: flex;">
-                            <ui:VisualElement name="HeaderPanel" style="width: 100%; justify-content: space-between; flex-direction: row;">
-                                <ui:Label text="Create Resource" name="ResourceText" class="Title" />
-                                <ui:Button name="ResourceCloseButton" class="ButtonTexts Button closeButtons" style="align-self: stretch;" />
-                            </ui:VisualElement>
-                            <SpriteObjectField name="ResourceSO" label="Resource SO" style="color: rgb(255, 255, 255); margin-top: 0; margin-right: 0; margin-bottom: 0; margin-left: 0;" />
-                            <ui:Slider label="Amount" value="0" high-value="10" show-input-field="true" fill="true" name="ResourceAmount" low-value="0" style="margin-top: 0; margin-right: 0; margin-bottom: 0; margin-left: 0;" />
-                            <ui:Slider label="Sell Rate" value="0" high-value="10" show-input-field="true" fill="true" name="SellRate" low-value="0" style="margin-top: 0; margin-right: 0; margin-bottom: 0; margin-left: 0;" />
-                            <ui:Slider label="Sell Rate Mult." value="1" high-value="10" show-input-field="true" fill="true" name="SellRateMultiplier" low-value="1" style="margin-top: 0; margin-right: 0; margin-bottom: 0; margin-left: 0; padding-top: 0; padding-right: 0; padding-bottom: 0; padding-left: 0;" />
-                            <ui:Button text="Create" name="ResourceCreateButton" class="ButtonTexts Button" />
-                        </ui:VisualElement>
-                    </ui:VisualElement>
-                    <ui:VisualElement name="RightPanel" style="flex-grow: 1; visibility: visible; display: flex; flex-shrink: 0;">
-                        <ui:VisualElement name="CollectorSOCard" class="sizeWidth100 sizeWidth100Height50 sizeWidth90Height50 CardBG" style="display: flex;">
-                            <ui:VisualElement name="HeaderPanel" style="width: 100%; justify-content: space-between; flex-direction: row;">
-                                <ui:Label text="Collector Scriptable Object" name="CollectorSOText" class="Title" />
-                                <ui:Button name="CollectorSOCloseButton" class="ButtonTexts Button closeButtons" />
-                            </ui:VisualElement>
-                            <ui:VisualElement name="BodyPanel">
-                                <ScriptableObjectField name="GeneratedResourceSO" label="Generated Resource" style="margin-top: 0; margin-right: 0; margin-bottom: 0; margin-left: 0;" />
-                                <ui:EnumField label="Collector Type" value="EnergyCollector" type="CollectorType, Assembly-CSharp" include-obsolete-values="false" name="CollectorType" style="justify-content: center; margin-top: 0; margin-right: 0; margin-bottom: 0; margin-left: 0; padding-top: 0; padding-right: 0; padding-bottom: 0; padding-left: 0; align-self: stretch; align-content: center; align-items: center;" />
-                                <ui:Slider label="Base Rate" value="0" high-value="10" show-input-field="true" fill="true" name="BaseCollectionRate" style="margin-top: 0; margin-right: 0; margin-bottom: 0; margin-left: 0;" />
-                            </ui:VisualElement>
-                            <ui:Button text="Create" name="CollectorSOCreateButton" class="ButtonTexts Button" />
-                        </ui:VisualElement>
-                        <ui:VisualElement name="CollectorCard" class="sizeWidth100 sizeWidth100Height50 sizeWidth90Height50 CardBG" style="flex-grow: 1; display: flex;">
-                            <ui:ScrollView name="CollectorCardScrollView">
-                                <ui:VisualElement name="HeaderPanel" style="flex-grow: 1; flex-direction: row; width: 100%; justify-content: space-between;">
-                                    <ui:Label text="Collector Model" name="CollectorSOText" class="Title" style="align-content: center; align-self: center; margin-top: 10px; margin-right: 0; margin-bottom: 10px; margin-left: 0; padding-top: 0; padding-right: 0; padding-bottom: 0; padding-left: 0;" />
-                                    <ui:Button name="CollectorCloseButton" class="ButtonTexts Button closeButtons" />
-                                </ui:VisualElement>
-                                <ScriptableObjectField name="CollectorSO" label="Collector SO" style="margin-top: 0; margin-right: 0; margin-bottom: 10px; margin-left: 0;" />
-                                <ScriptableObjectField name="CollectorUI" label="UI Prefab " style="margin-top: 0; margin-right: 0; margin-bottom: 10px; margin-left: 0;" />
-                                <ui:Label text="Cost Resources" style="align-self: center;" />
-                                <ui:ListView name="CostResourceListView" />
-                                <ui:VisualElement name="CostResourceCard" class="sizeWidth100 sizeWidth100Height50 sizeWidth90Height50 CardBG" style="background-color: rgb(93, 47, 119);">
-                                    <ui:Label text="Cost Resource" name="CostResourceText" style="align-content: center; align-self: center; padding-left: 4px;" />
-                                    <SpriteObjectField name="CostResourceSO" label="Resource SO" style="margin-top: 0; margin-right: 0; margin-bottom: 0; margin-left: 0;" />
-                                    <ui:Slider label="Cost Amount" value="0" high-value="100" show-input-field="true" fill="true" name="CostAmount" low-value="0" style="margin-top: 0; margin-right: 0; margin-bottom: 0; margin-left: 0;" />
-                                    <ui:Slider label="Base Cost Amount" value="0" high-value="100" show-input-field="true" fill="true" name="BaseCostAmount" low-value="0" style="margin-top: 0; margin-right: 0; margin-bottom: 0; margin-left: 0;" />
-                                    <ui:Slider label="Cost Mult." value="1" high-value="10" show-input-field="true" fill="true" name="CostMultiplier" low-value="1" style="margin-top: 0; margin-right: 0; margin-bottom: 0; margin-left: 0;" />
-                                    <ui:Button text="Create" name="CostResourceCreateButton" class="ButtonTexts Button" style="background-color: rgb(141, 95, 140); color: rgb(255, 172, 172);" />
-                                </ui:VisualElement>
-                                <ui:Slider label="Rate" value="1" high-value="10" show-input-field="true" fill="true" name="CollectorRate" low-value="0" style="margin-top: 0; margin-right: 0; margin-bottom: 0; margin-left: 0;" />
-                                <ui:Slider label="Rate Mult." value="1" high-value="10" show-input-field="true" fill="true" name="CollectorRateMultiplier" low-value="1" style="margin-top: 0; margin-right: 0; margin-bottom: 0; margin-left: 0;" />
-                                <ui:Slider label="Speed" value="1" high-value="10" show-input-field="true" fill="true" name="CollectorSpeed" low-value="0" style="margin-top: 0; margin-right: 0; margin-bottom: 0; margin-left: 0;" />
-                                <ui:Slider label="Speed Mult." value="0" high-value="1" show-input-field="true" fill="true" name="CollectorSpeedMultiplier" low-value="0" style="margin-top: 0; margin-right: 0; margin-bottom: 0; margin-left: 0;" />
-                                <ui:SliderInt label="Level" value="1" high-value="5" name="CollectorLevel" show-input-field="true" fill="true" />
-                                <ui:SliderInt label="Level Inc" value="1" high-value="5" name="CollectorLevelIncrement" fill="true" show-input-field="true" />
-                                <ui:Button text="Create" name="CollectorCreateButton" class="ButtonTexts Button" />
-                            </ui:ScrollView>
-                        </ui:VisualElement>
-                    </ui:VisualElement>
-                </ui:VisualElement>
-                <ui:VisualElement name="Footer" style="background-color: rgb(62, 30, 104); border-top-left-radius: 5px; border-top-right-radius: 5px; border-bottom-right-radius: 5px; border-bottom-left-radius: 5px; height: 5%; flex-direction: row; justify-content: space-between;">
-                    <ui:Label text="Info" name="LeftLabel" />
-                    <ui:Label text="INFO" name="MiddleLabel" />
-                    <ui:Label text="INFO" name="RightLabel" />
-                </ui:VisualElement>
+            <ui:VisualElement name="ButtonPanel" style="justify-content: space-evenly; flex-direction: column; flex-grow: 1; width: 10%;">
+                <ui:Label text="Menu" name="CreateLabel" style="align-self: center;" />
+                <ui:Button text="Colony SO" name="CreateColonySO" class="ButtonTexts Button menuButtons" />
+                <ui:Button text="Resource SO" name="CreateResourceSO" class="ButtonTexts Button menuButtons" />
+                <ui:Button text="Resource" name="CreateResource" class="ButtonTexts Button menuButtons" />
+                <ui:Button text="Collector SO" name="CreateCollectorSO" class="ButtonTexts Button menuButtons" />
+                <ui:Button text="Collector" name="CreateCollector" class="ButtonTexts Button menuButtons" />
+                <ui:Button text="Upgrade &#10;Manager" name="CreateUpgradeManager" class="ButtonTexts Button menuButtons" />
+                <ui:Button text="Upgrade SO" name="CreateUpgradeSO" class="ButtonTexts Button menuButtons" />
+                <ui:Button text="Upgrade" name="CreateUpgrade" class="ButtonTexts Button menuButtons" style="display: flex;" />
             </ui:VisualElement>
+            <ui:ScrollView name="MainScrollView" horizontal-scroller-visibility="Hidden" style="width: 60%; justify-content: center; align-items: stretch; align-content: center; align-self: auto; padding-top: 5px; padding-right: 5px; padding-bottom: 5px; padding-left: 5px;">
+                <ui:Label text="Asset Creation" style="-unity-text-align: middle-center;" />
+                <ui:VisualElement name="ColonySOCard" class="sizeWidth100 sizeWidth100Height50 sizeWidth90Height50 CardBG" style="display: none; justify-content: space-evenly;">
+                    <ui:VisualElement name="HeaderPanel" class="HeaderPanel" style="width: 100%; justify-content: space-between; flex-direction: row; align-self: center; align-content: center; align-items: center;">
+                        <ui:Label text="COLONY SCRIPTABLE OBJECT" name="ColonySOText" class="Title" />
+                        <ui:Button name="ColonySOCloseButton" class="ButtonTexts Button closeButtons" style="align-self: stretch;" />
+                    </ui:VisualElement>
+                    <ui:VisualElement name="BodyPanel" style="flex-grow: 1;">
+                        <SpriteObjectField name="ColonySOSelect" label="Colony SO" style="display: none;" />
+                        <SpriteObjectField name="ColonyUI" label="UI PREFAB" style="display: none;" />
+                        <SpriteObjectField name="ColonyManager" label="Colony Manager" style="display: none;" />
+                        <SpriteObjectField name="ColonyWhereToAdd" label="Where To Add UI" style="display: none;" />
+                        <ui:EnumField label="Colony Type" value="Earth" type="ColonyType, Assembly-CSharp" include-obsolete-values="false" name="ColonySOTypeEnum" style="display: none;" />
+                    </ui:VisualElement>
+                    <ui:VisualElement name="ColonySOButtonPanel" style="flex-direction: row; align-items: stretch; align-content: stretch; justify-content: space-evenly; align-self: auto;">
+                        <ui:Button text="Create" name="ColonySOCreateButton" class="ButtonTexts Button" />
+                        <ui:Button text="Select" name="ColonySOSelectButton" class="ButtonTexts Button" />
+                    </ui:VisualElement>
+                </ui:VisualElement>
+                <ui:VisualElement name="ResourceSOCard" class="sizeWidth100 sizeWidth100Height50 sizeWidth90Height50 CardBG" style="display: none;">
+                    <ui:VisualElement name="HeaderPanel" class="HeaderPanel" style="flex-direction: row; width: 100%; justify-content: space-between;">
+                        <ui:Label text="Resource Scriptable Object" name="ResourceSOText" class="Title" />
+                        <ui:Button name="ResourceSOCloseButton" class="ButtonTexts closeButtons Button" />
+                    </ui:VisualElement>
+                    <SpriteObjectField name="ResourceSOIcon" label="Sprite" />
+                    <ui:EnumField label="Resource Type" value="Money" type="ResourceType, Assembly-CSharp" include-obsolete-values="false" name="ResourceSOType" />
+                    <ui:TextField label="Resource Unit" placeholder-text="Unit" name="ResourceSOUnit" password="false" />
+                    <ui:Button text="Create" name="ResourceSOCreateButton" class="ButtonTexts Button" />
+                </ui:VisualElement>
+                <ui:VisualElement name="ResourceCard" class="sizeWidth100 sizeWidth100Height50 sizeWidth90Height50 CardBG" style="display: none;">
+                    <ui:VisualElement name="HeaderPanel" class="HeaderPanel" style="width: 100%; justify-content: space-between; flex-direction: row;">
+                        <ui:Label text="Create Resource" name="ResourceText" class="Title" />
+                        <ui:Button name="ResourceCloseButton" class="ButtonTexts Button closeButtons" style="align-self: stretch;" />
+                    </ui:VisualElement>
+                    <SpriteObjectField name="ResourceSO" label="Resource SO" style="color: rgb(255, 255, 255); margin-top: 0; margin-right: 0; margin-bottom: 0; margin-left: 0;" />
+                    <ui:Slider label="Amount" value="0" high-value="10" show-input-field="true" fill="true" name="ResourceAmount" low-value="0" style="margin-top: 0; margin-right: 0; margin-bottom: 0; margin-left: 0;" />
+                    <ui:Slider label="Sell Rate" value="0" high-value="10" show-input-field="true" fill="true" name="SellRate" low-value="0" style="margin-top: 0; margin-right: 0; margin-bottom: 0; margin-left: 0;" />
+                    <ui:Slider label="Sell Rate Mult." value="1" high-value="10" show-input-field="true" fill="true" name="SellRateMultiplier" low-value="1" style="margin-top: 0; margin-right: 0; margin-bottom: 0; margin-left: 0; padding-top: 0; padding-right: 0; padding-bottom: 0; padding-left: 0;" />
+                    <ui:Button text="Create" name="ResourceCreateButton" class="ButtonTexts Button" />
+                </ui:VisualElement>
+                <ui:VisualElement name="CollectorSOCard" class="sizeWidth100 sizeWidth100Height50 sizeWidth90Height50 CardBG" style="display: none;">
+                    <ui:VisualElement name="HeaderPanel" class="HeaderPanel" style="width: 100%; justify-content: space-between; flex-direction: row;">
+                        <ui:Label text="Collector Scriptable Object" name="CollectorSOText" class="Title" />
+                        <ui:Button name="CollectorSOCloseButton" class="ButtonTexts Button closeButtons" />
+                    </ui:VisualElement>
+                    <ui:VisualElement name="BodyPanel" style="flex-grow: 1; justify-content: space-evenly;">
+                        <ScriptableObjectField name="GeneratedResourceSO" label="Generated Resource" style="margin-top: 0; margin-right: 0; margin-bottom: 0; margin-left: 0;" />
+                        <ui:EnumField label="Collector Type" value="EnergyCollector" type="CollectorType, Assembly-CSharp" include-obsolete-values="false" name="CollectorType" style="justify-content: center; margin-top: 0; margin-right: 0; margin-bottom: 0; margin-left: 0; padding-top: 0; padding-right: 0; padding-bottom: 0; padding-left: 0; align-self: stretch; align-content: center; align-items: center;" />
+                        <ui:Slider label="Base Rate" value="0" high-value="10" show-input-field="true" fill="true" name="BaseCollectionRate" style="margin-top: 0; margin-right: 0; margin-bottom: 0; margin-left: 0;" />
+                    </ui:VisualElement>
+                    <ui:Button text="Create" name="CollectorSOCreateButton" class="ButtonTexts Button" />
+                </ui:VisualElement>
+                <ui:VisualElement name="CollectorCard" class="sizeWidth100 sizeWidth100Height50 sizeWidth90Height50 CardBG" style="flex-grow: 1; display: none;">
+                    <ui:ScrollView name="CollectorCardScrollView">
+                        <ui:VisualElement name="HeaderPanel" class="HeaderPanel" style="flex-grow: 1; flex-direction: row; width: 100%; justify-content: space-between;">
+                            <ui:Label text="Collector Model" name="CollectorSOText" class="Title" style="align-content: center; align-self: center; margin-top: 10px; margin-right: 0; margin-bottom: 10px; margin-left: 0; padding-top: 0; padding-right: 0; padding-bottom: 0; padding-left: 0;" />
+                            <ui:Button name="CollectorCloseButton" class="ButtonTexts Button closeButtons" />
+                        </ui:VisualElement>
+                        <ScriptableObjectField name="CollectorSO" label="Collector SO" style="margin-top: 0; margin-right: 0; margin-bottom: 10px; margin-left: 0;" />
+                        <ScriptableObjectField name="CollectorUI" label="UI Prefab " style="margin-top: 0; margin-right: 0; margin-bottom: 10px; margin-left: 0;" />
+                        <ui:Label text="Cost Resources" style="align-self: center;" />
+                        <ui:ListView name="CostResourceListView" />
+                        <ui:VisualElement name="CostResourceCard" class="sizeWidth100 sizeWidth100Height50 sizeWidth90Height50 CardBG" style="background-color: rgb(93, 47, 119);">
+                            <ui:Label text="Cost Resource" name="CostResourceText" style="align-content: center; align-self: center; padding-left: 4px;" />
+                            <SpriteObjectField name="CostResourceSO" label="Resource SO" style="margin-top: 0; margin-right: 0; margin-bottom: 0; margin-left: 0;" />
+                            <ui:Slider label="Cost Amount" value="0" high-value="100" show-input-field="true" fill="true" name="CostAmount" low-value="0" style="margin-top: 0; margin-right: 0; margin-bottom: 0; margin-left: 0;" />
+                            <ui:Slider label="Base Cost Amount" value="0" high-value="100" show-input-field="true" fill="true" name="BaseCostAmount" low-value="0" style="margin-top: 0; margin-right: 0; margin-bottom: 0; margin-left: 0;" />
+                            <ui:Slider label="Cost Mult." value="1" high-value="10" show-input-field="true" fill="true" name="CostMultiplier" low-value="1" style="margin-top: 0; margin-right: 0; margin-bottom: 0; margin-left: 0;" />
+                            <ui:Button text="Create" name="CostResourceCreateButton" class="ButtonTexts Button" style="background-color: rgb(141, 95, 140); color: rgb(255, 172, 172);" />
+                        </ui:VisualElement>
+                        <ui:Slider label="Rate" value="1" high-value="10" show-input-field="true" fill="true" name="CollectorRate" low-value="0" style="margin-top: 0; margin-right: 0; margin-bottom: 0; margin-left: 0;" />
+                        <ui:Slider label="Rate Mult." value="1" high-value="10" show-input-field="true" fill="true" name="CollectorRateMultiplier" low-value="1" style="margin-top: 0; margin-right: 0; margin-bottom: 0; margin-left: 0;" />
+                        <ui:Slider label="Speed" value="1" high-value="10" show-input-field="true" fill="true" name="CollectorSpeed" low-value="0" style="margin-top: 0; margin-right: 0; margin-bottom: 0; margin-left: 0;" />
+                        <ui:Slider label="Speed Mult." value="0" high-value="1" show-input-field="true" fill="true" name="CollectorSpeedMultiplier" low-value="0" style="margin-top: 0; margin-right: 0; margin-bottom: 0; margin-left: 0;" />
+                        <ui:SliderInt label="Level" value="1" high-value="5" name="CollectorLevel" show-input-field="true" fill="true" />
+                        <ui:SliderInt label="Level Inc" value="1" high-value="5" name="CollectorLevelIncrement" fill="true" show-input-field="true" />
+                        <ui:Button text="Create" name="CollectorCreateButton" class="ButtonTexts Button" />
+                    </ui:ScrollView>
+                </ui:VisualElement>
+                <ui:VisualElement name="UpgradeManagerCard" class="sizeWidth100 sizeWidth100Height50 sizeWidth90Height50 CardBG" style="display: flex;">
+                    <ui:VisualElement name="HeaderPanel" class="HeaderPanel" style="width: 100%; justify-content: space-between; flex-direction: row;">
+                        <ui:Label text="Upgrade Manager" name="UpgradeManagerText" class="Title" />
+                        <ui:Button name="UpgradeManagerCloseButton" class="ButtonTexts Button closeButtons" />
+                    </ui:VisualElement>
+                    <ui:VisualElement name="BodyPanel" style="flex-grow: 1; justify-content: space-evenly;">
+                        <ScriptableObjectField name="UpgradeManagerViewPrefab" label="View Prefab" style="margin-top: 0; margin-right: 0; margin-bottom: 0; margin-left: 0;" />
+                        <ScriptableObjectField name="UpgradeManagerViewParent" label="View Parent" style="margin-top: 0; margin-right: 0; margin-bottom: 0; margin-left: 0;" />
+                    </ui:VisualElement>
+                    <ui:Button text="Create" name="UpgradeManagerCreateButton" class="ButtonTexts Button" />
+                </ui:VisualElement>
+                <ui:VisualElement name="UpgradeSOCard" class="sizeWidth100 sizeWidth100Height50 sizeWidth90Height50 CardBG" style="display: none;">
+                    <ui:VisualElement name="HeaderPanel" class="HeaderPanel" style="width: 100%; justify-content: space-between; flex-direction: row;">
+                        <ui:Label text="Upgrade SO" name="UpgradeSOText" class="Title" />
+                        <ui:Button name="UpgradeSOCloseButton" class="ButtonTexts Button closeButtons" />
+                    </ui:VisualElement>
+                    <ui:VisualElement name="BodyPanel" style="flex-grow: 1; justify-content: space-around;">
+                        <ui:EnumField label="Upgrade Type" value="Speed" type="UpgradeType, Assembly-CSharp" include-obsolete-values="false" name="UpgradeSOType" style="justify-content: center; margin-top: 0; margin-right: 0; margin-bottom: 0; margin-left: 0; padding-top: 0; padding-right: 0; padding-bottom: 0; padding-left: 0; align-self: stretch; align-content: center; align-items: center;" />
+                        <ui:Slider label="Speed Multiplier" value="1" high-value="10" show-input-field="true" fill="true" name="UpgradeSOSpeedMultiplier" low-value="0" style="margin-top: 0; margin-right: 0; margin-bottom: 0; margin-left: 0;" />
+                    </ui:VisualElement>
+                    <ui:Button text="Create" name="UpgradeSOCreateButton" class="ButtonTexts Button" />
+                </ui:VisualElement>
+                <ui:VisualElement name="UpgradeModelCard" class="sizeWidth100 sizeWidth100Height50 sizeWidth90Height50 CardBG" style="display: flex;">
+                    <ui:VisualElement name="HeaderPanel" class="HeaderPanel" style="width: 100%; justify-content: space-between; flex-direction: row;">
+                        <ui:Label text="Upgrade Model" name="UpgradeModelText" class="Title" />
+                        <ui:Button name="UpgradeModelCloseButton" class="ButtonTexts Button closeButtons" />
+                    </ui:VisualElement>
+                    <ui:VisualElement name="BodyPanel" style="flex-grow: 1; justify-content: space-around;">
+                        <ScriptableObjectField name="UpgradeModelSO" label="Upgrade SO" style="margin-top: 0; margin-right: 0; margin-bottom: 0; margin-left: 0;" />
+                        <ui:TextField label="Upgrade Description" placeholder-text="Description" name="UpgradeModelDescription" />
+                        <ScriptableObjectField name="UpgradeModelTarget" label="Upgrade Target" style="margin-top: 0; margin-right: 0; margin-bottom: 0; margin-left: 0;" />
+                        <ui:ListView name="UpgradeModelCostResourceListView" style="border-left-color: rgb(93, 47, 119); border-right-color: rgb(93, 47, 119); border-top-color: rgb(93, 47, 119); border-bottom-color: rgb(93, 47, 119); border-top-width: 2px; border-right-width: 2px; border-bottom-width: 2px; border-left-width: 2px;" />
+                        <ui:VisualElement name="UpgradeModelCostResourceCard" class="sizeWidth100 sizeWidth100Height50 sizeWidth90Height50 CardBG" style="background-color: rgb(93, 47, 119);">
+                            <ui:Label text="Upgrade Costs" name="UpgradeModelCostResourceText" style="align-content: center; align-self: center; padding-left: 4px;" />
+                            <SpriteObjectField name="UpgradeModelCostResourceSO" label="Resource SO" style="margin-top: 0; margin-right: 0; margin-bottom: 0; margin-left: 0;" />
+                            <ui:Slider label="Cost Amount" value="0" high-value="100000" show-input-field="true" fill="true" name="UpgradeModelCostAmount" low-value="0" style="margin-top: 0; margin-right: 0; margin-bottom: 0; margin-left: 0;" />
+                            <ui:Slider label="Base Cost Amount" value="0" high-value="100000" show-input-field="true" fill="true" name="UpgradeModelBaseCostAmount" low-value="0" style="margin-top: 0; margin-right: 0; margin-bottom: 0; margin-left: 0;" />
+                            <ui:Button text="Add to Costs" name="UpgradeModelCostResourceCreateButton" class="ButtonTexts Button" style="background-color: rgb(141, 95, 140); color: rgb(255, 172, 172);" />
+                        </ui:VisualElement>
+                    </ui:VisualElement>
+                    <ui:Button text="Create" name="UpgradeModelCreateButton" class="ButtonTexts Button" />
+                </ui:VisualElement>
+            </ui:ScrollView>
             <ui:VisualElement style="flex-grow: 1; width: 30%;">
-                <ui:TabView style="flex-grow: 1;">
-                    <ui:Tab label="Created Assets" name="Created" style="justify-content: space-between; flex-grow: 1;">
-                        <ui:Label text="Created Assets" name="Label" style="-unity-text-align: middle-center; font-size: 20px;" />
-                        <ui:TreeView name="Hierarchy" reorderable="true" fixed-item-height="30" virtualization-method="DynamicHeight" show-border="false" show-alternating-row-backgrounds="None" auto-expand="true" style="border-left-color: rgb(255, 0, 0); border-right-color: rgb(255, 0, 0); border-top-color: rgb(255, 0, 0); border-bottom-color: rgb(255, 0, 0); border-top-width: 2px; border-right-width: 2px; border-bottom-width: 2px; border-left-width: 2px; background-color: rgb(62, 30, 104);" />
-                        <ui:Button text="Generate UI" name="GenerateUI" class="ButtonTexts Button" />
-                        <ui:Button text="Add Child" name="AddChild" enable-rich-text="true" class="ButtonTexts Button" />
-                    </ui:Tab>
-                    <ui:Tab label="Scene View" name="SceneView">
-                        <ui:Label text="Scene View" />
-                        <ui:Button text="Create" name="Button" class="ButtonTexts Button" />
-                        <ui:Button text="Create" name="Button" class="ButtonTexts Button" />
-                    </ui:Tab>
-                </ui:TabView>
+                <ui:Label text="Created Assets" name="Label" style="-unity-text-align: middle-center; font-size: 20px;" />
+                <ui:TreeView name="Hierarchy" reorderable="true" fixed-item-height="30" virtualization-method="DynamicHeight" show-border="false" show-alternating-row-backgrounds="None" auto-expand="true" style="background-color: rgb(62, 30, 104);" />
+                <ui:Button text="Generate UI" name="GenerateUI" class="ButtonTexts Button" />
             </ui:VisualElement>
         </ui:VisualElement>
     </ui:VisualElement>

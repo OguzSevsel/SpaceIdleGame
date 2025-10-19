@@ -31,10 +31,9 @@ public class ColonyCreatorView
     public Button CollectorSOMenuBtn;
     public Button CollectorMenuBtn;
     public Button ColonyMenuBtn;
-
-    //Body Panel Elements
-    public VisualElement LeftPanel;
-    public VisualElement RightPanel;
+    public Button UpgradeModelMenuBtn;
+    public Button UpgradeSOMenuBtn;
+    public Button UpgradeManagerMenuBtn;
 
     //ColonySO Card Elements
     public VisualElement ColonySoCard;
@@ -96,11 +95,33 @@ public class ColonyCreatorView
     public Slider CostResourceCostMultSlider;
     public Button CostResourceCreateBtn;
 
-    //Footer Panel Elements
-    public VisualElement FooterPanel;
-    public Label LeftLabel;
-    public Label MiddleLabel;
-    public Label RightLabel;
+    //Upgrade Manager Card Elements
+    public VisualElement UpgradeManagerCard;
+    public ObjectField UpgradeManagerPrefab;
+    public ObjectField UpgradeManagerParent;
+    public Button UpgradeManagerCreateButton;
+    public Button UpgradeManagerCloseButton;
+
+    //Upgrade SO Card Elements
+    public VisualElement UpgradeSOCard;
+    public EnumField UpgradeSOEnumField;
+    public Slider UpgradeSOSpeedMultiplier;
+    public Button UpgradeSOCloseButton;
+    public Button UpgradeSOCreateButton;
+
+    //Upgrade Model Card Elements
+    public VisualElement UpgradeModelCard;
+    public ObjectField UpgradeModelSO;
+    public TextField UpgradeModelDescription;
+    public ObjectField UpgradeModelTarget;
+    public ObjectField UpgradeModelCostResourceSO;
+    public ListView UpgradeModelCostResourceListView;
+    public Slider UpgradeModelCostAmount;
+    public Slider UpgradeModelBaseCostAmount;
+    public Button UpgradeModelCostResourceCreateButton;
+    public Button UpgradeModelCloseButton;
+    public Button UpgradeModelCreateButton;
+
 
 
     public ColonyCreatorView(VisualElement root)
@@ -118,10 +139,9 @@ public class ColonyCreatorView
         ResourceMenuBtn = Parent.Q<Button>("CreateResource");
         CollectorSOMenuBtn = Parent.Q<Button>("CreateCollectorSO");
         CollectorMenuBtn = Parent.Q<Button>("CreateCollector");
-
-        //Main Panels
-        LeftPanel = Parent.Q<VisualElement>("LeftPanel");
-        RightPanel = Parent.Q<VisualElement>("RightPanel");
+        UpgradeModelMenuBtn = Parent.Q<Button>("CreateUpgrade");
+        UpgradeSOMenuBtn = Parent.Q<Button>("CreateUpgradeSO");
+        UpgradeManagerMenuBtn = Parent.Q<Button>("CreateUpgradeManager");
 
         //ColonySO Card Elements
         ColonySoCard = Parent.Q<VisualElement>("ColonySOCard");
@@ -203,10 +223,36 @@ public class ColonyCreatorView
         CostResourceCostMultSlider = Parent.Q<Slider>("CostMultiplier");
         CostResourceCreateBtn = Parent.Q<Button>("CostResourceCreateButton");
 
-        //Footer Panel Elements
-        LeftLabel = Parent.Q<Label>("LeftLabel");
-        MiddleLabel = Parent.Q<Label>("MiddleLabel");
-        RightLabel = Parent.Q<Label>("RightLabel");
+        //Upgrade Manager Card Elements
+        UpgradeManagerCard = Parent.Q<VisualElement>("UpgradeManagerCard");
+        UpgradeManagerPrefab = Parent.Q<ObjectField>("UpgradeManagerViewPrefab");
+        UpgradeManagerPrefab.objectType = typeof(GameObject);
+        UpgradeManagerPrefab.allowSceneObjects = false;
+        UpgradeManagerParent = Parent.Q<ObjectField>("UpgradeManagerViewParent");
+        UpgradeManagerParent.objectType = typeof(GameObject);
+        UpgradeManagerParent.allowSceneObjects = false;
+        UpgradeManagerCloseButton = Parent.Q<Button>("UpgradeManagerCloseButton");
+        UpgradeManagerCreateButton = Parent.Q<Button>("UpgradeManagerCreateButton");
+
+        //Upgrade SO Card Elements
+        UpgradeSOCard = Parent.Q<VisualElement>("UpgradeSOCard");
+        UpgradeSOCloseButton = Parent.Q<Button>("UpgradeSOCloseButton");
+        UpgradeSOEnumField = Parent.Q<EnumField>("UpgradeSOType");
+        UpgradeSOSpeedMultiplier = Parent.Q<Slider>("UpgradeSOSpeedMultiplier");
+        UpgradeSOCreateButton = Parent.Q<Button>("UpgradeSOCreateButton");
+
+        //Upgrade Model Card Elements
+        UpgradeModelCard = Parent.Q<VisualElement>("UpgradeModelCard");
+        UpgradeModelCloseButton = Parent.Q<Button>("UpgradeModelCloseButton");
+        UpgradeModelSO = Parent.Q<ObjectField>("UpgradeModelSO");
+        UpgradeModelDescription = Parent.Q<TextField>("UpgradeModelDescription");
+        UpgradeModelTarget = Parent.Q<ObjectField>("UpgradeModelTarget");
+        UpgradeModelCostResourceListView = Parent.Q<ListView>("UpgradeModelCostResourceListView");
+        UpgradeModelCostResourceSO = Parent.Q<ObjectField>("UpgradeModelCostResourceSO");
+        UpgradeModelCostAmount = Parent.Q<Slider>("UpgradeModelCostAmount");
+        UpgradeModelBaseCostAmount = Parent.Q<Slider>("UpgradeModelBaseCostAmount");
+        UpgradeModelCostResourceCreateButton = Parent.Q<Button>("UpgradeModelCostResourceCreateButton");
+        UpgradeModelCreateButton = Parent.Q<Button>("UpgradeModelCreateButton");
 
         //TreeView Elements
         TreeView = Parent.Q<UnityEngine.UIElements.TreeView>("Hierarchy");
@@ -922,7 +968,10 @@ public enum TypeEnum
     Colony,
     Collector,
     CostResource,
-    Resource
+    Resource,
+    UpgradeManager,
+    UpgradeModel,
+    UpgradeSO
 }
 
 [Serializable]

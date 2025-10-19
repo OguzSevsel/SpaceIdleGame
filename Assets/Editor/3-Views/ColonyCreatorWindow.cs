@@ -9,48 +9,9 @@ using UnityEngine;
 using UnityEngine.UIElements;
 using static UnityEditor.Graphs.Styles;
 
-public enum State
-{
-    CreateColonyFromZero,
-
-    ColonySOSelection,
-    CreateColonySO,
-    SelectColonySO,
-
-    ResourceSOSelection,
-    CreateResourceSO,
-    SelectResourceSO,
-
-    CreateResource,
-
-    CollectorSOSelection,
-    CreateCollectorSO,
-    SelectCollectorSO,
-
-    OnlyCreateCollector,
-}
-
-public class StateController
-{
-    public State State {  get; private set; }
-
-    public event Action<State> OnStateChanged;
-
-    public StateController()
-    {
-        this.State = State.CreateColonyFromZero;
-    }
-
-    public void ChangeState(State newState)
-    {
-        this.State = newState;
-        OnStateChanged?.Invoke(this.State);
-    }
-}
-
-
 public class ColonyCreatorWindow : EditorWindow
 {
+    
     #region Menu Item
 
     [MenuItem("Tools/Colony Creator (UI Toolkit)")]
@@ -109,37 +70,8 @@ public class ColonyCreatorWindow : EditorWindow
         main.Parent.style.flexGrow = 1;
     }
 
-    private void StateChangedHandler(State state)
-    {
-        switch (state)
-        {
-            default:
-                break;
-        }
-    }
 
     #region Utils
-
-    private CollectorType? GetCollectorEnumValue(ResourceSO resourceSO)
-    {
-        foreach (ResourceType value in Enum.GetValues(typeof(ResourceType)))
-        {
-            if (value == resourceSO.resourceType)
-            {
-                foreach (CollectorType enumValue in Enum.GetValues(typeof(CollectorType)))
-                {
-                    string resourceValue = value.ToString().ToLower();
-                    string collectorValue = enumValue.ToString().ToLower();
-
-                    if (collectorValue.Contains(resourceValue))
-                    {
-                        return enumValue;
-                    }
-                }
-            }
-        }
-        return null;
-    }
     
     private void RegisterCallBacks()
     {
@@ -165,21 +97,26 @@ public class ColonyCreatorWindow : EditorWindow
         main.CollectorCreateBtn.clicked += CollectorCreateButtonClickHandler;
         main.CostResourceCreateBtn.clicked += CostResourceCreateButtonClickHandler;
 
-        main.TreeViewAddChildButton.clicked += TreeViewAddChildClickHandler;
         main.GenerateUIButton.clicked += GenerateUIButtonClickHandler;
-    }
 
-    private void TreeViewAddChildClickHandler()
-    {
-        ColonySO newColony = AddColonySO("deneme", ColonyType.Ceres);
-        main.AddChildToItemWithObjs(newColony, _colonyPanel, _whereToAddColony, newColony.ColonyType.ToString(), TypeEnum.Colony, _colonySO);
-    }
+        main.UpgradeManagerCloseButton.clicked += UpgradeManagerCloseButtonClickHandler;
+        main.UpgradeManagerCreateButton.clicked += UpgradeManagerCreateButtonClickHandler;
+        main.UpgradeManagerMenuBtn.clicked += UpgradeManagerMenuButtonClickHandler;
 
+        main.UpgradeSOMenuBtn.clicked += UpgradeSOMenuButtonClickHandler;
+        main.UpgradeSOCloseButton.clicked += UpgradeSOCloseButtonClickHandler;
+        main.UpgradeSOCreateButton.clicked += UpgradeSOCreateButtonClickHandler;
+
+        main.UpgradeModelCreateButton.clicked += UpgradeModelCreateButtonClickHandler;
+        main.UpgradeModelCloseButton.clicked += UpgradeModelCloseButtonClickHandler;
+        main.UpgradeModelMenuBtn.clicked += UpgradeModelMenuButtonClickHandler;
+        main.UpgradeModelCostResourceCreateButton.clicked += UpgradeModelCostCreateButtonClickHandler;
+
+    }
     private void GenerateUIButtonClickHandler()
     {
         main.GenerateUI(_colonyManager);
     }
-
     private void ShowControl(VisualElement control)
     {
         control.style.display = DisplayStyle.Flex;
@@ -206,38 +143,14 @@ public class ColonyCreatorWindow : EditorWindow
     }
 
     #endregion
+    
 
-    #region Menu Button Handlers
+    #region Colony SO
 
     private void ColonySOMenuButtonClickHandler()
     {
         ShowControl(main.ColonySoCard);
     }
-
-    private void ResourceSOMenuButtonClickHandler()
-    {
-        ShowControl(main.ResourceSOCard);
-    }
-
-    private void ResourceMenuButtonClickHandler()
-    {
-        ShowControl(main.ResourceCard);
-    }
-
-    private void CollectorSOMenuButtonClickHandler()
-    {
-        ShowControl(main.CollectorSOCard);
-    }
-
-    private void CollectorMenuButtonClickHandler()
-    {
-        ShowControl(main.CollectorCard);
-    }
-
-    #endregion
-
-    #region Close Button Handlers
-
     private void ColonySOCloseButtonClickHandler()
     {
         HideControl(main.ColonySOSelectObject);
@@ -246,34 +159,6 @@ public class ColonyCreatorWindow : EditorWindow
         ShowControl(main.ColonySOCreateBtn);
         ShowControl(main.ColonySOSelectBtn);
     }
-
-    private void ResourceSOCloseButtonClickHandler()
-    {
-        HideControl(main.ResourceSOCard);
-    }
-
-    private void ResourceCloseButtonClickHandler()
-    {
-        HideControl(main.ResourceCard);
-    }
-
-    private void CollectorSOCloseButtonClickHandler()
-    {
-        HideControl(main.CollectorSOCard);
-    }
-
-    private void CollectorCloseButtonClickHandler()
-    {
-        HideControl(main.CollectorCard);
-    }
-
-    #endregion
-
-
-    
-
-    #region ColonySO Handlers
-
     private void ShowColonySOCreateControls()
     {
         main.ColonySOButtonPanel.style.bottom = StyleKeyword.Auto;
@@ -302,13 +187,11 @@ public class ColonyCreatorWindow : EditorWindow
         ShowControl(main.ColonySOSelectBtn);
         main.ColonySOButtonPanel.style.bottom = new Length(40, LengthUnit.Percent);
     }
-
     private void ColonySOSelectButtonClickHandler()
     {
         _isColonySOSelect = true;
         ShowColonySOSelectControls();
     }
-
     private void ColonySOCreateButtonClickHandler()
     {
         if (_isColonySOSelect)
@@ -376,7 +259,6 @@ public class ColonyCreatorWindow : EditorWindow
             ShowColonySOCreateControls();
         }
     }
-
     private ColonySO AddColonySO(string colonyName, ColonyType colonyType)
     {
         string path = _SOFolder + "3-Colonies";
@@ -396,16 +278,34 @@ public class ColonyCreatorWindow : EditorWindow
         }
         return null;
     }
+    private void AddColony()
+    {
+        GameObject colony = new GameObject($"{_colonySO.ColonyType}_Colony");
+        var colonyModel = colony.AddComponent<ColonyModel>();
+        colonyModel.colonyData = _colonySO;
+        colonyModel.Collectors = new List<CollectorModel>();
+        colonyModel.Resources = new List<Resource>();
+
+        _colonies.Add(colony);
+        main.AddRootItemToTree(colony, _colonyPanel, _whereToAddColony, colonyModel.colonyData.ColonyType.ToString(), TypeEnum.Colony);
+    }
 
     #endregion
 
-    #region ResourceSO Button Handlers
+    #region Resource SO
 
+    private void ResourceSOMenuButtonClickHandler()
+    {
+        ShowControl(main.ResourceSOCard);
+    }
+    private void ResourceSOCloseButtonClickHandler()
+    {
+        HideControl(main.ResourceSOCard);
+    }
     private void ResourceSOCreateButtonClickHandler()
     {
         AddResourceSO(main.ResourceSOTypeEnum.value.ToString(), (ResourceType)main.ResourceSOTypeEnum.value, main.ResourceSOUnitText.value, (Sprite)main.ResourceSOIcon.value);
     }
-
     private void AddResourceSO(string resourceName, ResourceType resourceType, string resourceUnit, Sprite icon)
     {
         string path = _SOFolder + "1-Resources";
@@ -428,13 +328,20 @@ public class ColonyCreatorWindow : EditorWindow
 
     #endregion
 
-    #region Resource Button Handlers
+    #region Resource
 
+    private void ResourceMenuButtonClickHandler()
+    {
+        ShowControl(main.ResourceCard);
+    }
+    private void ResourceCloseButtonClickHandler()
+    {
+        HideControl(main.ResourceCard);
+    }
     private void ResourceCreateButtonClickHandler()
     {
         AddResource((ResourceSO)main.ResourceObject.value, main.ResourceAmountSlider.value, main.ResourceSellRateSlider.value, main.ResourceSellRateMultSlider.value);
     }
-
     private void AddResource(ResourceSO resourceSO, double resourceAmount, double sellRate, double sellRateMultiplier)
     {
         Resource newResource = new Resource();
@@ -470,11 +377,18 @@ public class ColonyCreatorWindow : EditorWindow
         }
     }
 
-
     #endregion
 
-    #region CollectorSO Button Handlers
+    #region Collector SO
 
+    private void CollectorSOMenuButtonClickHandler()
+    {
+        ShowControl(main.CollectorSOCard);
+    }
+    private void CollectorSOCloseButtonClickHandler()
+    {
+        HideControl(main.CollectorSOCard);
+    }
     private void CollectorSOCreateButtonClickHandler()
     {
         AddCollectorSO(main.CollectorSOTypeEnum.value.ToString(), (CollectorType)main.CollectorSOTypeEnum.value, (ResourceSO)main.CollectorSOResourceObject.value, main.CollectorSOBaseRate.value);
@@ -504,13 +418,20 @@ public class ColonyCreatorWindow : EditorWindow
 
     #endregion
 
-    #region Collector Button Handlers
+    #region Collector
 
+    private void CollectorMenuButtonClickHandler()
+    {
+        ShowControl(main.CollectorCard);
+    }
+    private void CollectorCloseButtonClickHandler()
+    {
+        HideControl(main.CollectorCard);
+    }
     private void CostResourceCreateButtonClickHandler()
     {
         AddCostResources();
     }
-
     private void CollectorCreateButtonClickHandler()
     {
         if (main.CollectorPrefab.value == null)
@@ -523,7 +444,6 @@ public class ColonyCreatorWindow : EditorWindow
         _costResources.Clear();
         main.CollectorScrollView.ScrollTo(main.CollectorCloseBtn);
     }
-
     private void AddCostResources()
     {
         CostResource newCostResource = new CostResource();
@@ -557,7 +477,6 @@ public class ColonyCreatorWindow : EditorWindow
         main.CollectorCostResourceListView.itemsSource = _costResources;
         main.CollectorCostResourceListView.fixedItemHeight = 20;
     }
-
     private void AddCollector()
     {
         GameObject collectorObject = new();
@@ -606,71 +525,120 @@ public class ColonyCreatorWindow : EditorWindow
 
     #endregion
 
+    #region Upgrade Manager
+
+    private void UpgradeManagerMenuButtonClickHandler()
+    {
+        ShowControl(main.UpgradeManagerCard);
+    }
+    private void UpgradeManagerCloseButtonClickHandler()
+    {
+        HideControl(main.UpgradeManagerCard);
+    }
+    private void UpgradeManagerCreateButtonClickHandler()
+    {
+        GameObject upgradeManagerObject = new GameObject("New Upgrade Manager");
+        UpgradePresenter manager = upgradeManagerObject.AddComponent<UpgradePresenter>();
+        manager.UpgradeViewParent = (GameObject)main.UpgradeManagerPrefab.value;
+        manager.UpgradeViewParent = (GameObject)main.UpgradeManagerParent.value;
+        main.AddRootItemToTree(item: upgradeManagerObject, UIReference: null, whereToAdd: null, label: upgradeManagerObject.name, TypeEnum.UpgradeManager);
+    }
+
+    #endregion
+
+    #region UpgradeSO
+
+    private void UpgradeSOMenuButtonClickHandler()
+    {
+        ShowControl(main.UpgradeSOCard);
+    }
+    private void UpgradeSOCloseButtonClickHandler()
+    {
+        HideControl(main.UpgradeSOCard);
+    }
+    private void UpgradeSOCreateButtonClickHandler()
+    {
+        main.UpgradeSOEnumField.RegisterValueChangedCallback((args) => 
+        {
+            if ((UpgradeType)args.newValue == UpgradeType.Speed)
+            {
+                ShowControl(main.UpgradeSOSpeedMultiplier);
+            }
+            else
+            {
+                HideControl(main.UpgradeSOSpeedMultiplier);
+            }
+        });
+
+        UpgradeType type = (UpgradeType)main.UpgradeSOEnumField.value;
+        AddUpgradeSO(type.ToString(), type, (double)main.UpgradeSOSpeedMultiplier.value);
+    }
+    private UpgradeSO AddUpgradeSO(string upgradeName, UpgradeType type, double speedMult = default)
+    {
+        string path = _SOFolder + "4-Upgrades";
+        bool isAssetExists = CheckAssetNamesAtPath(path, type.ToString());
+
+        if (!isAssetExists)
+        {
+            switch (type)
+            {
+                case UpgradeType.Speed:
+
+                    var speedUpgrade = ScriptableObjectUtility.CreateAssetAtPath<SpeedUpgradeSO>(path, upgradeName);
+                    speedUpgrade.upgradeType = type;
+                    speedUpgrade.speedMultiplier = speedMult;
+                    EditorUtility.SetDirty(speedUpgrade);
+                    return speedUpgrade;
+                case UpgradeType.Level:
+
+                    var levelUpgrade = ScriptableObjectUtility.CreateAssetAtPath<LevelUpgradeSO>(path, upgradeName);
+                    levelUpgrade.upgradeType = type;
+                    EditorUtility.SetDirty(levelUpgrade);
+                    return levelUpgrade;
+                case UpgradeType.AutoCollect:
+
+                    var autoCollectUpgrade = ScriptableObjectUtility.CreateAssetAtPath<AutoCollectUpgradeSO>(path, upgradeName);
+                    autoCollectUpgrade.upgradeType = type;
+                    EditorUtility.SetDirty(autoCollectUpgrade);
+                    return autoCollectUpgrade;
+                default:
+                    break;
+            }
+        }
+        else
+        {
+            EditorUtility.DisplayDialog("Asset Exists!", "Operation is not completed.", "OK");
+        }
+        return null;
+    }
+
+    #endregion
+
+    #region Upgrade Model
+
+    private void UpgradeModelMenuButtonClickHandler()
+    {
+        ShowControl(main.UpgradeModelCard);
+    }
+    private void UpgradeModelCloseButtonClickHandler()
+    {
+        HideControl(main.UpgradeModelCard);
+    }
+    private void UpgradeModelCostCreateButtonClickHandler()
+    {
+        throw new NotImplementedException();
+    }
+    private void UpgradeModelCreateButtonClickHandler()
+    {
+        
+    }
+
+    #endregion
+
 
     private void SetParent(GameObject child, GameObject parent)
     {
         child.transform.SetParent(parent.transform);
-    }
-
-
-
-
-    private void AddColony()
-    {
-        GameObject colony = new GameObject($"{_colonySO.ColonyType}_Colony");
-        var colonyModel = colony.AddComponent<ColonyModel>();
-        colonyModel.colonyData = _colonySO;
-        colonyModel.Collectors = new List<CollectorModel>();
-        colonyModel.Resources = new List<Resource>();
-
-        _colonies.Add(colony);
-        main.AddRootItemToTree(colony, _colonyPanel, _whereToAddColony, colonyModel.colonyData.ColonyType.ToString(), TypeEnum.Colony);
-    }
-
-    private void AddColonySOUI()
-    {
-        //_colonySOCreator.ColonyTypeEnumField.RegisterValueChangedCallback((ChangeEvent<System.Enum> evt) =>
-        //{
-        //    if (_colonySO != null)
-        //    {
-        //        string earlyPath = _SOFolder + "3-Colonies";
-        //        string path = _SOFolder + $"3-Colonies/{_colonySO.ColonyType.ToString()}.asset";
-
-        //        var colonySO = AssetDatabase.LoadAssetAtPath<ColonySO>(path);
-
-        //        ColonyType newColonyType = (ColonyType)evt.newValue;
-
-        //        bool isAssetExists = CheckAssetNamesAtPath(earlyPath, newColonyType.ToString());
-
-        //        if (!isAssetExists)
-        //        {
-        //            _colonySO.ColonyType = (ColonyType)evt.newValue;
-        //            colonySO.ColonyType = (ColonyType)evt.newValue;
-
-        //            string error = AssetDatabase.RenameAsset(path, colonySO.ColonyType.ToString());
-        //            AssetDatabase.SaveAssets();
-        //            AssetDatabase.Refresh();
-
-        //            _colonySO.name = _colonySO.ColonyType.ToString();
-        //        }
-        //        else
-        //        {
-        //            EditorUtility.DisplayDialog("Asset Conflict", "There is an asset with the same kind operation is not completed", "OK");
-        //        }
-        //    }
-        //});
-    }
-
-    private void HandleResourceSelect()
-    {
-        //_resourceSOCreator.ResourceIconObjectField.RegisterValueChangedCallback((evt) => {
-        //    _resourceSO = (ResourceSO)evt.newValue;
-
-        //    _resourceSOCreator.ResourceTypeEnumField.value = null;
-        //    _resourceSOCreator.ResourceUnitTextField.value = null;
-
-        //    _stateController.ChangeState(State.CreateResource);
-        //});
     }
 }
 

@@ -1,8 +1,0 @@
-<ui:UXML xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements" noNamespaceSchemaLocation="../../../UIElementsSchema/UIElements.xsd" editor-extension-mode="False">
-    <Style src="project://database/Assets/Editor/1-Style/CustomListView.uss?fileID=7433441132597879392&amp;guid=0155ca6b10868df429800a1f36a773ff&amp;type=3#CustomListView" />
-    <ui:VisualElement style="margin-top: 0; margin-right: 0; margin-bottom: 0; margin-left: 0; padding-top: 0; padding-right: 0; padding-bottom: 0; padding-left: 0; width: 100%; height: 100%; min-width: 100%; max-width: 100%; min-height: 100%; max-height: 100%;">
-        <ui:Button style="margin-top: 0; margin-right: 0; margin-bottom: 0; margin-left: 0; padding-top: 0; padding-right: 0; padding-bottom: 0; padding-left: 0; background-color: rgba(188, 188, 188, 0); width: 100%; height: 100%; min-width: 100%; max-width: 10%; min-height: 100%; max-height: 100%;">
-            <ui:Label style="align-self: flex-start; width: 20%; height: 100%; margin-top: 0; margin-right: 0; margin-bottom: 0; margin-left: 0; padding-top: 0; padding-right: 0; padding-bottom: 0; padding-left: 0; background-image: url(&quot;project://database/Assets/UI%20button%20pack%203/white%20icon/back.png?fileID=2800000&amp;guid=64619ef912cd2e4419cc3e3e090ac5f8&amp;type=3#back&quot;); rotate: 0 0 180 2.5turn;" />
-        </ui:Button>
-    </ui:VisualElement>
-</ui:UXML>

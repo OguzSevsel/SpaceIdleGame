@@ -3,6 +3,13 @@
 }
 
 .unity-slider__input > #unity-drag-container {
+    top: 0%;
+    left: 0%;
+    bottom: 0%;
+    right: 0%;
+    justify-content: center;
+    align-items: stretch;
+    align-content: center;
 }
 
 .unity-slider__input > #unity-text-field > #unity-text-input {
@@ -23,25 +30,57 @@
     margin-left: 0;
 }
 
+.unity-slider__input > #unity-drag-container > #unity-dragger-border {
+    flex-grow: 1;
+    display: none;
+}
+
 .unity-slider__input > #unity-drag-container > #unity-dragger {
-    background-color: rgb(228, 90, 146);
-    width: 15px;
+    top: 25%;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    margin-top: 0;
+    margin-right: 0;
+    margin-bottom: 0;
+    margin-left: 0;
+    padding-top: 0;
+    padding-right: 0;
+    padding-bottom: 0;
+    padding-left: 0;
+    position: absolute;
+    height: 50%;
     border-top-left-radius: 5px;
     border-top-right-radius: 5px;
     border-bottom-right-radius: 5px;
     border-bottom-left-radius: 5px;
+    background-color: rgb(255, 172, 172);
+    border-top-width: 0;
+    border-right-width: 0;
+    border-bottom-width: 0;
+    border-left-width: 0;
 }
 
 .unity-slider__input > #unity-drag-container > #unity-tracker > #unity-fill {
     background-color: rgb(255, 172, 172);
+    align-self: stretch;
 }
 
 .unity-slider__input > #unity-drag-container > #unity-tracker {
-    border-left-color: rgb(228, 90, 146);
-    border-right-color: rgb(228, 90, 146);
-    border-top-color: rgb(228, 90, 146);
-    border-bottom-color: rgb(228, 90, 146);
-    background-color: rgb(93, 47, 119);
+    background-color: rgb(228, 90, 146);
+    margin-top: 0;
+    margin-right: 0;
+    margin-bottom: 0;
+    margin-left: 0;
+    padding-top: 0;
+    padding-right: 0;
+    padding-bottom: 0;
+    padding-left: 0;
+    top: 0%;
+    left: 0%;
+    right: 0%;
+    bottom: 0%;
+    position: relative;
 }
 
 .unity-slider__input > #unity-text-field {
@@ -52,6 +91,7 @@
     border-bottom-right-radius: 5px;
     border-bottom-left-radius: 5px;
     margin-bottom: 3px;
+    width: 20%;
 }
 
 .unity-label {
@@ -64,15 +104,17 @@
     margin-left: 5px;
     -unity-text-outline-color: rgb(255, 255, 255);
     color: rgb(255, 172, 172);
-    font-size: 12px;
+    font-size: 16px;
 }
 
 .unity-object-field__input > .unity-object-field__object > .unity-object-field-display__label--value-null {
     color: rgb(255, 172, 172);
+    align-self: center;
 }
 
 .unity-object-field__input > .unity-object-field__object > .unity-object-field-display__label {
     color: rgb(255, 172, 172);
+    align-self: center;
 }
 
 .unity-enum-field__label {
@@ -102,6 +144,7 @@
     margin-right: 5px;
     margin-bottom: 5px;
     margin-left: 5px;
+    font-size: 22px;
 }
 
 .unity-enum-field__input > .unity-enum-field__text {
@@ -129,8 +172,6 @@
     margin-right: 5px;
     margin-bottom: 5px;
     margin-left: 5px;
-    min-height: 32%;
-    max-height: 70%;
 }
 
 .Button {
@@ -153,6 +194,8 @@
     margin-bottom: 0;
     margin-left: 0;
     flex-grow: 0.2;
+    flex-direction: column;
+    font-size: 22px;
 }
 
 .unity-text-element--inner-input-field-component {
@@ -190,8 +233,8 @@
 }
 
 .closeButtons {
-    height: 30px;
-    width: 30px;
+    height: 50px;
+    width: 50px;
     margin-top: 0;
     margin-right: 0;
     margin-bottom: 0;
@@ -206,12 +249,11 @@
 }
 
 .menuButtons {
-    align-self: center;
+    align-self: stretch;
     align-content: center;
     justify-content: center;
     font-size: 14px;
     -unity-font-style: bold;
-    height: 90%;
     margin-top: 5px;
     margin-right: 5px;
     margin-bottom: 5px;
@@ -219,6 +261,7 @@
     -unity-text-align: middle-center;
     letter-spacing: -5px;
     word-spacing: -5px;
+    flex-grow: 1;
 }
 
 .unity-slider-int__label {
@@ -311,45 +354,7 @@
     display: flex;
 }
 
-#MainPanel {
-    flex-grow: 1;
-    flex-direction: column;
-    display: flex;
-}
-
-#Body {
-    flex-grow: 1;
-    flex-shrink: 0;
-    display: flex;
-    flex-direction: row;
-}
-
-.unity-tab-view > .unity-tab-view__content-viewport {
-    justify-content: center;
-    background-color: rgb(62, 30, 104);
-}
-
-#Root > VisualElement > VisualElement > .unity-tab-view > .unity-tab-view__content-viewport > #unity-tab-view__header-container > #unity-tab__header {
-    background-color: rgb(93, 47, 119);
-}
-
-#Root > VisualElement > VisualElement > .unity-tab-view {
-    background-color: rgb(62, 30, 104);
-}
-
-#Root > VisualElement > VisualElement > .unity-tab-view > #Created {
-}
-
 .unity-tree-view {
-}
-
-#Root > VisualElement > VisualElement > .unity-tab-view > #unity-tab-view__content-container {
-    flex-grow: 1;
-    justify-content: space-between;
-}
-
-#Root > VisualElement > VisualElement > .unity-tab-view > #Created > #unity-tab__content-container {
-    flex-grow: 1;
 }
 
 .unity-tree-view__item {
@@ -386,4 +391,20 @@
 
 .unity-tree-view__item > .unity-tree-view__item-content.selected:hover {
     background-color: rgb(228, 90, 146);
+}
+
+#Root > VisualElement > #MainScrollView {
+}
+
+.HeaderPanel {
+    height: 50px;
+}
+
+#Root > VisualElement > #MainScrollView > #UpgradeModelCard > #BodyPanel > #UpgradeModelSO > .unity-object-field__input {
+}
+
+#Root > VisualElement > #MainScrollView > #UpgradeModelCard > #BodyPanel > #UpgradeModelCostResourceCard > #UpgradeModelCostAmount {
+    justify-content: center;
+    align-items: center;
+    align-content: center;
 }

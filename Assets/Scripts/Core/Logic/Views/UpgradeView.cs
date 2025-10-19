@@ -19,7 +19,6 @@ public class UpgradeView : MonoBehaviour
 
     private Dictionary<string, GameObject> _resourceTextMap;
 
-
     public void Initialize(UpgradeModel model, string targetId)
     {
         this._model = model;
@@ -30,8 +29,6 @@ public class UpgradeView : MonoBehaviour
 
         _upgradeButton = GetComponentInChildren<UnityEngine.UI.Button>();
         _upgradeButton.onClick.AddListener(UpgradeButtonClickHandler);
-
-        
     }
 
     private void UpgradeButtonClickHandler()

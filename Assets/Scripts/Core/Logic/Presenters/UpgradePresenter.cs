@@ -5,10 +5,10 @@ using UnityEngine;
 
 public class UpgradePresenter : MonoBehaviour
 {
-    [SerializeField] private List<UpgradeModel> _upgradeModels;
+    [SerializeField] public List<UpgradeModel> UpgradeModels;
     [SerializeField] private List<UpgradeView> _upgradeViews;
-    [SerializeField] private GameObject _upgradeViewParent;
-    [SerializeField] private GameObject _upgradeViewPrefab;
+    [SerializeField] public GameObject UpgradeViewParent;
+    [SerializeField] public GameObject UpgradeViewPrefab;
     private ColonyModel _colonyModel;
     private bool _isShowingUpgradeInfo;
     private List<IUpgradeable> upgradeables;
@@ -19,7 +19,7 @@ public class UpgradePresenter : MonoBehaviour
     {
         if (_isShowingUpgradeInfo && _colonyModel != null)
         {
-            foreach (var model in _upgradeModels)
+            foreach (var model in UpgradeModels)
             {
                 foreach (var costResource in model.upgradeCosts)
                 {
@@ -37,14 +37,14 @@ public class UpgradePresenter : MonoBehaviour
 
     public List<UpgradeModel> GetUpgrades()
     {
-        return _upgradeModels;
+        return UpgradeModels;
     }
 
     private void Awake()
     {
         _colonyModel = GetComponentInParent<ColonyModel>();
         upgradeables = new List<IUpgradeable>();
-        foreach (UpgradeModel upgradeModel in _upgradeModels)
+        foreach (UpgradeModel upgradeModel in UpgradeModels)
         {
             CreateUpgradePanel(upgradeModel, upgradeModel.TargetId);
         }
@@ -58,7 +58,7 @@ public class UpgradePresenter : MonoBehaviour
     //When creating upgrade views we will assing them a target ID and UpgradeModel.
     private void CreateUpgradePanel(UpgradeModel model, string targetId)
     {
-        GameObject viewObject = Instantiate(_upgradeViewPrefab, _upgradeViewParent.transform);
+        GameObject viewObject = Instantiate(UpgradeViewPrefab, UpgradeViewParent.transform);
         UpgradeView view = viewObject.GetComponent<UpgradeView>();
         viewObject.transform.localScale = Vector3.one;
 
@@ -93,7 +93,7 @@ public class UpgradePresenter : MonoBehaviour
 
     public void AddToModels(UpgradeModel model)
     {
-        _upgradeModels.Add(model);
+        UpgradeModels.Add(model);
     }
 
     public void AddToViews(UpgradeView view)
