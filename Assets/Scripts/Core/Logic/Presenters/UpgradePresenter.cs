@@ -50,6 +50,7 @@ public class UpgradePresenter : MonoBehaviour
         }
     }
 
+    //Register collectors to the upgrade system.
     private void RegisterCollector(CollectorEventArgs args)
     {
         upgradeables.Add(args.Collector);

@@ -34,6 +34,11 @@ public class ColonyModel : MonoBehaviour
         }
     }
 
+    /// <summary>
+    /// Check single resource that colony has enough of.
+    /// </summary>
+    /// <param name="costResources"> This is the cost, which function checks </param>
+    /// <returns></returns>
     public bool CheckSingleResource(CostResource costResource)
     {
         Resource resource = Resources.Find(r => r.ResourceSO.resourceType == costResource.Resource.resourceType);

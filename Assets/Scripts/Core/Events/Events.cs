@@ -1,5 +1,7 @@
 #region Collector Events Args
 
+using System;
+
 public struct ProgressBarUpdateArgs
 {
     public CollectorModel CollectorModel;
@@ -54,6 +56,34 @@ public struct InfoUpgradeEventArgs
     public bool IsEnoughResource;
     public string TargetId;
 }
+
+//public class Deneme
+//{
+//    delegate void MessageDelegate(string message);
+
+//    static void SayHello(string message)
+//    {
+//        Console.WriteLine("Hello, " + message);
+//    }
+
+//    static void SayGoodbye(string message)
+//    {
+//        Console.WriteLine("Goodbye, " + message);
+//    }
+
+//    static void Main()
+//    {
+//        MessageDelegate greet = SayHello;
+//        MessageDelegate farewell = SayGoodbye;
+
+//        greet("O?uz");
+//        farewell("O?uz");
+
+//        MessageDelegate combo = greet + farewell;
+//        combo("everyone");
+//    }
+
+//}
 
 #endregion
 

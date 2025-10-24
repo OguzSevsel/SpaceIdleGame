@@ -29,16 +29,16 @@ public class CollectorSO : ScriptableObject
     }
 }
 
-[CreateAssetMenuAttribute(menuName = "ScriptableObjects/Transport Hub", fileName = "New Transport Hub")]
-public class TransportHubSO : ScriptableObject
-{
+//[CreateAssetMenuAttribute(menuName = "ScriptableObjects/Transport Hub", fileName = "New Transport Hub")]
+//public class TransportHubSO : ScriptableObject
+//{
     
-}
+//}
 
-[CreateAssetMenuAttribute(menuName = "ScriptableObjects/Marketplace", fileName = "New Marketplace")]
-public class MarketplaceSO : ScriptableObject
-{
+//[CreateAssetMenuAttribute(menuName = "ScriptableObjects/Marketplace", fileName = "New Marketplace")]
+//public class MarketplaceSO : ScriptableObject
+//{
     
-}
+//}
 
 

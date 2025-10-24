@@ -48,67 +48,48 @@ public class ColonyPresenter : MonoBehaviour
         InitializeResourceTexts(_colonyModel.Resources);
     }
 
+    //Handle UI When resource is spent.
     private void OnResourceSpendHandler(Resource resource, int index)
     {
         _colonyView.UpdateResourceText(resource.ResourceSO, resource.ResourceAmount, index);
     }
 
-    /// <summary>
-    /// Sell the resource 
-    /// </summary>
-    /// <param name="resource"></param>
+    //Sell the resource 
     private void SelectedResourceSellHandler(Resource resource)
     {
         _colonyModel.SellResource(resource, resource.ResourceAmount);
     }
 
-    /// <summary>
-    /// Creating the resource selection buttons in the sell screen.  
-    /// </summary>
-    /// <param name="resources"></param>
+    //Creating the resource selection buttons in the sell screen.  
     private void InitializeSellButtons(List<Resource> resources)
     {
         _colonyView.InitializeSellButtons(resources);
     }
 
 
-    /// <summary>
-    /// Initializing resource texts according to the resources colony has. 
-    /// </summary>
-    /// <param name="colonyResources"></param>
+    //Initializing resource texts according to the resources colony has. 
     private void InitializeResourceTexts(List<Resource> colonyResources)
     {
         _colonyView.InitializeResourceTexts(colonyResources);
     }
 
-
-    /// <summary>
-    /// Updating resource texts after the collection happens. 
-    /// </summary>
-    /// <param name="resource"></param>
-    /// <param name="index"></param>
+    //Updating resource texts after the collection happens.
     private void OnResourceAddedHandler(Resource resource, int index)
     {
         _colonyView.UpdateResourceText(resource.ResourceSO, resource.ResourceAmount, index);
     }
 
-    /// <summary>
-    /// In this files update method we do handle the changing sell button ui according to the ongoing resource collection. This is the show method for it because of the performance we only updating it when player opens that panel. 
-    /// </summary>
+    //In this files update method we do handle the changing sell button ui according to the ongoing resource collection. This is the show method for it because of the performance we only updating it when player opens that panel. 
     private void SellResourceShowHandler()
     {
         _isShowingSellInfo = true;
     }
 
-
-    /// <summary>
-    /// In this files update method we do handle the changing sell button ui according to the ongoing resource collection. This is the hide method of it because of the performance constantly updating it. 
-    /// </summary>
+    //In this files update method we do handle the changing sell button ui according to the ongoing resource collection. This is the hide method of it because of the performance constantly updating it.
     private void SellResourceHideHandler()
     {
         _isShowingSellInfo = false;
     }
-
 
     //Generic event subscribe and unsubscribe methods.
     private void OnEnable()
