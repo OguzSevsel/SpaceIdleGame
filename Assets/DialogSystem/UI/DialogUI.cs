@@ -3,6 +3,7 @@ using TMPro;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
+using static System.Net.Mime.MediaTypeNames;
 
 public class DialogUI : MonoBehaviour
 {
@@ -11,11 +12,13 @@ public class DialogUI : MonoBehaviour
     [SerializeField] private UnityEngine.UI.Image _speakerPortrait;
     [SerializeField] private GameObject _choicesContainer;
     [SerializeField] private GameObject _choiceButtonPrefab;
-
+    [SerializeField] private DialogVariables variables;
     private Coroutine typingCoroutine;
 
     public void CreateNewDialog(DialogNode dialogNode)
     {
+        string dialogText = dialogNode.DialogText;
+
         foreach (Transform child in _choicesContainer.transform)
         {
             Destroy(child.gameObject);
@@ -27,7 +30,9 @@ public class DialogUI : MonoBehaviour
         _speakerNameText.text = dialogNode.SpeakerName;
         _speakerPortrait.sprite = dialogNode.Portrait;
 
-        typingCoroutine = StartCoroutine(TypeText(dialogNode.DialogText, () =>
+        dialogText = variables.ReplaceVariables(dialogText);
+
+        typingCoroutine = StartCoroutine(TypeText(dialogText, () =>
         {
             foreach (var option in dialogNode.DialogOptions)
             {
@@ -35,7 +40,8 @@ public class DialogUI : MonoBehaviour
                 TextMeshProUGUI choiceButtonText = choiceButtonObj.GetComponentInChildren<TextMeshProUGUI>();
                 Button choiceButton = choiceButtonObj.GetComponent<Button>();
 
-                choiceButtonText.text = dialogNode.DialogOptions[dialogNode.DialogOptions.IndexOf(option)].OptionText;
+                string optionText = dialogNode.DialogOptions[dialogNode.DialogOptions.IndexOf(option)].OptionText;
+                choiceButtonText.text = variables.ReplaceVariables(optionText);
 
                 choiceButton.onClick.AddListener(() =>
                 {

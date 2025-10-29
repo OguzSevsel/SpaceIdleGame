@@ -1,0 +1,36 @@
+.ScrollView {
+}
+
+.BG {
+    background-color: rgb(255, 123, 123);
+}
+
+.objectLabel {
+    width: 30%;
+    color: rgb(255, 255, 255);
+    min-width: 30%;
+    max-width: 30%;
+    margin-top: 0;
+    margin-right: 0;
+    margin-bottom: 0;
+    margin-left: 0;
+    padding-top: 0;
+    padding-right: 0;
+    padding-bottom: 0;
+    padding-left: 0;
+}
+
+.objectField {
+    width: 70%;
+    color: rgb(255, 255, 255);
+    min-width: 70%;
+    max-width: 70%;
+    margin-top: 0;
+    margin-right: 0;
+    margin-bottom: 0;
+    margin-left: 0;
+    padding-top: 0;
+    padding-right: 0;
+    padding-bottom: 0;
+    padding-left: 0;
+}

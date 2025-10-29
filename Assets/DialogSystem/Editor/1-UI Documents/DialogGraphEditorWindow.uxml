@@ -1,0 +1,10 @@
+<ui:UXML xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements" noNamespaceSchemaLocation="../../../../UIElementsSchema/UIElements.xsd" editor-extension-mode="False">
+    <Style src="project://database/Assets/DialogSystem/Editor/2-Styles/DialogGraphEditorWindowStyle.uss?fileID=7433441132597879392&amp;guid=9f282d65087973444b0ea72384f7e99a&amp;type=3#DialogGraphEditorWindowStyle" />
+    <ui:VisualElement name="BG" class="BG" style="flex-grow: 1;">
+        <ui:Button text="Add Dialog Node" name="AddDialogNode" />
+        <ScriptableObjectField name="ScriptableObjectField" label="naber" />
+        <ui:ScrollView horizontal-scroller-visibility="Hidden" vertical-scroller-visibility="Hidden" name="deneme" mode="VerticalAndHorizontal" picking-mode="Ignore" mouse-wheel-scroll-size="0" horizontal-page-size="50000" vertical-page-size="50000" class="ScrollView">
+            <ui:VisualElement name="Canvas" style="flex-grow: 1; width: 5000px; height: 5000px;" />
+        </ui:ScrollView>
+    </ui:VisualElement>
+</ui:UXML>

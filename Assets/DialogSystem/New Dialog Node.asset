@@ -9,8 +9,12 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 41184f6860c387e4db813aac33bff285, type: 3}
-  m_Name: TutorialDialogGraph
-  m_EditorClassIdentifier: DialogSystem::DialogGraph
-  DialogNodes:
-  - {fileID: 11400000, guid: fd30503d4562c61459071607bbab157e, type: 2}
+  m_Script: {fileID: 11500000, guid: 5a12009323dc7db4fb7999a814d78682, type: 3}
+  m_Name: New Dialog Node
+  m_EditorClassIdentifier: DialogSystem::DialogNodeSO
+  DialogNode:
+    NodeId: 
+    Portrait: {fileID: 0}
+    SpeakerName: 
+    DialogOptions: []
+    DialogText: 
