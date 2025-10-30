@@ -54,13 +54,11 @@ public class DialogGraphView
 
     void Zoom(float delta)
     {
-        // Update zoomFactor safely
         if (delta > 0)
             zoomFactor = Mathf.Min(zoomFactor + zoomStep, maxZoom);
         else
             zoomFactor = Mathf.Max(zoomFactor - zoomStep, minZoom);
 
-        // Calculate how much zoom changed
         float scaleChange = zoomFactor / zoomScale;
 
         foreach (var node in ScrollView.contentContainer.Children())
@@ -68,7 +66,6 @@ public class DialogGraphView
             if (node.name == "Canvas")
                 continue;
 
-            // Store original size once
             if (node.userData == null)
             {
                 node.userData = new Vector2(
@@ -79,7 +76,6 @@ public class DialogGraphView
 
             Vector2 baseSize = (Vector2)node.userData;
 
-            // Always scale from the original base
             node.style.width = baseSize.x * zoomFactor;
             node.style.height = baseSize.y * zoomFactor;
         }

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using Unity.Android.Gradle;
 using UnityEditor;
 using UnityEditor.UIElements;
 using UnityEngine;
@@ -37,8 +38,14 @@ public class DialogGraphEditorWindow : EditorWindow
         _node = new NodeElement();
         
         main.ScrollView.Add(_node.Node);
-        _node.OtherNodes = _nodes;
         _node.Parent = this;
+
+        foreach (var item in _nodes)
+        {
+            _node.OtherNodes.Add(item);
+            item.OtherNodes.Add(_node);
+        }
+
         _nodes.Add(_node);
         main.AdjustZoom();
 
@@ -49,7 +56,6 @@ public class DialogGraphEditorWindow : EditorWindow
     }
 }
 
-// Editor or runtime: works inside EditorWindow UI Toolkit
 public class LineElement : VisualElement
 {
     private readonly VisualElement from;
@@ -168,10 +174,12 @@ public class NodeElement
     public ObjectField PortraitField { get; private set; }
     public TextField DialogueTextField { get; private set; }
     public Button AddOptionButton { get; private set; }
-    public ListView OptionListView { get; private set; }
-
     public List<NodeElement> OtherNodes = new List<NodeElement>();
     public DialogGraphEditorWindow Parent { get; set; }
+    public OptionElement OptionElement { get; private set; }
+    public OptionElement EarlierOptionElement { get; private set; }
+
+    public List<LineElement> Lines = new List<LineElement>();
 
     Vector2 startMouse = Vector2.zero;
     Vector2 startPos = Vector2.zero;
@@ -179,6 +187,8 @@ public class NodeElement
     public NodeElement()
     {
         Node = CreateNode();
+        OptionElement = new OptionElement();
+        EarlierOptionElement = new OptionElement();
     }
 
     private VisualElement CreateNode()
@@ -197,7 +207,6 @@ public class NodeElement
         AddNodeIdField(node);
         AddPortraitField(node);
         AddSpeakerNameField(node);
-        AddOptionListView(node);
         AddOptionButtonUI(node);
         AddDialogueTextField(node);
 
@@ -210,20 +219,31 @@ public class NodeElement
     {
         OptionElement optionElement = new();
         Node.Insert(3, optionElement.OptionCard);
-        optionElement.PopulateNodeId(OtherNodes);
         optionElement.ParentNode = this;
         optionElement.OnOptionCreated += OptionCreatedHandler;
+        optionElement.PopulateNodeId(OtherNodes);
+        this.AddOptionButton.visible = false;
+        OptionElement = optionElement;
     }
 
     private void OptionCreatedHandler(OptionElement element)
     {
-        NodeElement nextNode = OtherNodes.Find(node => node.NodeIdField.value == element.NextIdField.value);
+        if (EarlierOptionElement.NextIdField.value == OptionElement.NextIdField.value)
+        {
+            EditorUtility.DisplayDialog("You cant do that", "you cant do that", "ok");
+        }
+        else
+        {
+            NodeElement nextNode = OtherNodes.Find(node => node.NodeIdField.value == element.NextIdField.value);
+            LineElement line = new LineElement(this.Node, nextNode.Node);
+            this.Lines.Add(line);
 
-        LineElement line = new LineElement(this.Node, nextNode.Node);
-
-        Parent.main.ScrollView.Add(line);
-
-        Parent.main.ScrollView.schedule.Execute(() => line.MarkDirtyRepaint()).Every(16);
+            Parent.main.ScrollView.Add(line);
+            Parent.main.ScrollView.schedule.Execute(() => line.MarkDirtyRepaint()).Every(5);
+            Node.Remove(element.OptionCard);
+            this.AddOptionButton.visible = true;
+            EarlierOptionElement = OptionElement;
+        }
     }
 
 
@@ -276,18 +296,14 @@ public class NodeElement
     {
         DialogueTextField = new TextField("Dialogue Text:");
         DialogueTextField.multiline = true;
+        SetTextFieldWidthsPercent(DialogueTextField);
         node.Add(DialogueTextField);
-    }
-
-    private void AddOptionListView(VisualElement node)
-    {
-        OptionListView = new ListView();
-        node.Add(OptionListView);
     }
 
     private void AddSpeakerNameField(VisualElement node)
     {
         SpeakerNameField = new TextField("Speaker Name:");
+        SetTextFieldWidthsPercent(SpeakerNameField);
         node.Add(SpeakerNameField);
     }
 
@@ -314,20 +330,50 @@ public class NodeElement
             var children = objField.Children().ToList();
             if (children.Count >= 2)
             {
-                children[0].AddToClassList("objectLabel"); // label
-                children[1].AddToClassList("objectField"); // field
+                children[0].AddToClassList("objectLabel"); 
+                children[1].AddToClassList("objectField"); 
             }
         });
     }
 
 
-
+    void SetTextFieldWidthsPercent(TextField textField)
+    {
+        textField.RegisterCallback<AttachToPanelEvent>(evt =>
+        {
+            var children = textField.Children().ToList();
+            if (children.Count >= 2)
+            {
+                children[0].AddToClassList("objectLabel");
+                children[1].AddToClassList("objectField");
+            }
+        });
+    }
 
     private void AddNodeIdField(VisualElement node)
     {
         NodeIdField = new TextField("Node ID:");
+        SetTextFieldWidthsPercent(NodeIdField);
+
+        NodeIdField.RegisterCallback<FocusOutEvent>(evt => OnNodeIdFieldChangedHandler());
 
         node.Add(NodeIdField);
+    }
+
+    private void OnNodeIdFieldChangedHandler()
+    {
+        foreach (var node in OtherNodes)
+        {
+            if (node != this && OptionElement != null)
+            {
+                foreach (var line in node.Lines)
+                {
+                    Parent.main.ScrollView.Remove(line);
+                }
+                node.Lines.Clear();
+                node.OptionElement.PopulateNodeId(node.OtherNodes);
+            }
+        }
     }
 
     private void AddOptionButtonUI(VisualElement node)
@@ -390,9 +436,13 @@ public class OptionElement
 
     public void PopulateNodeId(List<NodeElement> nodes)
     {
+        NextIdField.choices.Clear();
         foreach (var node in nodes)
         {
-            NextIdField.choices.Add(node.NodeIdField.value);
+            if (node != ParentNode && node.NodeIdField.value != string.Empty)
+            {
+                NextIdField.choices.Add(node.NodeIdField.value);
+            }
         }
     }
 }
