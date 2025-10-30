@@ -16,22 +16,34 @@ public class DialogGraphView
     public VisualElement Parent;
     public ScrollView ScrollView { get; private set; }
     public Button AddNodeButton { get; private set; }
+    public VisualElement MouseElement { get; private set; }
 
     private Vector2 dragStart;
     private Vector2 scrollStart;
     private bool isPanning;
 
-    float zoomLevel = 1f;
     float zoomFactor = 1f;
     float zoomScale = 1f;
     float zoomStep = 0.1f;
     float minZoom = 0.7f;
     float maxZoom = 1.3f;
+    private Vector2 grabOffset;
+    private Label infoLabel;
+    private Label infoLabel1;
 
     public DialogGraphView(VisualElement root)
     {
         BindTreeAsset(root);
-        BindUIElements();   
+        BindUIElements();  
+        MouseElement = new VisualElement();
+        infoLabel = new Label("Deneme");
+        infoLabel1 = new Label("Deneme");
+        Parent.Add(infoLabel);
+        Parent.Add(infoLabel1);
+        MouseElement.style.width = 1;
+        MouseElement.style.height = 1;
+        MouseElement.style.position = Position.Absolute;
+        ScrollView.Add(MouseElement);
     }
 
     private void BindUIElements()
@@ -108,16 +120,34 @@ public class DialogGraphView
             this.ScrollView.CapturePointer(evt.pointerId);
             evt.StopPropagation();
         }
+        else
+        {
+            Vector2 mouseWorld = evt.position; // panel/world coordinates
+            Vector2 mouseElementWorld = MouseElement.parent.LocalToWorld(
+                new Vector2(MouseElement.style.left.value.value, MouseElement.style.top.value.value)
+            );
+            grabOffset = mouseWorld - mouseElementWorld;
+            evt.StopPropagation();
+        }
     }
 
     private void OnPointerMove(PointerMoveEvent evt)
     {
-        if (!isPanning) return;
+        if (isPanning)
+        {
+            Vector2 diff = (Vector2)evt.position - dragStart;
+            this.ScrollView.scrollOffset = scrollStart - diff;
 
-        Vector2 diff = (Vector2)evt.position - dragStart;
-        this.ScrollView.scrollOffset = scrollStart - diff;
+            evt.StopPropagation();
+        }
+        else
+        {
+            Vector2 mouseWorld = evt.position;
+            Vector2 mouseInParent = MouseElement.parent.WorldToLocal(mouseWorld - grabOffset);
 
-        evt.StopPropagation();
+            MouseElement.style.left = mouseInParent.x;
+            MouseElement.style.top = mouseInParent.y;
+        }
     }
 
     private void OnPointerUp(PointerUpEvent evt)
