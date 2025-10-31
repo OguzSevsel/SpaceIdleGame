@@ -1,5 +1,7 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
+using Unity.Android.Gradle;
 using UnityEditor;
 using UnityEditor.UIElements;
 using UnityEngine;
@@ -7,42 +9,47 @@ using UnityEngine.UIElements;
 
 public class NodeElement
 {
-    public VisualElement Node { get; private set; }
+    public ScrollView Node { get; private set; }
     public TextField NodeIdField { get; private set; }
     public TextField SpeakerNameField { get; private set; }
     public ObjectField PortraitField { get; private set; }
     public TextField DialogueTextField { get; private set; }
     public Button AddOptionButton { get; private set; }
-    public List<NodeElement> OtherNodes = new List<NodeElement>();
     public DialogGraphEditorWindow Parent { get; set; }
-    public OptionElement OptionElement { get; private set; }
-    public OptionElement EarlierOptionElement { get; private set; }
-    public ContextMenu ContextMenu { get; private set; }
-
-    public List<LineElement> Lines = new List<LineElement>();
+    public ContextMenu ContextMenu { get; set; }
     public LineElement TempLine { get; set; }
+    public List<NodeElement> ChildNodes { get; set; } = new List<NodeElement>();
+    public List<NodeElement> ParentNodes { get; set; } = new List<NodeElement>();
 
     Vector2 startMouse = Vector2.zero;
     Vector2 startPos = Vector2.zero;
 
+    private IVisualElementScheduledItem tempLineSchedule;
+
     public NodeElement()
     {
         Node = CreateNode();
-        ContextMenu = new ContextMenu();
-        Node.Add(ContextMenu.MenuElement);
         ContextMenu.OnCreateConnectionButtonClicked += OnCreateConnection;
-        ContextMenu.MenuElement.style.display = DisplayStyle.None;
-        OptionElement = new OptionElement();
-        EarlierOptionElement = new OptionElement();
     }
 
-    
-
-    private VisualElement CreateNode()
+    private void OnCreateConnection(NodeElement element)
     {
-        var node = new VisualElement();
-        node.style.width = 300;
-        node.style.height = 300;
+        if (element == this)
+        {
+            Parent.isMakingConnection = true;
+            Parent.ConnectionStartedNode = this;
+            ContextMenu.MenuElement.style.display = DisplayStyle.None;
+            TempLine = new LineElement(this.Node, Parent.main.MouseElement, Parent.main.ScrollView, nodeFrom: this);
+            TempLine.ScrollView.contentContainer.Add(TempLine);
+            tempLineSchedule = TempLine.ScrollView.contentContainer.schedule.Execute(() => TempLine.MarkDirtyRepaint()).Every(5);
+        }
+    }
+
+    private ScrollView CreateNode()
+    {
+        var node = new ScrollView();
+        node.style.width = 200;
+        node.style.height = 150;
         node.style.backgroundColor = Color.blue;
         node.style.borderBottomLeftRadius = 6;
         node.style.borderBottomRightRadius = 6;
@@ -54,120 +61,128 @@ public class NodeElement
         AddNodeIdField(node);
         AddPortraitField(node);
         AddSpeakerNameField(node);
-        AddOptionButtonUI(node);
         AddDialogueTextField(node);
-
         EnableNodeDragging(node);
 
         return node;
     }
-
-
-    private void AddOptionButtonClickHandler()
-    {
-        OptionElement optionElement = new();
-        Node.Insert(3, optionElement.OptionCard);
-        optionElement.ParentNode = this;
-        optionElement.OnOptionCreated += OptionCreatedHandler;
-        optionElement.PopulateNodeId(OtherNodes);
-        this.AddOptionButton.visible = false;
-        OptionElement = optionElement;
-    }
-
-    private void OptionCreatedHandler(OptionElement element)
-    {
-        if (EarlierOptionElement.NextIdField.value == OptionElement.NextIdField.value)
-        {
-            EditorUtility.DisplayDialog("You cant do that", "you cant do that", "ok");
-        }
-        else
-        {
-            NodeElement nextNode = OtherNodes.Find(node => node.NodeIdField.value == element.NextIdField.value);
-            LineElement line = new LineElement(this.Node, nextNode.Node);
-            this.Lines.Add(line);
-
-            Parent.main.ScrollView.Add(line);
-            Parent.main.ScrollView.schedule.Execute(() => line.MarkDirtyRepaint()).Every(5);
-            Node.Remove(element.OptionCard);
-            this.AddOptionButton.visible = true;
-            EarlierOptionElement = OptionElement;
-        }
-    }
-
-    private void OnCreateConnection()
-    {
-        Parent.isMakingConnection = true;
-        Parent.ConnectionStartedNode = this;
-        ContextMenu.MenuElement.style.display = DisplayStyle.None;
-        TempLine = new LineElement(this.Node, Parent.main.MouseElement, nodeFrom: this);
-        this.Lines.Add(TempLine);
-        Parent.main.ScrollView.contentContainer.Add(TempLine);
-        Parent.main.ScrollView.contentContainer.schedule.Execute(() => TempLine.MarkDirtyRepaint()).Every(5);
-    }
-
+    
     #region Dragging Functionality
 
-    void EnableNodeDragging(VisualElement node)
+    void EnableNodeDragging(ScrollView node)
     {
         node.RegisterCallback<MouseDownEvent>(evt => OnNodeMouseDown(node, evt));
         node.RegisterCallback<MouseMoveEvent>(evt => OnNodeMouseMove(node, evt));
         node.RegisterCallback<MouseUpEvent>(evt => OnNodeMouseUp(node, evt));
     }
 
-    private void OnNodeMouseDown(VisualElement node, MouseDownEvent evt)
+    private void OnNodeMouseDown(ScrollView node, MouseDownEvent evt)
     {
+        if (evt.button == 1)
+        {
+            if (ContextMenu == null)
+            {
+                return;
+            }
+
+            ContextMenu.Parent = this;
+            ContextMenu.MenuElement.style.display = DisplayStyle.Flex;
+
+            Vector2 worldPos = this.Node.LocalToWorld(evt.localMousePosition);
+            Vector2 overlayPos = Parent.overlay.WorldToLocal(worldPos);
+
+            ContextMenu.MenuElement.style.left = overlayPos.x;
+            ContextMenu.MenuElement.style.top = overlayPos.y;
+            
+            return;
+        }
+
         if (evt.button == 0)
         {
-            if (Parent.isMakingConnection && this != Parent.ConnectionStartedNode)
+            if (ContextMenu == null)
             {
-                Parent.ConnectionEndedNode = this;
-
-                if (Parent.ConnectionStartedNode.TempLine != null)
-                {
-                    if (Parent.main.ScrollView != null)
-                    {
-                        if (Parent.ConnectionStartedNode.TempLine.parent != null)
-                            Parent.ConnectionStartedNode.TempLine.parent.Remove(Parent.ConnectionStartedNode.TempLine);
-
-                        Parent.ConnectionStartedNode.Lines.Remove(Parent.ConnectionStartedNode.TempLine);
-                    }
-                }
-
-                if (Parent.ConnectionStartedNode != null && Parent.ConnectionEndedNode != null)
-                {
-                    LineElement line = new LineElement(
-                        Parent.ConnectionStartedNode.Node,
-                        Parent.ConnectionEndedNode.Node,
-                        Parent.ConnectionStartedNode,
-                        Parent.ConnectionEndedNode
-                    );
-
-                    this.Lines.Add(line);
-                    Parent.ConnectionStartedNode.Lines.Add(line);
-                    Parent.main.ScrollView.Add(line);
-                    Parent.main.ScrollView.schedule.Execute(() => line.MarkDirtyRepaint()).Every(5);
-                }
-
-                Parent.isMakingConnection = false;
+                return;
             }
-            else
+
+            if (!Parent.isMakingConnection)
             {
                 startMouse = evt.mousePosition;
                 startPos = new Vector2(node.resolvedStyle.left, node.resolvedStyle.top);
                 node.CaptureMouse();
                 evt.StopPropagation();
                 ContextMenu.MenuElement.style.display = DisplayStyle.None;
-            }   
-        }
-        else if (evt.button == 1)
-        {
-            ContextMenu.MenuElement.style.display = DisplayStyle.Flex;
-            ContextMenu.MenuElement.style.left = evt.localMousePosition.x;
-            ContextMenu.MenuElement.style.top = evt.localMousePosition.y;
+                return;
+            }
+
+            if (Parent.ConnectionStartedNode.TempLine == null)
+            {
+                return;
+            }
+
+            Parent.ConnectionStartedNode.TempLine.ScrollView.contentContainer.Remove(Parent.ConnectionStartedNode.TempLine);
+            Parent.ConnectionStartedNode.tempLineSchedule.Pause();
+            Parent.ConnectionStartedNode.TempLine = null;
+            ContextMenu.Parent = null;
+
+
+
+            Parent.ConnectionEndedNode = this;
+
+            if (this.ChildNodes.Contains(Parent.ConnectionStartedNode))
+            {
+                EditorUtility.DisplayDialog("This node is a root node", "Root Node Conflict", "OK");
+                Parent.isMakingConnection = false;
+                return;
+            }
+
+            LineElement line = new LineElement(
+                Parent.ConnectionStartedNode.Node,
+                Parent.ConnectionEndedNode.Node,
+                Parent.main.ScrollView,
+                Parent.ConnectionStartedNode,
+                Parent.ConnectionEndedNode
+            );
+
+            Parent.Connections.Add(line);
+            Parent.main.ScrollView.contentContainer.Add(line);
+            line.CreateTextBox();
+            Parent.main.ScrollView.contentContainer.schedule.Execute(() =>
+            {
+                line.MarkDirtyRepaint();
+                line.UpdateTextboxPosition();
+            }).Every(5);
+
+            this.ParentNodes.Add(Parent.ConnectionStartedNode);
+            Parent.ConnectionStartedNode.ChildNodes.Add(this);
+            Parent.isMakingConnection = false;
         }
     }
 
-    private void OnNodeMouseMove(VisualElement node, MouseMoveEvent evt)
+    //private void OnNodeMouseMove(ScrollView node, MouseMoveEvent evt)
+    //{
+    //    if (node.HasMouseCapture())
+    //    {
+    //        Vector2 diff = evt.mousePosition - startMouse;
+    //        OnNodeDragged(node, new Vector2(startPos.x + diff.x, startPos.y + diff.y));
+    //    }
+    //}
+
+    private void OnNodeMouseUp(ScrollView node, MouseUpEvent evt)
+    {
+        node.ReleaseMouse();
+    }
+
+    //void OnNodeDragged(ScrollView node, Vector2 newPosition)
+    //{
+    //    // Prevent moving left or up
+    //    float clampedX = Mathf.Max(0, newPosition.x);
+    //    float clampedY = Mathf.Max(0, newPosition.y);
+
+    //    node.style.left = clampedX;
+    //    node.style.top = clampedY;
+    //}
+
+    private void OnNodeMouseMove(ScrollView node, MouseMoveEvent evt)
     {
         if (node.HasMouseCapture())
         {
@@ -176,41 +191,47 @@ public class NodeElement
         }
     }
 
-    private void OnNodeMouseUp(VisualElement node, MouseUpEvent evt)
+    void OnNodeDragged(ScrollView node, Vector2 newPosition)
     {
-        node.ReleaseMouse();
-    }
+        float minX = Mathf.Min(0, newPosition.x);
+        float minY = Mathf.Min(0, newPosition.y);
 
-    void OnNodeDragged(VisualElement node, Vector2 newPosition)
-    {
-        // Prevent moving left or up
-        float clampedX = Mathf.Max(0, newPosition.x);
-        float clampedY = Mathf.Max(0, newPosition.y);
+        if (minX < 0)
+        {
+            // expand content left
+            Parent.main.ScrollView.contentContainer.style.paddingLeft = -minX;
+        }
+        if (minY < 0)
+        {
+            // expand content top
+            Parent.main.ScrollView.contentContainer.style.paddingTop = -minY;
+        }
 
-        node.style.left = clampedX;
-        node.style.top = clampedY;
+        node.style.left = newPosition.x;
+        node.style.top = newPosition.y;
     }
 
     #endregion
 
     #region UI Creation
 
-    private void AddDialogueTextField(VisualElement node)
+    private void AddDialogueTextField(ScrollView node)
     {
         DialogueTextField = new TextField("Dialogue Text:");
         DialogueTextField.multiline = true;
+        DialogueTextField.style.marginBottom = 0;
         SetTextFieldWidthsPercent(DialogueTextField);
         node.Add(DialogueTextField);
     }
 
-    private void AddSpeakerNameField(VisualElement node)
+    private void AddSpeakerNameField(ScrollView node)
     {
         SpeakerNameField = new TextField("Speaker Name:");
         SetTextFieldWidthsPercent(SpeakerNameField);
         node.Add(SpeakerNameField);
     }
 
-    private void AddPortraitField(VisualElement node)
+    private void AddPortraitField(ScrollView node)
     {
         PortraitField = new ObjectField("Portrait:");
         PortraitField.objectType = typeof(Sprite);
@@ -226,6 +247,13 @@ public class NodeElement
         node.Add(PortraitField);
     }
 
+    private void AddNodeIdField(ScrollView node)
+    {
+        NodeIdField = new TextField("Node ID:");
+        SetTextFieldWidthsPercent(NodeIdField);
+        node.Add(NodeIdField);
+    }
+
     void SetObjectFieldWidthsPercent(ObjectField objField)
     {
         objField.RegisterCallback<AttachToPanelEvent>(evt =>
@@ -239,7 +267,6 @@ public class NodeElement
         });
     }
 
-
     void SetTextFieldWidthsPercent(TextField textField)
     {
         textField.RegisterCallback<AttachToPanelEvent>(evt =>
@@ -251,41 +278,6 @@ public class NodeElement
                 children[1].AddToClassList("objectField");
             }
         });
-    }
-
-    private void AddNodeIdField(VisualElement node)
-    {
-        NodeIdField = new TextField("Node ID:");
-        SetTextFieldWidthsPercent(NodeIdField);
-
-        NodeIdField.RegisterCallback<FocusOutEvent>(evt => OnNodeIdFieldChangedHandler());
-
-        node.Add(NodeIdField);
-    }
-
-    private void OnNodeIdFieldChangedHandler()
-    {
-        foreach (var node in OtherNodes)
-        {
-            if (node != this && OptionElement != null)
-            {
-                foreach (var line in node.Lines)
-                {
-                    Parent.main.ScrollView.Remove(line);
-                }
-                node.Lines.Clear();
-                node.OptionElement.PopulateNodeId(node.OtherNodes);
-            }
-        }
-    }
-
-    private void AddOptionButtonUI(VisualElement node)
-    {
-        AddOptionButton = new Button();
-        AddOptionButton.text = "Add Option";
-        AddOptionButton.clicked += AddOptionButtonClickHandler;
-
-        node.Add(AddOptionButton);
     }
 
     #endregion

@@ -12,11 +12,15 @@ public class DialogGraphEditorWindow : EditorWindow
     public DialogGraphView main;
     private NodeElement _node;
     private LineElement _connection;
-    private List<LineElement> _connections = new List<LineElement>();
+    public List<LineElement> Connections { get; set; }
     private List<NodeElement> _nodes = new List<NodeElement>();
     public bool isMakingConnection = false;
     public NodeElement ConnectionStartedNode;
     public NodeElement ConnectionEndedNode;
+    public ContextMenu ContextMenu { get; set; }
+
+    public VisualElement overlay;
+
 
     [MenuItem("Tools/Dialog Graph Editor")]
     public static void ShowWindow()
@@ -28,31 +32,102 @@ public class DialogGraphEditorWindow : EditorWindow
     private void CreateGUI()
     {
         main = new DialogGraphView(rootVisualElement);
-        RegisterCallBacks();
+        main.window = this;
         ConnectionStartedNode = new NodeElement();
         ConnectionEndedNode = new NodeElement();
+        ContextMenu = new ContextMenu();
+        ContextMenu.CreateMenuItemsForNode(ContextMenu.MenuElement);
+        ContextMenu.MenuElement.style.display = DisplayStyle.None;
+
+        overlay = new VisualElement();
+        overlay.style.position = Position.Absolute;
+        overlay.style.left = 0;
+        overlay.style.top = 0;
+        overlay.style.right = 0;
+        overlay.style.bottom = 0;
+        overlay.pickingMode = PickingMode.Ignore;
+        rootVisualElement.Add(overlay);
+        overlay.Add(ContextMenu.MenuElement);
+
+        Connections = new List<LineElement>();
+
+        RegisterCallBacks();
     }
+
+    
 
     private void RegisterCallBacks()
     {
-        main.AddNodeButton.clicked += AddNode;
+        main.OnCreateNode += AddNode;
+        main.OnContextMenuCreated += CreateMainContextMenu;
+        ContextMenu.OnDeleteNodeButtonClicked += DeleteNode;
+    }
+
+    private void CreateMainContextMenu()
+    {
+        if (main.ContextMenu == null)
+        {
+            main.ContextMenu = new ContextMenu();
+            main.ContextMenu.CreateMenuItemsForScrollView(main.ContextMenu.MenuElement);
+            main.ContextMenu.MenuElement.style.display = DisplayStyle.Flex;
+            main.ContextMenu.OnCreateNodeButtonClicked += AddNode;
+            overlay.Add(main.ContextMenu.MenuElement);
+        }
     }
 
     private void AddNode()
     {
         _node = new NodeElement();
-        
-        main.ScrollView.Add(_node.Node);
-        _node.Parent = this;
 
-        foreach (var item in _nodes)
-        {
-            _node.OtherNodes.Add(item);
-            item.OtherNodes.Add(_node);
-        }
+        main.ScrollView.contentContainer.Add(_node.Node);
+
+        _node.Node.style.left = main.MouseElement.style.left;
+        _node.Node.style.top = main.MouseElement.style.top;
+
+        _node.Parent = this;
+        _node.ContextMenu = this.ContextMenu;
+
+        main.ContextMenu.MenuElement.style.display = DisplayStyle.None;
 
         _nodes.Add(_node);
         main.AdjustZoom();
+    }
+    private void DeleteNode(NodeElement element)
+    {
+        List<LineElement> deleteLines = new List<LineElement>();
+
+        foreach (var node in _nodes)
+        {
+            if (node.ChildNodes.Contains(element))
+            {
+                node.ChildNodes.Remove(element);
+            }
+        }
+
+        element.ChildNodes.Clear();
+        element.ParentNodes.Clear();
+
+        foreach (var line in Connections)
+        {
+            if (line.NodeFrom == element || line.NodeTo == element)
+            {
+                deleteLines.Add(line);
+            }
+        }
+
+        foreach (var line in deleteLines)
+        {
+            Connections.Remove(line);
+            main.ScrollView.contentContainer.Remove(line);
+            main.ScrollView.contentContainer.Remove(line.OptionText);
+        }
+
+        if (main.ScrollView.contentContainer.Contains(element.Node))
+        {
+            main.ScrollView.contentContainer.Remove(element.Node);
+        }
+
+        ContextMenu.MenuElement.style.display = DisplayStyle.None;
     }
 }
 

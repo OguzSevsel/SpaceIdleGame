@@ -9,17 +9,81 @@ public class LineElement : VisualElement
     public NodeElement NodeFrom { get; private set; }
     public NodeElement NodeTo { get; private set; }
 
-    public LineElement(VisualElement from, VisualElement to, NodeElement nodeFrom = null, NodeElement nodeTo = null)
+    public TextField OptionText { get; private set; }
+    public ScrollView ScrollView { get; private set; }
+
+    public LineElement(VisualElement from, VisualElement to, ScrollView scrollView, NodeElement nodeFrom = null, NodeElement nodeTo = null)
     {
         this.lineFrom = from;
         this.lineTo = to;
         this.NodeFrom = nodeFrom;
         this.NodeTo = nodeTo;
+        this.ScrollView = scrollView;
 
         pickingMode = PickingMode.Ignore;
         style.position = Position.Absolute;
 
         generateVisualContent += OnGenerateVisualContent;
+    }
+
+    public void UpdateTextboxPosition()
+    {
+        if (lineFrom == null || lineTo == null || this.parent == null || ScrollView == null) return;
+
+        // Convert world midpoint to the same space as the textbox parent
+        Vector2 fromCenter = lineFrom.worldBound.center;
+        Vector2 toCenter = lineTo.worldBound.center;
+        Vector2 midWorld = (fromCenter + toCenter) / 2f;
+
+        // Convert world position to local relative to the scrolling content
+        Vector2 midLocal = ScrollView.contentContainer.WorldToLocal(midWorld);
+
+        // Update textbox position
+        OptionText.style.left = midLocal.x - OptionText.resolvedStyle.width / 2f;
+        OptionText.style.top = midLocal.y - OptionText.resolvedStyle.height / 2f;
+
+        // Ensure textbox is under the same scrolling content
+        if (!ScrollView.contentContainer.Contains(OptionText))
+            ScrollView.contentContainer.Add(OptionText);
+    }
+
+
+    public void CreateTextBox()
+    {
+        // Create textbox
+        var textBox = new TextField();
+        textBox.style.position = Position.Absolute;
+        textBox.style.width = 100;
+        textBox.style.height = 20;
+        textBox.style.unityTextAlign = TextAnchor.MiddleCenter;
+
+        // Compute world-space midpoint between centers
+        Vector2 fromCenter = lineFrom.worldBound.center;
+        Vector2 toCenter = lineTo.worldBound.center;
+        Vector2 midWorld = (fromCenter + toCenter) / 2f;
+
+        // Convert world position to parent local (so it's positioned correctly)
+        Vector2 midLocal = ScrollView.contentContainer.WorldToLocal(midWorld);
+
+        // Position textbox so it’s centered
+        textBox.style.left = midLocal.x - 50; // half of width
+        textBox.style.top = midLocal.y - 10;  // small offset
+
+        // Optional styling
+        textBox.style.backgroundColor = new Color(0.2f, 0.2f, 0.2f);
+        textBox.style.color = Color.white;
+        textBox.style.borderBottomLeftRadius = 4;
+        textBox.style.borderBottomRightRadius = 4;
+        textBox.style.borderTopLeftRadius = 4;
+        textBox.style.borderTopRightRadius = 4;
+        textBox.multiline = true;
+
+        // Add to the same parent (so it appears above the line)
+        OptionText = textBox;
+        ScrollView.contentContainer.Add(OptionText);
+
+        // Focus immediately so user can type
+        textBox.Focus();
     }
 
     private void OnGenerateVisualContent(MeshGenerationContext ctx)
@@ -116,3 +180,6 @@ public class LineElement : VisualElement
         return float.IsFinite(v.x) && float.IsFinite(v.y) && Mathf.Abs(v.x) < 1e8f && Mathf.Abs(v.y) < 1e8f;
     }
 }
+
+
+

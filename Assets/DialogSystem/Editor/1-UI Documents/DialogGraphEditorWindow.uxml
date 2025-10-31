@@ -3,8 +3,6 @@
     <ui:VisualElement name="BG" class="BG" style="flex-grow: 1;">
         <ui:Button text="Add Dialog Node" name="AddDialogNode" />
         <ScriptableObjectField name="ScriptableObjectField" label="naber" />
-        <ui:ScrollView horizontal-scroller-visibility="Hidden" vertical-scroller-visibility="Hidden" name="deneme" mode="VerticalAndHorizontal" picking-mode="Ignore" mouse-wheel-scroll-size="0" horizontal-page-size="50000" vertical-page-size="50000" class="ScrollView">
-            <ui:VisualElement name="Canvas" style="flex-grow: 1; width: 5000px; height: 5000px;" />
-        </ui:ScrollView>
+        <ui:ScrollView horizontal-scroller-visibility="Hidden" vertical-scroller-visibility="Hidden" name="deneme" mode="VerticalAndHorizontal" picking-mode="Ignore" mouse-wheel-scroll-size="0" horizontal-page-size="50000" vertical-page-size="50000" class="ScrollView" style="flex-grow: 1; width: 1920px; height: 1080px;" />
     </ui:VisualElement>
 </ui:UXML>
