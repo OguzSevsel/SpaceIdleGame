@@ -10,15 +10,15 @@ public class LineElement : VisualElement
     public NodeElement NodeTo { get; private set; }
 
     public TextField OptionText { get; private set; }
-    public ScrollView ScrollView { get; private set; }
+    public VisualElement Canvas { get; private set; }
 
-    public LineElement(VisualElement from, VisualElement to, ScrollView scrollView, NodeElement nodeFrom = null, NodeElement nodeTo = null)
+    public LineElement(VisualElement from, VisualElement to, VisualElement canvas, NodeElement nodeFrom = null, NodeElement nodeTo = null)
     {
         this.lineFrom = from;
         this.lineTo = to;
         this.NodeFrom = nodeFrom;
         this.NodeTo = nodeTo;
-        this.ScrollView = scrollView;
+        this.Canvas = canvas;
 
         pickingMode = PickingMode.Ignore;
         style.position = Position.Absolute;
@@ -28,7 +28,7 @@ public class LineElement : VisualElement
 
     public void UpdateTextboxPosition()
     {
-        if (lineFrom == null || lineTo == null || this.parent == null || ScrollView == null) return;
+        if (lineFrom == null || lineTo == null || this.parent == null || Canvas == null) return;
 
         // Convert world midpoint to the same space as the textbox parent
         Vector2 fromCenter = lineFrom.worldBound.center;
@@ -36,15 +36,15 @@ public class LineElement : VisualElement
         Vector2 midWorld = (fromCenter + toCenter) / 2f;
 
         // Convert world position to local relative to the scrolling content
-        Vector2 midLocal = ScrollView.contentContainer.WorldToLocal(midWorld);
+        Vector2 midLocal = Canvas.contentContainer.WorldToLocal(midWorld);
 
         // Update textbox position
         OptionText.style.left = midLocal.x - OptionText.resolvedStyle.width / 2f;
         OptionText.style.top = midLocal.y - OptionText.resolvedStyle.height / 2f;
 
         // Ensure textbox is under the same scrolling content
-        if (!ScrollView.contentContainer.Contains(OptionText))
-            ScrollView.contentContainer.Add(OptionText);
+        if (!Canvas.Contains(OptionText))
+            Canvas.Add(OptionText);
     }
 
 
@@ -63,7 +63,7 @@ public class LineElement : VisualElement
         Vector2 midWorld = (fromCenter + toCenter) / 2f;
 
         // Convert world position to parent local (so it's positioned correctly)
-        Vector2 midLocal = ScrollView.contentContainer.WorldToLocal(midWorld);
+        Vector2 midLocal = Canvas.contentContainer.WorldToLocal(midWorld);
 
         // Position textbox so it’s centered
         textBox.style.left = midLocal.x - 50; // half of width
@@ -80,7 +80,7 @@ public class LineElement : VisualElement
 
         // Add to the same parent (so it appears above the line)
         OptionText = textBox;
-        ScrollView.contentContainer.Add(OptionText);
+        Canvas.Add(OptionText);
 
         // Focus immediately so user can type
         textBox.Focus();

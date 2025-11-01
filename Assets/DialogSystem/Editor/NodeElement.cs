@@ -9,7 +9,7 @@ using UnityEngine.UIElements;
 
 public class NodeElement
 {
-    public ScrollView Node { get; private set; }
+    public VisualElement Node { get; private set; }
     public TextField NodeIdField { get; private set; }
     public TextField SpeakerNameField { get; private set; }
     public ObjectField PortraitField { get; private set; }
@@ -20,6 +20,9 @@ public class NodeElement
     public LineElement TempLine { get; set; }
     public List<NodeElement> ChildNodes { get; set; } = new List<NodeElement>();
     public List<NodeElement> ParentNodes { get; set; } = new List<NodeElement>();
+
+    public Label ParentNodeLabel { get; private set; }
+    public Label ChildNodeLabel { get; private set; }
 
     Vector2 startMouse = Vector2.zero;
     Vector2 startPos = Vector2.zero;
@@ -40,14 +43,15 @@ public class NodeElement
             Parent.ConnectionStartedNode = this;
             ContextMenu.MenuElement.style.display = DisplayStyle.None;
             TempLine = new LineElement(this.Node, Parent.main.MouseElement, Parent.main.ScrollView, nodeFrom: this);
-            TempLine.ScrollView.contentContainer.Add(TempLine);
-            tempLineSchedule = TempLine.ScrollView.contentContainer.schedule.Execute(() => TempLine.MarkDirtyRepaint()).Every(5);
+            TempLine.Canvas.Add(TempLine);
+            Parent.main.TempLine = this.TempLine;
+            tempLineSchedule = TempLine.Canvas.schedule.Execute(() => TempLine.MarkDirtyRepaint()).Every(5);
         }
     }
 
-    private ScrollView CreateNode()
+    private VisualElement CreateNode()
     {
-        var node = new ScrollView();
+        var node = new VisualElement();
         node.style.width = 200;
         node.style.height = 150;
         node.style.backgroundColor = Color.blue;
@@ -63,20 +67,35 @@ public class NodeElement
         AddSpeakerNameField(node);
         AddDialogueTextField(node);
         EnableNodeDragging(node);
+        AddInfoFields(node);
 
         return node;
+    }
+
+    private void AddInfoFields(VisualElement node)
+    {
+        ParentNodeLabel = new Label($"Parent Nodes: {ParentNodes.Count}");
+        ChildNodeLabel = new Label($"Child Nodes: {ChildNodes.Count}");
+        node.Add(ParentNodeLabel);
+        node.Add(ChildNodeLabel);
+    }
+
+    public void UpdateInfoFields()
+    {
+        ParentNodeLabel.text = $"Parent Nodes: {ParentNodes.Count}";
+        ChildNodeLabel.text = $"Child Nodes: {ChildNodes.Count}";
     }
     
     #region Dragging Functionality
 
-    void EnableNodeDragging(ScrollView node)
+    void EnableNodeDragging(VisualElement node)
     {
         node.RegisterCallback<MouseDownEvent>(evt => OnNodeMouseDown(node, evt));
         node.RegisterCallback<MouseMoveEvent>(evt => OnNodeMouseMove(node, evt));
         node.RegisterCallback<MouseUpEvent>(evt => OnNodeMouseUp(node, evt));
     }
 
-    private void OnNodeMouseDown(ScrollView node, MouseDownEvent evt)
+    private void OnNodeMouseDown(VisualElement node, MouseDownEvent evt)
     {
         if (evt.button == 1)
         {
@@ -108,8 +127,10 @@ public class NodeElement
             {
                 startMouse = evt.mousePosition;
                 startPos = new Vector2(node.resolvedStyle.left, node.resolvedStyle.top);
+
                 node.CaptureMouse();
                 evt.StopPropagation();
+
                 ContextMenu.MenuElement.style.display = DisplayStyle.None;
                 return;
             }
@@ -119,18 +140,16 @@ public class NodeElement
                 return;
             }
 
-            Parent.ConnectionStartedNode.TempLine.ScrollView.contentContainer.Remove(Parent.ConnectionStartedNode.TempLine);
+            Parent.ConnectionStartedNode.TempLine.Canvas.Remove(Parent.ConnectionStartedNode.TempLine);
             Parent.ConnectionStartedNode.tempLineSchedule.Pause();
             Parent.ConnectionStartedNode.TempLine = null;
             ContextMenu.Parent = null;
-
-
 
             Parent.ConnectionEndedNode = this;
 
             if (this.ChildNodes.Contains(Parent.ConnectionStartedNode))
             {
-                EditorUtility.DisplayDialog("This node is a root node", "Root Node Conflict", "OK");
+                EditorUtility.DisplayDialog("Parent node of this node", "Parent Node Conflict", "OK");
                 Parent.isMakingConnection = false;
                 return;
             }
@@ -138,15 +157,15 @@ public class NodeElement
             LineElement line = new LineElement(
                 Parent.ConnectionStartedNode.Node,
                 Parent.ConnectionEndedNode.Node,
-                Parent.main.ScrollView,
+                Parent.main.Canvas,
                 Parent.ConnectionStartedNode,
                 Parent.ConnectionEndedNode
             );
 
             Parent.Connections.Add(line);
-            Parent.main.ScrollView.contentContainer.Add(line);
+            line.Canvas.Add(line);
             line.CreateTextBox();
-            Parent.main.ScrollView.contentContainer.schedule.Execute(() =>
+            line.Canvas.schedule.Execute(() =>
             {
                 line.MarkDirtyRepaint();
                 line.UpdateTextboxPosition();
@@ -155,57 +174,31 @@ public class NodeElement
             this.ParentNodes.Add(Parent.ConnectionStartedNode);
             Parent.ConnectionStartedNode.ChildNodes.Add(this);
             Parent.isMakingConnection = false;
+            UpdateInfoFields();
+            Parent.ConnectionStartedNode.UpdateInfoFields();
         }
     }
 
-    //private void OnNodeMouseMove(ScrollView node, MouseMoveEvent evt)
-    //{
-    //    if (node.HasMouseCapture())
-    //    {
-    //        Vector2 diff = evt.mousePosition - startMouse;
-    //        OnNodeDragged(node, new Vector2(startPos.x + diff.x, startPos.y + diff.y));
-    //    }
-    //}
-
-    private void OnNodeMouseUp(ScrollView node, MouseUpEvent evt)
+    private void OnNodeMouseUp(VisualElement node, MouseUpEvent evt)
     {
         node.ReleaseMouse();
     }
 
-    //void OnNodeDragged(ScrollView node, Vector2 newPosition)
-    //{
-    //    // Prevent moving left or up
-    //    float clampedX = Mathf.Max(0, newPosition.x);
-    //    float clampedY = Mathf.Max(0, newPosition.y);
-
-    //    node.style.left = clampedX;
-    //    node.style.top = clampedY;
-    //}
-
-    private void OnNodeMouseMove(ScrollView node, MouseMoveEvent evt)
+    private void OnNodeMouseMove(VisualElement node, MouseMoveEvent evt)
     {
         if (node.HasMouseCapture())
         {
-            Vector2 diff = evt.mousePosition - startMouse;
+            float zoom = Parent.main.zoomFactor == 0 ? 1f : Parent.main.zoomFactor;
+            Vector2 diff = (evt.mousePosition - startMouse) / zoom;
+
             OnNodeDragged(node, new Vector2(startPos.x + diff.x, startPos.y + diff.y));
         }
     }
 
-    void OnNodeDragged(ScrollView node, Vector2 newPosition)
+    void OnNodeDragged(VisualElement node, Vector2 newPosition)
     {
         float minX = Mathf.Min(0, newPosition.x);
         float minY = Mathf.Min(0, newPosition.y);
-
-        if (minX < 0)
-        {
-            // expand content left
-            Parent.main.ScrollView.contentContainer.style.paddingLeft = -minX;
-        }
-        if (minY < 0)
-        {
-            // expand content top
-            Parent.main.ScrollView.contentContainer.style.paddingTop = -minY;
-        }
 
         node.style.left = newPosition.x;
         node.style.top = newPosition.y;
@@ -215,7 +208,7 @@ public class NodeElement
 
     #region UI Creation
 
-    private void AddDialogueTextField(ScrollView node)
+    private void AddDialogueTextField(VisualElement node)
     {
         DialogueTextField = new TextField("Dialogue Text:");
         DialogueTextField.multiline = true;
@@ -224,14 +217,14 @@ public class NodeElement
         node.Add(DialogueTextField);
     }
 
-    private void AddSpeakerNameField(ScrollView node)
+    private void AddSpeakerNameField(VisualElement node)
     {
         SpeakerNameField = new TextField("Speaker Name:");
         SetTextFieldWidthsPercent(SpeakerNameField);
         node.Add(SpeakerNameField);
     }
 
-    private void AddPortraitField(ScrollView node)
+    private void AddPortraitField(VisualElement node)
     {
         PortraitField = new ObjectField("Portrait:");
         PortraitField.objectType = typeof(Sprite);
@@ -247,7 +240,7 @@ public class NodeElement
         node.Add(PortraitField);
     }
 
-    private void AddNodeIdField(ScrollView node)
+    private void AddNodeIdField(VisualElement node)
     {
         NodeIdField = new TextField("Node ID:");
         SetTextFieldWidthsPercent(NodeIdField);

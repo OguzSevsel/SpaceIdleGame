@@ -58,7 +58,6 @@ public class DialogGraphEditorWindow : EditorWindow
 
     private void RegisterCallBacks()
     {
-        main.OnCreateNode += AddNode;
         main.OnContextMenuCreated += CreateMainContextMenu;
         ContextMenu.OnDeleteNodeButtonClicked += DeleteNode;
     }
@@ -75,11 +74,12 @@ public class DialogGraphEditorWindow : EditorWindow
         }
     }
 
+
     private void AddNode()
     {
         _node = new NodeElement();
 
-        main.ScrollView.contentContainer.Add(_node.Node);
+        main.Canvas.Add(_node.Node);
 
         _node.Node.style.left = main.MouseElement.style.left;
         _node.Node.style.top = main.MouseElement.style.top;
@@ -90,8 +90,9 @@ public class DialogGraphEditorWindow : EditorWindow
         main.ContextMenu.MenuElement.style.display = DisplayStyle.None;
 
         _nodes.Add(_node);
-        main.AdjustZoom();
+        //main.AdjustZoom();
     }
+
     private void DeleteNode(NodeElement element)
     {
         List<LineElement> deleteLines = new List<LineElement>();
@@ -101,6 +102,13 @@ public class DialogGraphEditorWindow : EditorWindow
             if (node.ChildNodes.Contains(element))
             {
                 node.ChildNodes.Remove(element);
+                node.UpdateInfoFields();
+            }
+
+            if (node.ParentNodes.Contains(element))
+            {
+                node.ParentNodes.Remove(element);
+                node.UpdateInfoFields();
             }
         }
 
@@ -118,13 +126,13 @@ public class DialogGraphEditorWindow : EditorWindow
         foreach (var line in deleteLines)
         {
             Connections.Remove(line);
-            main.ScrollView.contentContainer.Remove(line);
-            main.ScrollView.contentContainer.Remove(line.OptionText);
+            line.Canvas.Remove(line);
+            line.Canvas.Remove(line.OptionText);
         }
 
-        if (main.ScrollView.contentContainer.Contains(element.Node))
+        if (main.Canvas.Contains(element.Node))
         {
-            main.ScrollView.contentContainer.Remove(element.Node);
+            main.Canvas.Remove(element.Node);
         }
 
         ContextMenu.MenuElement.style.display = DisplayStyle.None;

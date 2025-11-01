@@ -31,10 +31,6 @@
 #BG > #deneme > #unity-content-and-vertical-scroll-container > #unity-content-viewport > #unity-content-container {
     width: 100%;
     height: 100%;
-    padding-top: 100px;
-    padding-right: 100px;
-    padding-bottom: 100px;
-    padding-left: 100px;
 }
 
 #BG > #deneme > #unity-content-and-vertical-scroll-container > #unity-content-viewport {
