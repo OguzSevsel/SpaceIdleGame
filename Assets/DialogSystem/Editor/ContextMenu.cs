@@ -1,50 +1,54 @@
 using System;
-using UnityEditor;
-using UnityEngine;
 using UnityEngine.UIElements;
 
 public class ContextMenu
 {
+    public NodeElement Parent { get; set; }
     public VisualElement MenuElement { get; private set; }
+
+
     public static event Action<NodeElement> OnCreateConnectionButtonClicked;
     public static event Action<NodeElement> OnDeleteNodeButtonClicked;
-
+    private string _stylePath = "Assets/DialogSystem/Editor/2-Styles/DialogGraphEditorWindowStyle.uss";
 
 
     public event Action OnCreateNodeButtonClicked;
-    public NodeElement Parent { get; set; }
 
-    public ContextMenu()
+    public ContextMenu(int width, int height)
     {
-        MenuElement = CreateMenu();
+        MenuElement = CreateMenu(width, height);
     }
 
-    private VisualElement CreateMenu()
+    private VisualElement CreateMenu(int width, int height)
     {
         var menu = new VisualElement();
-        menu.style.width = 150;
-        menu.style.height = 200;
-        menu.style.backgroundColor = Color.white;
-        menu.style.borderBottomLeftRadius = 6;
-        menu.style.borderBottomRightRadius = 6;
-        menu.style.borderTopLeftRadius = 6;
-        menu.style.borderTopRightRadius = 6;
+        menu.style.width = width;
+        menu.style.height = height;
+        Helpers.SetBorderRadius(menu, 6);
+        menu.style.alignContent = Align.FlexStart;
         menu.style.position = Position.Absolute;
         menu.style.flexDirection = FlexDirection.Column;
-        menu.pickingMode = PickingMode.Ignore;
-
         return menu;
     }
-
+    private void SetButtonUI(Button button, string buttonText)
+    {
+        button.text = buttonText;
+        button.style.color = Helpers.HexToColor(Helpers.ColorText);
+        button.style.backgroundColor = Helpers.HexToColor(Helpers.ColorBackground);
+        Helpers.SetBorderColor(button, Helpers.HexToColor(Helpers.ColorBorder));
+        Helpers.SetPadding(button, 1);
+        Helpers.OnMouseEnter(button, "Highlight");
+        Helpers.OnMouseLeave(button, "Highlight");
+    }
     public void CreateMenuItemsForNode(VisualElement menu)
     {
-        Button buttonCreateConnection = new Button();
-        buttonCreateConnection.text = "Create Connection";
+        UnityEngine.UIElements.Button buttonCreateConnection = new();
+        SetButtonUI(buttonCreateConnection, "Create Connection");
         buttonCreateConnection.clicked += OnCreateConnectionMenuButtonClicked;
         menu.Add(buttonCreateConnection);
 
-        Button buttonDelete = new Button();
-        buttonDelete.text = "Delete Node";
+        Button buttonDelete = new();
+        SetButtonUI(buttonDelete, "Delete Node");
         buttonDelete.clicked += OnDeleteNodeMenuButtonClicked;
         menu.Add(buttonDelete);
     }
@@ -58,20 +62,13 @@ public class ContextMenu
         OnCreateConnectionButtonClicked?.Invoke(Parent);
     }
 
-
-
-
-
-
-
     public void CreateMenuItemsForScrollView(VisualElement menu)
     {
-        Button button = new Button();
-        button.text = "Create Node";
+        Button button = new();
+        SetButtonUI(button, "Create Node");
         button.clicked += OnCreateNodeMenuButtonClicked;
         menu.Add(button);
     }
-
     private void OnCreateNodeMenuButtonClicked()
     {
         OnCreateNodeButtonClicked?.Invoke();

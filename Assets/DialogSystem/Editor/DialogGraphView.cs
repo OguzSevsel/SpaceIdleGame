@@ -13,8 +13,7 @@ public class DialogGraphView
 
     public VisualTreeAsset TreeAsset { get; private set; }
     public StyleSheet StyleSheet { get; private set; }
-
-    public VisualElement Parent;
+    public VisualElement Parent { get; private set; }
     public DialogGraphEditorWindow window { get; set; }
     public ScrollView ScrollView { get; private set; }
     public VisualElement MouseElement { get; private set; }
@@ -24,13 +23,12 @@ public class DialogGraphView
     public ContextMenu ContextMenu { get; set; }
 
     private Vector2 dragStart;
-    private Vector2 scrollStart;
     private bool isPanning;
 
     public float zoomFactor = 1f;
     float zoomStep = 0.1f;
-    float minZoom = 0.5f;
-    float maxZoom = 1.5f;
+    float minZoom = 0.3f;
+    float maxZoom = 2f;
     private Vector2 grabOffset;
     private Label infoLabel;
     private Label infoLabel1;
@@ -121,7 +119,7 @@ public class DialogGraphView
                 ContextMenu.MenuElement.style.display = DisplayStyle.Flex;
             }
 
-            Vector2 overlayPos = window.overlay.WorldToLocal(evt.position);
+            Vector2 overlayPos = ScrollView.WorldToLocal(evt.position);
 
             ContextMenu.MenuElement.style.left = overlayPos.x;
             ContextMenu.MenuElement.style.top = overlayPos.y;

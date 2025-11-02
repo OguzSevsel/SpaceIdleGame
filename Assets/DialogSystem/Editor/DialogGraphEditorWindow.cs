@@ -35,7 +35,7 @@ public class DialogGraphEditorWindow : EditorWindow
         main.window = this;
         ConnectionStartedNode = new NodeElement();
         ConnectionEndedNode = new NodeElement();
-        ContextMenu = new ContextMenu();
+        ContextMenu = new ContextMenu(120, 50);
         ContextMenu.CreateMenuItemsForNode(ContextMenu.MenuElement);
         ContextMenu.MenuElement.style.display = DisplayStyle.None;
 
@@ -46,8 +46,8 @@ public class DialogGraphEditorWindow : EditorWindow
         overlay.style.right = 0;
         overlay.style.bottom = 0;
         overlay.pickingMode = PickingMode.Ignore;
-        rootVisualElement.Add(overlay);
-        overlay.Add(ContextMenu.MenuElement);
+        main.Parent.Add(overlay);
+        main.ScrollView.Add(ContextMenu.MenuElement);
 
         Connections = new List<LineElement>();
 
@@ -66,11 +66,11 @@ public class DialogGraphEditorWindow : EditorWindow
     {
         if (main.ContextMenu == null)
         {
-            main.ContextMenu = new ContextMenu();
+            main.ContextMenu = new ContextMenu(120, 50);
             main.ContextMenu.CreateMenuItemsForScrollView(main.ContextMenu.MenuElement);
             main.ContextMenu.MenuElement.style.display = DisplayStyle.Flex;
             main.ContextMenu.OnCreateNodeButtonClicked += AddNode;
-            overlay.Add(main.ContextMenu.MenuElement);
+            main.ScrollView.Add(main.ContextMenu.MenuElement);
         }
     }
 
