@@ -26,6 +26,6 @@ public class DialogManager : MonoBehaviour
 
     public void StartDialog()
     {
-        _dialogUI.CreateNewDialog(_dialogGraph.GetNodeById("deneme"));
+        _dialogUI.CreateNewDialog(_dialogGraph.GetNodeById("deneme1"));
     }
 }
