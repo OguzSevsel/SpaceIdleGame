@@ -31,12 +31,7 @@ public class NodeElement
     private string leftClassName = "objectLabel";
     private string rightClassName = "objectField";
     private bool isContextMenuOpen = false;
-    private enum MouseButton
-    {
-        Left = 0,
-        Right = 1,
-        Middle = 2
-    }
+    
 
     public NodeElement()
     {
@@ -77,7 +72,7 @@ public class NodeElement
         AddSpeakerNameField(node);
         AddDialogueTextField(node);
         EnableNodeDragging(node);
-        //AddInfoFields(node);
+        AddInfoFields(node);
 
         return node;
     }
@@ -181,9 +176,23 @@ public class NodeElement
 
             Parent.ConnectionEndedNode = this;
 
+            if (Parent.ConnectionStartedNode == Parent.ConnectionEndedNode)
+            {
+                EditorUtility.DisplayDialog("You cant bind the same node", "Cant bind the same node", "OK");
+                Parent.isMakingConnection = false;
+                return;
+            }
+
             if (this.ChildNodes.Contains(Parent.ConnectionStartedNode))
             {
                 EditorUtility.DisplayDialog("Parent node of this node", "Parent Node Conflict", "OK");
+                Parent.isMakingConnection = false;
+                return;
+            }
+
+            if (Parent.ConnectionStartedNode.ChildNodes.Contains(Parent.ConnectionEndedNode))
+            {
+                EditorUtility.DisplayDialog("There is already a connection", "Connection already established", "OK");
                 Parent.isMakingConnection = false;
                 return;
             }
@@ -281,4 +290,12 @@ public class NodeElement
     }
 
     #endregion
+}
+
+
+public enum MouseButton
+{
+    Left = 0,
+    Right = 1,
+    Middle = 2
 }

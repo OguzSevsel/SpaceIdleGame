@@ -6,11 +6,8 @@ public class ContextMenu
     public NodeElement Parent { get; set; }
     public VisualElement MenuElement { get; private set; }
 
-
     public static event Action<NodeElement> OnCreateConnectionButtonClicked;
     public static event Action<NodeElement> OnDeleteNodeButtonClicked;
-    private string _stylePath = "Assets/DialogSystem/Editor/2-Styles/DialogGraphEditorWindowStyle.uss";
-
 
     public event Action OnCreateNodeButtonClicked;
 
@@ -42,7 +39,7 @@ public class ContextMenu
     }
     public void CreateMenuItemsForNode(VisualElement menu)
     {
-        UnityEngine.UIElements.Button buttonCreateConnection = new();
+        Button buttonCreateConnection = new();
         SetButtonUI(buttonCreateConnection, "Create Connection");
         buttonCreateConnection.clicked += OnCreateConnectionMenuButtonClicked;
         menu.Add(buttonCreateConnection);

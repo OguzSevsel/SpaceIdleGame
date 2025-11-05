@@ -49,7 +49,6 @@ public class LineElement : VisualElement
         var textBox = new TextField();
         textBox.style.position = Position.Absolute;
         textBox.style.width = 100;
-        textBox.style.height = 20;
         textBox.style.unityTextAlign = TextAnchor.MiddleCenter;
 
         Vector2 fromCenter = lineFrom.worldBound.center;

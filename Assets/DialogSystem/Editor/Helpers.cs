@@ -18,7 +18,7 @@ public static class Helpers
             return color;
 
         Debug.LogWarning($"Invalid hex code: {hex}");
-        return Color.white; // fallback color
+        return Color.white;
     }
 
     public static void SetFieldWidthPercentages(VisualElement Field, string leftClassName, string rightClassName)
