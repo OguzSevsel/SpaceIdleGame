@@ -464,7 +464,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: DialogSystem::DialogManager
   _dialogUI: {fileID: 2074290302}
-  _dialogGraph: {fileID: 11400000, guid: 824bad77285fee74e9972a2d34115209, type: 2}
+  _dialogGraph: {fileID: 11400000, guid: ffddc9d7c80a067479e9d97e13250127, type: 2}
 --- !u!1 &1296968395
 GameObject:
   m_ObjectHideFlags: 0
@@ -951,7 +951,7 @@ MonoBehaviour:
   _speakerPortrait: {fileID: 1732882411}
   _choicesContainer: {fileID: 587695122}
   _choiceButtonPrefab: {fileID: 8204631517681871983, guid: 2d921a1e538abc34ca37d88495c54772, type: 3}
-  variables: {fileID: 11400000, guid: b6f0ffe77ddad5a4182f3ee5466db582, type: 2}
+  variables: {fileID: 11400000, guid: 2ebb741a1f718024eabeda676e7300e4, type: 2}
 --- !u!114 &2074290303
 MonoBehaviour:
   m_ObjectHideFlags: 0

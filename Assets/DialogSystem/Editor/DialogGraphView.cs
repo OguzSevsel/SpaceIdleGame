@@ -18,6 +18,7 @@ public class DialogGraphView
     public ScrollView ScrollView { get; private set; }
     public VisualElement MouseElement { get; private set; }
     public VisualElement Canvas { get; private set; }
+    public VisualElement SidePanel { get; private set; }
     public LineElement TempLine { get; set; }
 
     public ContextMenu ContextMenu { get; set; }
@@ -54,8 +55,9 @@ public class DialogGraphView
 
     private void BindUIElements()
     {
-        this.ScrollView = Parent.Q<ScrollView>("deneme");
+        this.ScrollView = Parent.Q<ScrollView>("ScrollView");
         this.Canvas = Parent.Q<VisualElement>("Canvas");
+        this.SidePanel = Parent.Q<VisualElement>("SidePanel");
 
         this.ScrollView.RegisterCallback<PointerDownEvent>(OnPointerDown);
         this.ScrollView.RegisterCallback<PointerMoveEvent>(OnPointerMove);
