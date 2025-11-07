@@ -42,12 +42,12 @@
     scale: 1.05 1.05 1.05;
 }
 
-#BG > #deneme > #unity-content-and-vertical-scroll-container > #unity-content-viewport > #unity-content-container {
+#BG > #ScrollView > #unity-content-and-vertical-scroll-container > #unity-content-viewport > #unity-content-container {
     width: 100%;
     height: 100%;
 }
 
-#BG > #deneme > #unity-content-and-vertical-scroll-container > #unity-content-viewport {
+#BG > #ScrollView > #unity-content-and-vertical-scroll-container > #unity-content-viewport {
     width: 100%;
     height: 100%;
 }
