@@ -8,9 +8,13 @@ using UnityEngine.Rendering;
 
 public class DialogGraphView
 {
+    //UI Assets Paths
     private string _treePath = "Assets/DialogSystem/Editor/1-UI Documents/DialogGraphEditorWindow.uxml";
     private string _stylePath = "Assets/DialogSystem/Editor/2-Styles/DialogGraphEditorWindowStyle.uss";
 
+
+
+    //UI Elements Properties
     public VisualTreeAsset TreeAsset { get; private set; }
     public StyleSheet StyleSheet { get; private set; }
     public VisualElement Parent { get; private set; }
@@ -18,27 +22,64 @@ public class DialogGraphView
     public ScrollView ScrollView { get; private set; }
     public VisualElement MouseElement { get; private set; }
     public VisualElement Canvas { get; private set; }
-    public VisualElement SidePanel { get; private set; }
-    public LineElement TempLine { get; set; }
+    public VisualElement RightPanel { get; private set; }
+    public VisualElement LeftPanel { get; private set; }
+    public Button CreateNewDialogGraphButton { get; private set; }
+    public Button SelectDialogGraphButton { get; private set; }
+    public Button GenerateGraphButton { get; private set; }
+    public Button GenerateGraphInSceneButton { get; private set; }
 
+
+    //Public Properties
+    public LineElement TempLine { get; set; }
     public ContextMenu ContextMenu { get; set; }
 
+
+
+    //Events
+    public event Action OnContextMenuCreated;
+
+
+
+    //Panning Variables
     private Vector2 dragStart;
     private bool isPanning;
 
+
+    //Zoom Variables
     public float zoomFactor = 1f;
     float zoomStep = 0.1f;
     float minZoom = 0.3f;
     float maxZoom = 2f;
     private Vector2 grabOffset;
+
+
+    //Info labels
     private Label infoLabel;
     private Label infoLabel1;
 
-    public event Action OnContextMenuCreated;
     public DialogGraphView(VisualElement root)
     {
         BindTreeAsset(root);
         BindUIElements();  
+    }
+
+    private void BindUIElements()
+    {
+        this.ScrollView = Parent.Q<ScrollView>("ScrollView");
+        this.Canvas = Parent.Q<VisualElement>("Canvas");
+        this.RightPanel = Parent.Q<VisualElement>("RightPanel");
+        this.LeftPanel = Parent.Q<VisualElement>("LeftPanel");
+        this.CreateNewDialogGraphButton = Parent.Q<Button>("CreateNewGraphButton");
+        this.SelectDialogGraphButton = Parent.Q<Button>("SelectGraphButton");
+        this.GenerateGraphButton = Parent.Q<Button>("GenerateGraphButton");
+        this.GenerateGraphInSceneButton = Parent.Q<Button>("GenerateGraphInSceneButton");
+
+        this.ScrollView.RegisterCallback<PointerDownEvent>(OnPointerDown);
+        this.ScrollView.RegisterCallback<PointerMoveEvent>(OnPointerMove);
+        this.ScrollView.RegisterCallback<PointerUpEvent>(OnPointerUp);
+        this.ScrollView.RegisterCallback<WheelEvent>(OnZoom);
+
         MouseElement = new VisualElement();
         infoLabel = new Label("Deneme");
         infoLabel1 = new Label("Deneme");
@@ -51,18 +92,15 @@ public class DialogGraphView
         ScrollView.contentContainer.Add(MouseElement);
         Canvas.Add(MouseElement);
         zoomFactor = 1f;
-    }
 
-    private void BindUIElements()
-    {
-        this.ScrollView = Parent.Q<ScrollView>("ScrollView");
-        this.Canvas = Parent.Q<VisualElement>("Canvas");
-        this.SidePanel = Parent.Q<VisualElement>("SidePanel");
-
-        this.ScrollView.RegisterCallback<PointerDownEvent>(OnPointerDown);
-        this.ScrollView.RegisterCallback<PointerMoveEvent>(OnPointerMove);
-        this.ScrollView.RegisterCallback<PointerUpEvent>(OnPointerUp);
-        this.ScrollView.RegisterCallback<WheelEvent>(OnZoom);
+        Helpers.OnMouseEnter(CreateNewDialogGraphButton, "Highlight");
+        Helpers.OnMouseLeave(CreateNewDialogGraphButton, "Highlight");
+        Helpers.OnMouseEnter(SelectDialogGraphButton, "Highlight");
+        Helpers.OnMouseLeave(SelectDialogGraphButton, "Highlight");
+        Helpers.OnMouseEnter(GenerateGraphButton, "Highlight");
+        Helpers.OnMouseLeave(GenerateGraphButton, "Highlight");
+        Helpers.OnMouseEnter(GenerateGraphInSceneButton, "Highlight");
+        Helpers.OnMouseLeave(GenerateGraphInSceneButton, "Highlight");
     }
    
     private void OnZoom(WheelEvent evt)
