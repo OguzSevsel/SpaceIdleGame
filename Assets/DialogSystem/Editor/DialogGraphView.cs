@@ -28,6 +28,9 @@ public class DialogGraphView
     public Button SelectDialogGraphButton { get; private set; }
     public Button GenerateGraphButton { get; private set; }
     public Button GenerateGraphInSceneButton { get; private set; }
+    public Button BackButton { get; private set; }
+    public Button SyncDialogGraphButton { get; private set; }
+    public TextField GraphTitle { get; private set; }
 
 
     //Public Properties
@@ -61,9 +64,31 @@ public class DialogGraphView
     public DialogGraphView(VisualElement root)
     {
         BindTreeAsset(root);
-        BindUIElements();  
+        BindUIElements();
+        RegisterCallBacks();
+        zoomFactor = 1f;
+        ScrollView.SetEnabled(false);
+        Helpers.Hide(GenerateGraphButton);
+        Helpers.Hide(GenerateGraphInSceneButton);
+        Helpers.Hide(SyncDialogGraphButton);
+        Helpers.Hide(BackButton);
     }
 
+    public void SetTitleText(string text)
+    {
+        GraphTitle.value = text;
+    }
+    #region Initialization
+
+    private void BindTreeAsset(VisualElement root)
+    {
+        this.Parent = root;
+        TreeAsset = AssetDatabase.LoadAssetAtPath<VisualTreeAsset>(_treePath);
+        StyleSheet = AssetDatabase.LoadAssetAtPath<StyleSheet>(_stylePath);
+        VisualElement clonedTree = TreeAsset.CloneTree();
+        clonedTree.styleSheets.Add(StyleSheet);
+        Parent.Add(clonedTree);
+    }
     private void BindUIElements()
     {
         this.ScrollView = Parent.Q<ScrollView>("ScrollView");
@@ -74,35 +99,52 @@ public class DialogGraphView
         this.SelectDialogGraphButton = Parent.Q<Button>("SelectGraphButton");
         this.GenerateGraphButton = Parent.Q<Button>("GenerateGraphButton");
         this.GenerateGraphInSceneButton = Parent.Q<Button>("GenerateGraphInSceneButton");
-
+        this.GraphTitle = Parent.Q<TextField>("GraphNameTextField");
+        this.BackButton = Parent.Q<Button>("BackButton");
+        this.SyncDialogGraphButton = Parent.Q<Button>("SyncDialogGraphButton");
+        ResetCanvas();
+    }
+    private void RegisterCallBacks()
+    {
         this.ScrollView.RegisterCallback<PointerDownEvent>(OnPointerDown);
         this.ScrollView.RegisterCallback<PointerMoveEvent>(OnPointerMove);
         this.ScrollView.RegisterCallback<PointerUpEvent>(OnPointerUp);
         this.ScrollView.RegisterCallback<WheelEvent>(OnZoom);
 
+        Helpers.OnMouseEnter(CreateNewDialogGraphButton, "Highlight");
+        Helpers.OnMouseLeave(CreateNewDialogGraphButton, "Highlight");
+
+        Helpers.OnMouseEnter(SelectDialogGraphButton, "Highlight");
+        Helpers.OnMouseLeave(SelectDialogGraphButton, "Highlight");
+
+        Helpers.OnMouseEnter(GenerateGraphButton, "Highlight");
+        Helpers.OnMouseLeave(GenerateGraphButton, "Highlight");
+
+        Helpers.OnMouseEnter(GenerateGraphInSceneButton, "Highlight");
+        Helpers.OnMouseLeave(GenerateGraphInSceneButton, "Highlight");
+
+        Helpers.OnMouseEnter(BackButton, "Highlight");
+        Helpers.OnMouseLeave(BackButton, "Highlight");
+
+        Helpers.OnMouseEnter(SyncDialogGraphButton, "Highlight");
+        Helpers.OnMouseLeave(SyncDialogGraphButton, "Highlight");
+    }
+
+    public void ResetCanvas()
+    {
         MouseElement = new VisualElement();
-        infoLabel = new Label("Deneme");
-        infoLabel1 = new Label("Deneme");
-        Parent.Add(infoLabel);
-        Parent.Add(infoLabel1);
         MouseElement.style.width = 1;
         MouseElement.style.height = 1;
         MouseElement.style.position = Position.Absolute;
         MouseElement.name = "MouseTracker";
         ScrollView.contentContainer.Add(MouseElement);
         Canvas.Add(MouseElement);
-        zoomFactor = 1f;
-
-        Helpers.OnMouseEnter(CreateNewDialogGraphButton, "Highlight");
-        Helpers.OnMouseLeave(CreateNewDialogGraphButton, "Highlight");
-        Helpers.OnMouseEnter(SelectDialogGraphButton, "Highlight");
-        Helpers.OnMouseLeave(SelectDialogGraphButton, "Highlight");
-        Helpers.OnMouseEnter(GenerateGraphButton, "Highlight");
-        Helpers.OnMouseLeave(GenerateGraphButton, "Highlight");
-        Helpers.OnMouseEnter(GenerateGraphInSceneButton, "Highlight");
-        Helpers.OnMouseLeave(GenerateGraphInSceneButton, "Highlight");
     }
-   
+
+    #endregion
+
+    #region Events
+
     private void OnZoom(WheelEvent evt)
     {
         float delta = evt.delta.y;
@@ -130,7 +172,6 @@ public class DialogGraphView
 
         evt.StopPropagation();
     }
-
     private void OnPointerDown(PointerDownEvent evt)
     {
         dragStart = evt.position;
@@ -183,7 +224,6 @@ public class DialogGraphView
 
         evt.StopPropagation();
     }
-
     private void OnPointerMove(PointerMoveEvent evt)
     {
         if (isPanning)
@@ -208,7 +248,6 @@ public class DialogGraphView
 
         evt.StopPropagation();
     }
-
     private void OnPointerUp(PointerUpEvent evt)
     {
         if (!isPanning) return;
@@ -218,13 +257,5 @@ public class DialogGraphView
         evt.StopPropagation();
     }
 
-    private void BindTreeAsset(VisualElement root)
-    {
-        this.Parent = root;
-        TreeAsset = AssetDatabase.LoadAssetAtPath<VisualTreeAsset>(_treePath);
-        StyleSheet = AssetDatabase.LoadAssetAtPath<StyleSheet>(_stylePath);
-        VisualElement clonedTree = TreeAsset.CloneTree();
-        clonedTree.styleSheets.Add(StyleSheet);
-        Parent.Add(clonedTree);
-    }
+    #endregion
 }

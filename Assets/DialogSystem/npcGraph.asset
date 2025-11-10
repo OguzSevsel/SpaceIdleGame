@@ -14,6 +14,11 @@ MonoBehaviour:
   m_EditorClassIdentifier: DialogSystem::DialogGraph
   GraphId: npcGraph
   DialogNodes:
-  - {fileID: 11400000, guid: 9f61c899b6e74e94285509158119ddb7, type: 2}
-  - {fileID: 11400000, guid: 8cd993c59b7a88b41bd6841f3da05376, type: 2}
-  - {fileID: 11400000, guid: 66803123896731a418cc1f58d06e51ae, type: 2}
+  - {fileID: 11400000, guid: 5497e2ea4894d384286ccea31a745aa4, type: 2}
+  - {fileID: 11400000, guid: 25f9501b9a4f8564f9e26832f1b2f8ba, type: 2}
+  - {fileID: 11400000, guid: ee098f3b5e6756343a8319563d5e7a44, type: 2}
+  - {fileID: 11400000, guid: 4dffcd8d755171341aea21019012d125, type: 2}
+  - {fileID: 11400000, guid: c6b198c8911bc64419d922b5cf2e9b1a, type: 2}
+  - {fileID: 11400000, guid: f0e5a1561ce848a42ac256ce8a25a891, type: 2}
+  - {fileID: 11400000, guid: 0b86db388a41ba045ab187adf1068eeb, type: 2}
+  - {fileID: 11400000, guid: e8c8c004ed14c7b4b8f5441cdfca619e, type: 2}

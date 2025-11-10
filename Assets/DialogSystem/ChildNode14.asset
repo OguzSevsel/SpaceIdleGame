@@ -10,15 +10,11 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 5a12009323dc7db4fb7999a814d78682, type: 3}
-  m_Name: deneme
+  m_Name: ChildNode14
   m_EditorClassIdentifier: DialogSystem::DialogNodeSO
   DialogNode:
-    NodeId: deneme
-    Portrait: {fileID: 21300000, guid: b70efcd689bc91d44aaa4db917d63311, type: 3}
-    SpeakerName: npc
-    DialogText: '{itemprice}''a satarim'
-    DialogOptions:
-    - OptionText: olmaz kral cok fazla
-      NextNodeId: deneme1
-    - OptionText: olur ya alirim
-      NextNodeId: deneme2
+    NodeId: ChildNode14
+    Portrait: {fileID: 21300000, guid: 31ef0d2da46c7b2418ea8ceb76f04519, type: 3}
+    SpeakerName: ChildNode14
+    DialogText: ChildNode14
+    DialogOptions: []

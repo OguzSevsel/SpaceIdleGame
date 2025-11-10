@@ -34,6 +34,16 @@ public static class Helpers
         });
     }
 
+    public static void Hide(VisualElement element)
+    {
+        element.style.display = DisplayStyle.None;
+    }
+
+    public static void Show(VisualElement element)
+    {
+        element.style.display = DisplayStyle.Flex;
+    }
+
     public static void AddClass(VisualElement element, string className)
     {
         element.AddToClassList(className);

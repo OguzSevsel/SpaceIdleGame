@@ -39,6 +39,14 @@ public class NodeElement
         ContextMenu.OnCreateConnectionButtonClicked += OnCreateConnection;
     }
 
+    public void PopulateNodeFields(string nodeId, string speakerName, Sprite portrait, string dialogueText)
+    {
+        NodeIdField.value = nodeId;
+        SpeakerNameField.value = speakerName;
+        PortraitField.value = portrait;
+        DialogueTextField.value = dialogueText;
+    }
+
     private void OnCreateConnection(NodeElement element)
     {
         if (element == this)
@@ -98,31 +106,11 @@ public class NodeElement
 
     void EnableNodeDragging(ScrollView node)
     {
-        node.RegisterCallback<MouseLeaveEvent>(evt => OnMouseLeave(node, evt));
-        node.RegisterCallback<MouseEnterEvent>(evt => OnMouseEnter(node, evt));
+        Helpers.OnMouseEnter(node, "Highlight");
+        Helpers.OnMouseLeave(node, "Highlight");
         node.RegisterCallback<MouseDownEvent>(evt => OnNodeMouseDown(node, evt));
         node.RegisterCallback<MouseMoveEvent>(evt => OnNodeMouseMove(node, evt));
         node.RegisterCallback<MouseUpEvent>(evt => OnNodeMouseUp(node, evt));
-    }
-
-    private void OnMouseEnter(ScrollView node, MouseEnterEvent evt)
-    {
-        node.AddToClassList("Highlight");
-    }
-
-    private void OnMouseLeave(ScrollView node, MouseLeaveEvent evt)
-    {
-        if (Parent.isMakingConnection)
-        {
-            node.RemoveFromClassList("Highlight");
-            return;
-        }
-
-        if (isContextMenuOpen)
-        {
-            return;
-        }
-        node.RemoveFromClassList("Highlight");
     }
 
     private void OnNodeMouseDown(ScrollView node, MouseDownEvent evt)

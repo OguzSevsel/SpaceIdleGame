@@ -10,13 +10,17 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 5a12009323dc7db4fb7999a814d78682, type: 3}
-  m_Name: deneme2
+  m_Name: ParentNode
   m_EditorClassIdentifier: DialogSystem::DialogNodeSO
   DialogNode:
-    NodeId: deneme2
-    Portrait: {fileID: 21300000, guid: b70efcd689bc91d44aaa4db917d63311, type: 3}
-    SpeakerName: npc
-    DialogText: anlastik o zaman kral al bunu parayi ver sonra gorusuruz
+    NodeId: ParentNode
+    Portrait: {fileID: 21300000, guid: 31ef0d2da46c7b2418ea8ceb76f04519, type: 3}
+    SpeakerName: ParentNode
+    DialogText: ParentNode
     DialogOptions:
-    - OptionText: goodbye
-      NextNodeId: 
+    - OptionText: ChildNode1
+      NextNodeId: ChildNode1
+    - OptionText: ChildNode2
+      NextNodeId: ChildNode2
+    - OptionText: ChildNode3
+      NextNodeId: ChildNode3
