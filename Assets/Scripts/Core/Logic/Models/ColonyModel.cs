@@ -9,7 +9,19 @@ public class ColonyModel : MonoBehaviour
     public List<Resource> Resources;
 
     public event Action<Resource, int>  OnResourceAdded;
+    public event Action<Resource, int>  OnResourceSpend;
 
+    public List<UpgradeModel> GetUpgrades()
+    {
+        var upgradeManager = GetComponentInChildren<UpgradePresenter>();
+        return upgradeManager.GetUpgrades();
+    }
+
+    /// <summary>
+    /// Sells a specified amount of resource and converts it to money.    
+    /// </summary>
+    /// <param name="resource"></param>
+    /// <param name="amount"></param>
     public void SellResource(Resource resource, double amount)
     {
         foreach (Resource colonyResource in Resources)
@@ -22,8 +34,45 @@ public class ColonyModel : MonoBehaviour
         }
     }
 
+    /// <summary>
+    /// Check single resource that colony has enough of.
+    /// </summary>
+    /// <param name="costResources"> This is the cost, which function checks </param>
+    /// <returns></returns>
+    public bool CheckSingleResource(CostResource costResource)
+    {
+        Resource resource = Resources.Find(r => r.ResourceSO.resourceType == costResource.Resource.resourceType);
+        bool isEnough = false;
+
+        if (resource != null)
+        {
+            if (resource.CheckEnoughResource(costResource.GetCostAmount()))
+            {
+                isEnough = true;
+            }
+        }
+        else
+        {
+            if (costResource.Resource.resourceType == ResourceType.Money)
+            {
+                if (GlobalResourceManager.Instance.MoneyAmount >= costResource.GetCostAmount())
+                {
+                    isEnough = true;
+                }
+            }
+        }
+        return isEnough;
+    }
+
+    /// <summary>
+    /// Checking Resources that colony has enough of them.
+    /// </summary>
+    /// <param name="costResources"> This is the cost, which function checks </param>
+    /// <returns></returns>
     public bool CheckResources(List<CostResource> costResources)
     {
+        bool isEnough = true;
+
         foreach (CostResource resource in costResources)
         {
             if (resource.Resource.resourceType != ResourceType.Money)
@@ -32,31 +81,29 @@ public class ColonyModel : MonoBehaviour
 
                 if (newResource != null)
                 {
-                    if (newResource.CheckEnoughResource(resource.GetCostAmount()))
+                    if (!newResource.CheckEnoughResource(resource.GetCostAmount()))
                     {
-                        return true;
-                    }
-                    else
-                    {
-                        return false;
+                        isEnough = false;
                     }
                 }
             }
             else
             {
-                if (resource.GetCostAmount() < GlobalResourceManager.Instance.MoneyAmount)
+                if (resource.GetCostAmount() > GlobalResourceManager.Instance.MoneyAmount)
                 {
-                    return true;
-                }
-                else
-                {
-                    return false;
+                    isEnough = false;
                 }
             }
         }
-        return false;
+        return isEnough;
     }
 
+
+    /// <summary>
+    /// Add resource to the colony which then colony view update its resource text UI.
+    /// </summary>
+    /// <param name="resourceSO"></param>
+    /// <param name="amount"></param>
     public void AddResource(ResourceSO resourceSO, double amount)
     {
         foreach (Resource resource in Resources)
@@ -69,35 +116,31 @@ public class ColonyModel : MonoBehaviour
         }
     }
 
+    /// <summary>
+    /// Spend resources from the colony.
+    /// </summary>
+    /// <param name="costResources"></param>
     public void SpendResources(List<CostResource> costResources)
     {
-        foreach (CostResource resource in costResources)
-        {
-            if (resource.Resource.resourceType != ResourceType.Money)
-            {
-                Resource newResource = Resources.Find(r => r.ResourceSO.resourceType == resource.Resource.resourceType);
+        bool isEnough = CheckResources(costResources);
 
-                if (newResource != null)
-                {
-                    if (newResource.CheckEnoughResource(resource.GetCostAmount()))
-                    {
-                        newResource.SpendResource(resource.GetCostAmount());
-                    }
-                    else
-                    {
-                        Debug.LogWarning($"Cant spend resources because there is not enough of  {resource.Resource.resourceType}");
-                    }
-                }
-            }
-            else
+        if (isEnough)
+        {
+            foreach (CostResource costResource in costResources)
             {
-                if (resource.GetCostAmount() < GlobalResourceManager.Instance.MoneyAmount)
+                if (costResource.Resource.resourceType != ResourceType.Money)
                 {
-                    GlobalResourceManager.Instance.SpendMoney(resource.GetCostAmount());
+                    Resource resource = Resources.Find(r => r.ResourceSO == costResource.Resource);
+
+                    if (resource != null)
+                    {
+                        resource.SpendResource(costResource.GetCostAmount());
+                        OnResourceSpend?.Invoke(resource, Resources.IndexOf(resource));
+                    }
                 }
                 else
                 {
-                    Debug.LogWarning($"Cant spend resources because there is not enough of {resource.Resource.resourceType}");
+                    GlobalResourceManager.Instance.SpendMoney(costResource.GetCostAmount());
                 }
             }
         }

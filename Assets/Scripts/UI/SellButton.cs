@@ -16,6 +16,7 @@ public class SellButton : MonoBehaviour
         _iconResource.sprite = icon;
     }
 
+    //This method is called from the Colony Views initialization method which is called from the colony presenter initialization method.
     public void SetResource(Resource resource)
     {
         _resource = resource;
@@ -25,7 +26,8 @@ public class SellButton : MonoBehaviour
     {
         return _resource;
     }
-
+    
+    //Updating the sell button ui according to the resource that we set earlier with colony view. In this way we can create the sell buttons according the resources that colony has.
     public void SetButtonTexts()
     {
         _textResource.text = $"{_resource.ResourceAmount.ToShortString()} {_resource.ResourceSO.ResourceUnit}";

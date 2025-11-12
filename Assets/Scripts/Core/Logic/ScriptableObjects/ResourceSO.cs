@@ -29,15 +29,15 @@ public class Resource
     public ResourceSO ResourceSO;
 
     [field: SerializeField]
-    public double ResourceAmount {  get; private set; }
+    public double ResourceAmount { get; private set; }
     [field: SerializeField]
     public double SellRate { get; private set; }
     [field: SerializeField]
     public double SellRateMultiplier { get; private set; }
 
     public void AddResource(double amount) { ResourceAmount += amount; }
-    public void SpendResource (double amount) 
-    { 
+    public void SpendResource(double amount)
+    {
         bool isEnough = CheckEnoughResource(amount);
         if (isEnough)
         {
@@ -55,7 +55,12 @@ public class Resource
     }
 
 
-    public void ChangeResourceAmount (double amount) { ResourceAmount = amount; }
-    public void ChangeSellRate (double value) {  SellRate = value; }
-    public void ChangeSellRateMultiplier (double value) {  SellRateMultiplier = value; }
+    public void ChangeResourceAmount(double amount) { ResourceAmount = amount; }
+    public void ChangeSellRate(double value) { SellRate = value; }
+    public void ChangeSellRateMultiplier(double value) { SellRateMultiplier = value; }
+
+    public override string ToString()
+    {
+        return ResourceSO.resourceType.ToString();
+    }
 }

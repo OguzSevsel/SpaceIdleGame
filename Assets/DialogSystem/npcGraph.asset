@@ -1,0 +1,24 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 41184f6860c387e4db813aac33bff285, type: 3}
+  m_Name: npcGraph
+  m_EditorClassIdentifier: DialogSystem::DialogGraph
+  GraphId: npcGraph
+  DialogNodes:
+  - {fileID: 11400000, guid: 5497e2ea4894d384286ccea31a745aa4, type: 2}
+  - {fileID: 11400000, guid: 25f9501b9a4f8564f9e26832f1b2f8ba, type: 2}
+  - {fileID: 11400000, guid: ee098f3b5e6756343a8319563d5e7a44, type: 2}
+  - {fileID: 11400000, guid: 4dffcd8d755171341aea21019012d125, type: 2}
+  - {fileID: 11400000, guid: c6b198c8911bc64419d922b5cf2e9b1a, type: 2}
+  - {fileID: 11400000, guid: f0e5a1561ce848a42ac256ce8a25a891, type: 2}
+  - {fileID: 11400000, guid: 0b86db388a41ba045ab187adf1068eeb, type: 2}
+  - {fileID: 11400000, guid: e8c8c004ed14c7b4b8f5441cdfca619e, type: 2}
