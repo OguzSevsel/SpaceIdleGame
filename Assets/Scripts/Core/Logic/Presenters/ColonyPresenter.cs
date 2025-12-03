@@ -9,7 +9,6 @@ public class ColonyPresenter : MonoBehaviour
     private List<CollectorPresenter> _collectorPresenters = new();
     private bool _isShowingSellInfo;
 
-    //Actual logic that showing the sell panel info.
     private void Update()
     {
         if (_isShowingSellInfo)
@@ -48,32 +47,26 @@ public class ColonyPresenter : MonoBehaviour
         InitializeResourceTexts(_colonyModel.Resources);
     }
 
-    //Handle UI When resource is spent.
     private void OnResourceSpendHandler(Resource resource, int index)
     {
         _colonyView.UpdateResourceText(resource.ResourceSO, resource.ResourceAmount, index);
     }
 
-    //Sell the resource 
     private void SelectedResourceSellHandler(Resource resource)
     {
         _colonyModel.SellResource(resource, resource.ResourceAmount);
     }
 
-    //Creating the resource selection buttons in the sell screen.  
     private void InitializeSellButtons(List<Resource> resources)
     {
         _colonyView.InitializeSellButtons(resources);
     }
 
-
-    //Initializing resource texts according to the resources colony has. 
     private void InitializeResourceTexts(List<Resource> colonyResources)
     {
         _colonyView.InitializeResourceTexts(colonyResources);
     }
 
-    //Updating resource texts after the collection happens.
     private void OnResourceAddedHandler(Resource resource, int index)
     {
         _colonyView.UpdateResourceText(resource.ResourceSO, resource.ResourceAmount, index);
@@ -90,8 +83,7 @@ public class ColonyPresenter : MonoBehaviour
     {
         _isShowingSellInfo = false;
     }
-
-    //Generic event subscribe and unsubscribe methods.
+    
     private void OnEnable()
     {
         Subscribe();
