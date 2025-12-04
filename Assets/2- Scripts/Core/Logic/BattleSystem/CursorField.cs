@@ -1,5 +1,8 @@
 using System;
+using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
+using UnityEngine.Events;
 using UnityEngine.InputSystem;
 
 public class CursorField : MonoBehaviour
@@ -7,6 +10,7 @@ public class CursorField : MonoBehaviour
     public float radius = 1f;
     public LayerMask shipLayer;
     public static event Action<EnemyShip> isClicked;
+    private List<EnemyShip> shipsInside = new List<EnemyShip>();
 
     private void Update()
     {
@@ -25,23 +29,22 @@ public class CursorField : MonoBehaviour
 
     private void DetectShipsInside()
     {
-        // find ships inside the circle
-        Collider2D[] hits = Physics2D.OverlapCircleAll(transform.position, radius, shipLayer);
+        isClicked.Invoke(shipsInside.FirstOrDefault());
+    }
 
-        if (hits.Length == 0)
+    public void RegisterShip(EnemyShip ship)
+    {
+        if (!shipsInside.Contains(ship))
         {
-            Debug.Log("No ships inside circle.");
-            return;
+            shipsInside.Add(ship);
         }
+    }
 
-        foreach (Collider2D hit in hits)
+    public void UnregisterShip(EnemyShip ship)
+    {
+        if (shipsInside.Contains(ship))
         {
-            EnemyShip ship = hit.GetComponent<EnemyShip>();
-            if (ship != null)
-            {
-                Debug.Log("Ship inside circle: " + ship.name);
-                isClicked.Invoke(ship);
-            }
+            shipsInside.Remove(ship);
         }
     }
 

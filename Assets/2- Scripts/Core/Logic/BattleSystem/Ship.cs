@@ -17,7 +17,7 @@ public class Ship : MonoBehaviour, IDamageable
     public float HitRadius = 0.3f;
     private Vector3 _lastPos;
 
-    private void Start()
+    public void Start()
     {
         ShipManager.Instance.RegisterShip(this);
         SpatialGrid.Instance.RegisterShip(this);
@@ -59,6 +59,7 @@ public class Ship : MonoBehaviour, IDamageable
                     {
                         Shoot(Target);
                         CanShoot = false;
+                        IsShooting = false;
                         BulletIntervalTimer = DataSO.FireInterval;
                     }
                 }
