@@ -3,8 +3,6 @@ using UnityEngine.UI;
 using TMPro;
 using System;
 using System.Collections.Generic;
-using Mono.Cecil.Cil;
-using Unity.Properties;
 using System.Linq;
 
 public class CollectorView : MonoBehaviour

@@ -196,10 +196,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::EnemyShip
   DataSO: {fileID: 11400000, guid: 7dac67d31d35ea54bad90ea3ff0cef91, type: 2}
-  _bullets: []
   Target: {fileID: 0}
   IsShooting: 0
-  HitRadius: 0.19
+  _cursorField: {fileID: 0}
 --- !u!1 &4486398579538268058
 GameObject:
   m_ObjectHideFlags: 0

@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
+using UnityEngine.Rendering;
 
 public class Ship : MonoBehaviour, IDamageable
 {
@@ -9,34 +10,20 @@ public class Ship : MonoBehaviour, IDamageable
     public GameObject BulletObjectInstance { get; set; }
     public bool CanShoot { get; set; } = false;
     public float BulletIntervalTimer { get; set; } = 0f;
-
-    public List<GameObject> _bullets;
-
     public EnemyShip Target;
     public bool IsShooting = false;
-    public float HitRadius = 0.3f;
-    private Vector3 _lastPos;
+    public CursorField _cursorField;
 
-    public void Start()
+    public virtual void Start()
     {
         ShipManager.Instance.RegisterShip(this);
-        SpatialGrid.Instance.RegisterShip(this);
-        _lastPos = transform.position;
-        _bullets = new List<GameObject>();
         CreateBulletPool(5);
         CurrentHealth = DataSO.Health;
-    }
-    private void OnDrawGizmos()
-    {
-        Gizmos.color = Color.red;
-        Gizmos.DrawWireSphere(transform.position, HitRadius);
     }
 
     public void Tick()
     {
         HandleFireTimer();
-        SpatialGrid.Instance.UpdateShipCell(this, _lastPos);
-        _lastPos = transform.position;
 
         if (CanShoot)
         {
@@ -71,34 +58,6 @@ public class Ship : MonoBehaviour, IDamageable
         }
     }
 
-    private Ship GetTarget()
-    {
-        var ships = ShipManager.Instance.GetTargetsForBullet(isPlayerBullet: false);
-
-        if (this is PlayerShip)
-        {
-            ships = ShipManager.Instance.GetTargetsForBullet(isPlayerBullet: true);
-        }
-        else
-        {
-            ships = ShipManager.Instance.GetTargetsForBullet(isPlayerBullet: false);
-        }
-
-        return ships.FirstOrDefault();
-    }
-
-    public void TakeDamage(float damage)
-    {
-        CurrentHealth -= damage;
-        
-        if (CurrentHealth <= 0)
-        {
-            _bullets.Clear();
-            BulletObjectInstance = null;
-            Destroy(gameObject);
-        }
-    }
-
     private void HandleFireTimer()
     {
         if (!CanShoot)
@@ -112,50 +71,89 @@ public class Ship : MonoBehaviour, IDamageable
         }
     }
 
+    private Ship GetTarget()
+    {
+        var ships = ShipManager.Instance.GetTargetsForBullet(isPlayerBullet: false);
+
+        if (this is PlayerShip)
+        {
+            ships = ShipManager.Instance.GetTargetsForBullet(isPlayerBullet: true);
+        }
+        else
+        {
+            ships = ShipManager.Instance.GetTargetsForBullet(isPlayerBullet: false);
+        }
+
+        if (ships.Count == 0) return null;
+
+        int index = Random.Range(0, ships.Count);
+
+        return ships[index];
+    }
+
+    public void TakeDamage(float damage)
+    {
+        CurrentHealth -= damage;
+        
+        if (CurrentHealth <= 0)
+        {
+            Die();
+        }
+    }
+
+    private void Die()
+    {
+        if (this is EnemyShip)
+        {
+            _cursorField.UnregisterShip(this as EnemyShip);
+        }
+
+        ShipManager.Instance.UnregisterShip(this);
+        PoolManager.Instance.DestroyPool(this.gameObject);
+        GameObject.Destroy(this.gameObject);
+    }
+
+    private void OnTriggerEnter2D(Collider2D collision)
+    {
+        if (collision.TryGetComponent<Bullet>(out Bullet bullet))
+        {
+            if (this is PlayerShip && bullet.IsPlayerBullet) return;
+            if (this is EnemyShip && !bullet.IsPlayerBullet) return;
+
+            TakeDamage(10f);
+        }
+    }
+
     private void CreateBulletPool(int count)
     {
-        for (int i = 0; i < count; i++)
+        PoolManager.Instance.CreatePool(DataSO.BulletObject, this.transform, Quaternion.identity, count);
+
+        foreach (var item in PoolManager.Instance.GetPool(this.gameObject))
         {
-            BulletObjectInstance = Instantiate(DataSO.BulletObject, transform.position, Quaternion.identity);
-            BulletObjectInstance.SetActive(false);
-            _bullets.Add(BulletObjectInstance);
-            BulletManager.Instance.Register(BulletObjectInstance.GetComponent<Bullet>());
+            BulletManager.Instance.Register(item.GetComponent<Bullet>());
         }
     }
 
     public void Shoot(Ship target)
     {
-        foreach (var bullet in _bullets)
+        if (this.gameObject != null)
         {
-            if (!bullet.activeInHierarchy)
-            {
-                bullet.transform.position = this.transform.position;
-                bullet.SetActive(true);
+            BulletObjectInstance = PoolManager.Instance.Get(this.gameObject);
+            BulletObjectInstance.transform.position = this.transform.position;
+        }
 
-                if (this is PlayerShip)
-                {
-                    bullet.GetComponent<Bullet>().Shoot(target, DataSO.Damage, true);
-                }
-                else
-                {
-                    bullet.GetComponent<Bullet>().Shoot(target, DataSO.Damage, false);
-                }
-                return;
+        if (BulletObjectInstance != null)
+        {
+            if (this is PlayerShip)
+            {
+                BulletObjectInstance.GetComponent<Bullet>().Shoot(target, DataSO.Damage, fromPlayer: true);
+            }
+            else
+            {
+                BulletObjectInstance.GetComponent<Bullet>().Shoot(target, DataSO.Damage);
             }
         }
-    }
-
-    private void OnDestroy()
-    {
-        ShipManager.Instance.UnregisterShip(this);
-        SpatialGrid.Instance.UnregisterShip(this);
-    }
-
-    private void OnDisable()
-    {
-        ShipManager.Instance.UnregisterShip(this);
-
-        if (SpatialGrid.Instance != null)
-            SpatialGrid.Instance.UnregisterShip(this);
+        
+        return;
     }
 }

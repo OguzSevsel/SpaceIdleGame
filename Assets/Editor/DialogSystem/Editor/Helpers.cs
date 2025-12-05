@@ -1,8 +1,6 @@
 using UnityEngine;
 using UnityEngine.UIElements;
-using UnityEditor.UIElements;
 using System.Linq;
-using Unity.Android.Types;
 
 public static class Helpers
 {

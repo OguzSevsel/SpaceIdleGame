@@ -4,27 +4,26 @@ using UnityEngine;
 public class ShipManager : MonoBehaviour
 {
     public static ShipManager Instance;
-
-    public List<PlayerShip> PlayerShips = new();
-    public List<EnemyShip> EnemyShips = new();
-
-    public List<Bullet> Bullets = new();
+    public List<PlayerShip> PlayerShips;
+    public List<EnemyShip> EnemyShips;
 
     private void Awake()
     {
         Instance = this;
+        PlayerShips = new List<PlayerShip>();
+        EnemyShips = new List<EnemyShip>();
     }
 
-    private void Update()
+    public void Update()
     {
-        foreach (var enemyShip in EnemyShips)
+        foreach (var ship in PlayerShips)
         {
-            enemyShip.Tick();
+            if (ship != null) ship.Tick();
         }
 
-        foreach (var playerShip in PlayerShips)
+        foreach (var ship in EnemyShips)
         {
-            playerShip.Tick();
+            if (ship != null) ship.Tick();
         }
     }
 

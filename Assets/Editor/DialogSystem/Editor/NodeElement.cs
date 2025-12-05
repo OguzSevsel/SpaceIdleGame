@@ -1,7 +1,4 @@
-using System;
 using System.Collections.Generic;
-using System.Linq;
-using Unity.Android.Gradle;
 using UnityEditor;
 using UnityEditor.UIElements;
 using UnityEngine;
@@ -12,7 +9,7 @@ public class NodeElement
     public ScrollView Node { get; private set; }
     public TextField NodeIdField { get; private set; }
     public TextField SpeakerNameField { get; private set; }
-    public ObjectField PortraitField { get; private set; }
+    public UnityEditor.UIElements.ObjectField PortraitField { get; private set; }
     public TextField DialogueTextField { get; private set; }
     public Button AddOptionButton { get; private set; }
     public DialogGraphEditorWindow Parent { get; set; }

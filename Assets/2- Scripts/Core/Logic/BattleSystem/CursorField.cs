@@ -9,8 +9,8 @@ public class CursorField : MonoBehaviour
 {
     public float radius = 1f;
     public LayerMask shipLayer;
-    public static event Action<EnemyShip> isClicked;
-    private List<EnemyShip> shipsInside = new List<EnemyShip>();
+    public static event Action<List<EnemyShip>> isClicked;
+    public List<EnemyShip> shipsInside = new List<EnemyShip>();
 
     private void Update()
     {
@@ -29,7 +29,7 @@ public class CursorField : MonoBehaviour
 
     private void DetectShipsInside()
     {
-        isClicked.Invoke(shipsInside.FirstOrDefault());
+        isClicked.Invoke(shipsInside);
     }
 
     public void RegisterShip(EnemyShip ship)

@@ -3,28 +3,27 @@ using UnityEngine;
 
 public class EnemyShip : Ship
 {
-    private CursorField detector;
     private bool isInside = false;
 
-    void Start()
+    public override void Start()
     {
-        detector = FindAnyObjectByType<CursorField>();
         base.Start();
+        _cursorField = FindAnyObjectByType<CursorField>();
     }
 
-    void Update()
+    public void Update()
     {
-        float dist = Vector2.Distance(transform.position, detector.transform.position);
+        float dist = Vector2.Distance(transform.position, _cursorField.transform.position);
 
-        if (!isInside && dist <= detector.radius)
+        if (!isInside && dist <= _cursorField.radius)
         {
             isInside = true;
-            detector.RegisterShip(this);
+            _cursorField.RegisterShip(this);
         }
-        else if (isInside && dist > detector.radius)
+        else if (isInside && dist > _cursorField.radius)
         {
             isInside = false;
-            detector.UnregisterShip(this);
+            _cursorField.UnregisterShip(this);
         }
     }
 }

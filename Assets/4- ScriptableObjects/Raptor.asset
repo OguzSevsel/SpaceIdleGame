@@ -17,6 +17,6 @@ MonoBehaviour:
   _bulletObject: {fileID: 1860706049015914, guid: ee526a134bd1cd342aee84ae052d66a3, type: 3}
   _damage: 10
   _health: 100
-  _fireInterval: 1
+  _fireInterval: 2
   _bulletCount: 0
   _bulletCapacity: 100
