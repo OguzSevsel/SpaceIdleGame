@@ -5,11 +5,13 @@ using Unity.Mathematics;
 using UnityEngine;
 
 [BurstCompile]
-public struct BulletVsShipJob : IJobParallelFor
+public struct CollisionJob : IJobParallelFor
 {
     [ReadOnly] public NativeArray<PhysicsBody> Bullets;
     [ReadOnly] public NativeArray<PhysicsBody> Ships;
-    public NativeArray<int> CollisionResults; // 0 = no hit, 1 = hit
+
+    public NativeArray<int> BulletsResults; // 0 = no hit, 1 = hit
+    public NativeArray<int> ShipResults; // 0 = no hit, 1 = hit
 
     public void Execute(int i)
     {
@@ -18,20 +20,23 @@ public struct BulletVsShipJob : IJobParallelFor
         for (int s = 0; s < Ships.Length; s++)
         {
             PhysicsBody ship = Ships[s];
-            float distSq = math.distancesq(bullet.Position, ship.Position);
-            float radSum = bullet.Radius + ship.Radius;
 
-            if (distSq <= radSum * radSum)
+            if (CircleCollision(bullet.Position, bullet.Radius, ship.Position, ship.Radius))
             {
-                CollisionResults[i] = 1;
+                BulletsResults[i] = 1;
+                ShipResults[s] = 1;
                 return;
             }
         }
+    }
 
-        CollisionResults[i] = 0;
+    private bool CircleCollision(float3 position1, float radius1, float3 position2, float radius2)
+    {
+        float distSq = math.distancesq(position1, position2);
+        float radSum = radius1 + radius2;
+        return distSq <= radSum * radSum;
     }
 }
-
 
 public struct PhysicsBody
 {
@@ -83,6 +88,12 @@ public class Bullet : MonoBehaviour
     {
         IsActive = false;
         gameObject.SetActive(false);
+    }
+
+    private void OnDrawGizmos()
+    {
+        Gizmos.color = Color.red;
+        Gizmos.DrawWireSphere(transform.position, HitRadius);
     }
 
     private void OnDestroy()

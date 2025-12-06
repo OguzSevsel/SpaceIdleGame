@@ -8,63 +8,84 @@ using UnityEngine;
 public class BulletManager : MonoBehaviour
 {
     public static BulletManager Instance;
-    public List<Bullet> bullets;
+    public List<Bullet> EnemyBullets;
+    public List<Bullet> PlayerBullets;
     public List<Bullet> DestroyedBullets;
+
+    private JobHandle collisionJobHandle;
+    private CollisionJob collisionJob;
+    private NativeArray<PhysicsBody> _nativeBullets;
+    private NativeArray<PhysicsBody> _nativeShips;
+    private NativeArray<int> _bulletsResults;
+    private NativeArray<int> _shipResults;
 
     private void Awake()
     {
         Instance = this;
-        bullets = new List<Bullet>();
+        EnemyBullets = new List<Bullet>();
+        PlayerBullets = new List<Bullet>();
         DestroyedBullets = new List<Bullet>();
     }
 
-    public void Register(Bullet b)
+    public void Register(Bullet bullet, bool isPlayerBullet)
     {
-        bullets.Add(b);
+        if (isPlayerBullet)
+        {
+            PlayerBullets.Add(bullet);
+        }
+        else
+        {
+            EnemyBullets.Add(bullet);
+        }
     }
-    public void UnRegister(Bullet b)
+    public void UnRegister(Bullet bullet)
     {
-        DestroyedBullets.Add(b);
+        DestroyedBullets.Add(bullet);
     }
 
-    NativeArray<PhysicsBody> nativeBullets;
-    NativeArray<PhysicsBody> ships;
-    NativeArray<int> results;
-
-    private void RunCollisionJob(List<Bullet> bulletsToCheck, List<Ship> targetShips)
+    private void RunCollisionJob(List<Bullet> bullets, List<Ship> ships)
     {
-        int bulletCount = bulletsToCheck.Count;
-        int shipCount = targetShips.Count;
+        int bulletCount = bullets.Count;
+        int shipCount = ships.Count;
 
         if (bulletCount == 0 || shipCount == 0) return;
 
-        var nativeBullets = new NativeArray<PhysicsBody>(bulletCount, Allocator.TempJob);
-        var nativeShips = new NativeArray<PhysicsBody>(shipCount, Allocator.TempJob);
-        var results = new NativeArray<int>(bulletCount, Allocator.TempJob);
+        _nativeBullets = new NativeArray<PhysicsBody>(bulletCount, Allocator.TempJob);
+        _bulletsResults = new NativeArray<int>(bulletCount, Allocator.TempJob);
+
+        _nativeShips = new NativeArray<PhysicsBody>(shipCount, Allocator.TempJob);
+        _shipResults = new NativeArray<int>(shipCount, Allocator.TempJob);
 
         for (int i = 0; i < bulletCount; i++)
         {
-            nativeBullets[i] = new PhysicsBody
+            _nativeBullets[i] = new PhysicsBody
             {
-                Position = bulletsToCheck[i].transform.position,
-                Radius = bulletsToCheck[i].HitRadius
+                Position = bullets[i].transform.position,
+                Radius = bullets[i].HitRadius
             };
         }
 
         for (int s = 0; s < shipCount; s++)
         {
-            nativeShips[s] = new PhysicsBody
+            _nativeShips[s] = new PhysicsBody
             {
-                Position = targetShips[s].transform.position,
-                Radius = 0.2f
+                Position = ships[s].transform.position,
+                Radius = ships[s].DataSO.HitRadius
             };
         }
 
-        var job = new BulletVsShipJob
+        for (int i = 0; i < bulletCount; i++)
+            _bulletsResults[i] = 0;
+
+        for (int s = 0; s < shipCount; s++)
+            _shipResults[s] = 0;
+
+        var job = new CollisionJob
         {
-            Bullets = nativeBullets,
-            Ships = nativeShips,
-            CollisionResults = results
+            Bullets = _nativeBullets,
+            BulletsResults = _bulletsResults,
+            Ships = _nativeShips,
+            ShipResults = _shipResults
         };
 
         JobHandle handle = job.Schedule(bulletCount, 32);
@@ -73,53 +94,69 @@ public class BulletManager : MonoBehaviour
         // Process results
         for (int i = 0; i < bulletCount; i++)
         {
-            if (results[i] == 1)
+            if (_bulletsResults[i] == 1)
             {
-                bulletsToCheck[i].Deactivate();
+                bullets[i].Deactivate();
+            }
+        }
+
+        for (int i = 0; i < shipCount; i++)
+        {
+            if (_shipResults[i] == 1)
+            {
+                ships[i].TakeDamage(10f);
             }
         }
 
         // Dispose
-        nativeBullets.Dispose();
-        nativeShips.Dispose();
-        results.Dispose();
+        _nativeBullets.Dispose();
+        _nativeShips.Dispose();
+        _bulletsResults.Dispose();
+        _shipResults.Dispose();
+    }
+    private void LateUpdate()
+    {
+        
     }
 
     private void Update()
     {
-        if (bullets.Count == 0) return;
+        if (EnemyBullets.Count == 0 && PlayerBullets.Count == 0) return;
 
-        // Partition bullets by team
-        List<Bullet> playerBullets = new List<Bullet>();
-        List<Bullet> enemyBullets = new List<Bullet>();
-
-        foreach (var b in bullets)
+        foreach (var bullet in EnemyBullets)
         {
-            if (!b.IsActive) continue;
-
-            if (b == null)
+            if (bullet.IsActive)
             {
-                continue;
+                bullet.Tick();
             }
-
-            if (b.IsPlayerBullet) playerBullets.Add(b);
-            else enemyBullets.Add(b);
         }
 
-        // Run collision jobs
-        RunCollisionJob(playerBullets, ShipManager.Instance.EnemyShips.ToList<Ship>());
-        RunCollisionJob(enemyBullets, ShipManager.Instance.PlayerShips.ToList<Ship>());
-
-        // Move bullets
-        foreach (var b in bullets)
+        foreach (var bullet in PlayerBullets)
         {
-            if (b.IsActive) b.Tick();
+            if (bullet.IsActive)
+            {
+                bullet.Tick();
+            }
         }
+
+        RunCollisionJob(PlayerBullets, ShipManager.Instance.EnemyShips);
+        RunCollisionJob(EnemyBullets, ShipManager.Instance.PlayerShips);
 
         // Remove destroyed bullets
-        foreach (var b in DestroyedBullets)
-            bullets.Remove(b);
+        foreach (var bullet in DestroyedBullets)
+        {
+            if (EnemyBullets.Contains(bullet))
+            {
+                EnemyBullets.Remove(bullet);
+            }
+
+            if (PlayerBullets.Contains(bullet))
+            {
+                PlayerBullets.Remove(bullet);
+            }
+        }
 
         DestroyedBullets.Clear();
     }
 }
+

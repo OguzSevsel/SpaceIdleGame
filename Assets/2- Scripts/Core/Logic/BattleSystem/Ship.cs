@@ -130,7 +130,14 @@ public class Ship : MonoBehaviour, IDamageable
 
         foreach (var item in PoolManager.Instance.GetPool(this.gameObject))
         {
-            BulletManager.Instance.Register(item.GetComponent<Bullet>());
+            if (this is PlayerShip)
+            {
+                BulletManager.Instance.Register(item.GetComponent<Bullet>(), true);
+            }
+            else
+            {
+                BulletManager.Instance.Register(item.GetComponent<Bullet>(), false);
+            }
         }
     }
 
