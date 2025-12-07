@@ -69,7 +69,7 @@ public class LineElement : VisualElement
 
         OptionText = textBox;
         Canvas.Add(OptionText);
-        Helpers.SetMarginsAndPadding(OptionText, 0);
+        Utility.SetMarginsAndPadding(OptionText, 0);
 
         textBox.Focus();
     }
@@ -105,7 +105,7 @@ public class LineElement : VisualElement
 
         var painter = ctx.painter2D;
         painter.lineWidth = 3f;
-        painter.strokeColor = Helpers.HexToColor(Helpers.ColorBorder);
+        painter.strokeColor = Utility.HexToColor(Utility.ColorBorder);
 
         painter.BeginPath();
         painter.MoveTo(startLocal);
@@ -124,7 +124,7 @@ public class LineElement : VisualElement
         painter.LineTo(arrowLeft);
         painter.LineTo(arrowRight);
         painter.ClosePath();
-        painter.fillColor = Helpers.HexToColor(Helpers.ColorBorder);
+        painter.fillColor = Utility.HexToColor(Utility.ColorBorder);
         painter.Fill();
     }
 

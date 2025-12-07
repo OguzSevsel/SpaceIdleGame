@@ -2,7 +2,7 @@ using UnityEngine;
 using UnityEngine.UIElements;
 using System.Linq;
 
-public static class Helpers
+public static class Utility
 {
     public static string ColorBackground = "#0B0C0D";
     public static string ColorHighlight = "#161718";

@@ -10,8 +10,8 @@ using UnityEngine.UIElements;
 
 public class ColonyCreatorView
 {
-    private string _treePath = "Assets/Editor/2-VisualTree/1-ColonyCreatorWindow.uxml";
-    private string _stylePath = "Assets/Editor/1-Style/ColonyCreatorWindow.uss";
+    private string _treePath = "Assets/Editor/ObjectCreationTool/2-VisualTree/1-ColonyCreatorWindow.uxml";
+    private string _stylePath = "Assets/Editor/ObjectCreationTool/1-Style/ColonyCreatorWindow.uss";
     private List<TreeViewItemData<TreeItem>> _rootItems = new List<TreeViewItemData<TreeItem>>();
     public VisualTreeAsset TreeAsset { get; private set; }
     public StyleSheet StyleSheet { get; private set; }

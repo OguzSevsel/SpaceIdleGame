@@ -122,10 +122,10 @@ public class DialogGraphEditorWindow : EditorWindow
 
     private void SelectDialogGraphButtonClicked()
     {
-        Helpers.Show(main.BackButton);
-        Helpers.Show(main.SyncDialogGraphButton);
-        Helpers.Hide(main.CreateNewDialogGraphButton);
-        Helpers.Hide(main.SelectDialogGraphButton);
+        Utility.Show(main.BackButton);
+        Utility.Show(main.SyncDialogGraphButton);
+        Utility.Hide(main.CreateNewDialogGraphButton);
+        Utility.Hide(main.SelectDialogGraphButton);
         EditorGUIUtility.ShowObjectPicker<DialogGraph>(selectedGraph, false, "", 0);
     }
 
@@ -296,21 +296,21 @@ public class DialogGraphEditorWindow : EditorWindow
     {
         main.ScrollView.SetEnabled(true);
         main.SetTitleText("New Dialog Graph");
-        Helpers.Show(main.GenerateGraphButton);
-        Helpers.Show(main.GenerateGraphInSceneButton);
-        Helpers.Show(main.BackButton);
-        Helpers.Hide(main.SelectDialogGraphButton);
-        Helpers.Hide(main.CreateNewDialogGraphButton);
+        Utility.Show(main.GenerateGraphButton);
+        Utility.Show(main.GenerateGraphInSceneButton);
+        Utility.Show(main.BackButton);
+        Utility.Hide(main.SelectDialogGraphButton);
+        Utility.Hide(main.CreateNewDialogGraphButton);
     }
 
     private void ResetRightPanel()
     {
-        Helpers.Show(main.CreateNewDialogGraphButton);
-        Helpers.Show(main.SelectDialogGraphButton);
-        Helpers.Hide(main.BackButton);
-        Helpers.Hide(main.GenerateGraphButton);
-        Helpers.Hide(main.GenerateGraphInSceneButton);
-        Helpers.Hide(main.SyncDialogGraphButton);
+        Utility.Show(main.CreateNewDialogGraphButton);
+        Utility.Show(main.SelectDialogGraphButton);
+        Utility.Hide(main.BackButton);
+        Utility.Hide(main.GenerateGraphButton);
+        Utility.Hide(main.GenerateGraphInSceneButton);
+        Utility.Hide(main.SyncDialogGraphButton);
     }
 
     private void AddNode()

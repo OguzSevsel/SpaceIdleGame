@@ -27,8 +27,6 @@ public class NodeElement
     private IVisualElementScheduledItem tempLineSchedule;
     private string leftClassName = "objectLabel";
     private string rightClassName = "objectField";
-    private bool isContextMenuOpen = false;
-    
 
     public NodeElement()
     {
@@ -65,10 +63,10 @@ public class NodeElement
         node.style.height = 200;
         node.mouseWheelScrollSize = 0;
 
-        Helpers.SetBorderWidth(node, 1);
-        Helpers.SetBorderColor(node, Helpers.HexToColor(Helpers.ColorBorder));
-        Helpers.SetBorderRadius(node, 6);
-        Helpers.SetPadding(node, 6);
+        Utility.SetBorderWidth(node, 1);
+        Utility.SetBorderColor(node, Utility.HexToColor(Utility.ColorBorder));
+        Utility.SetBorderRadius(node, 6);
+        Utility.SetPadding(node, 6);
         node.style.position = Position.Absolute;
         node.style.flexDirection = FlexDirection.Column;
 
@@ -103,8 +101,8 @@ public class NodeElement
 
     void EnableNodeDragging(ScrollView node)
     {
-        Helpers.OnMouseEnter(node, "Highlight");
-        Helpers.OnMouseLeave(node, "Highlight");
+        Utility.OnMouseEnter(node, "Highlight");
+        Utility.OnMouseLeave(node, "Highlight");
         node.RegisterCallback<MouseDownEvent>(evt => OnNodeMouseDown(node, evt));
         node.RegisterCallback<MouseMoveEvent>(evt => OnNodeMouseMove(node, evt));
         node.RegisterCallback<MouseUpEvent>(evt => OnNodeMouseUp(node, evt));
@@ -112,7 +110,6 @@ public class NodeElement
 
     private void OnNodeMouseDown(ScrollView node, MouseDownEvent evt)
     {
-        isContextMenuOpen = false;
         if (evt.button == (int)MouseButton.Right)
         {
             if (ContextMenu == null)
@@ -129,7 +126,6 @@ public class NodeElement
             ContextMenu.MenuElement.style.left = overlayPos.x;
             ContextMenu.MenuElement.style.top = overlayPos.y;
             node.AddToClassList("Highlight");
-            isContextMenuOpen = true;
 
             return;
         }
@@ -258,7 +254,7 @@ public class NodeElement
         PortraitField.objectType = typeof(Sprite);
         PortraitField.allowSceneObjects = false;
 
-        Helpers.SetPadding(PortraitField, 0);
+        Utility.SetPadding(PortraitField, 0);
         Set(PortraitField);
         node.Add(PortraitField);
     }
@@ -271,7 +267,7 @@ public class NodeElement
     }
     private void Set(VisualElement element)
     {
-        Helpers.SetFieldWidthPercentages(element, leftClassName, rightClassName);
+        Utility.SetFieldWidthPercentages(element, leftClassName, rightClassName);
     }
 
     #endregion

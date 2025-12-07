@@ -21,7 +21,7 @@ public class ContextMenu
         var menu = new VisualElement();
         menu.style.width = width;
         menu.style.height = height;
-        Helpers.SetBorderRadius(menu, 6);
+        Utility.SetBorderRadius(menu, 6);
         menu.style.alignContent = Align.FlexStart;
         menu.style.position = Position.Absolute;
         menu.style.flexDirection = FlexDirection.Column;
@@ -30,12 +30,12 @@ public class ContextMenu
     private void SetButtonUI(Button button, string buttonText)
     {
         button.text = buttonText;
-        button.style.color = Helpers.HexToColor(Helpers.ColorText);
-        button.style.backgroundColor = Helpers.HexToColor(Helpers.ColorBackground);
-        Helpers.SetBorderColor(button, Helpers.HexToColor(Helpers.ColorBorder));
-        Helpers.SetPadding(button, 1);
-        Helpers.OnMouseEnter(button, "Highlight");
-        Helpers.OnMouseLeave(button, "Highlight");
+        button.style.color = Utility.HexToColor(Utility.ColorText);
+        button.style.backgroundColor = Utility.HexToColor(Utility.ColorBackground);
+        Utility.SetBorderColor(button, Utility.HexToColor(Utility.ColorBorder));
+        Utility.SetPadding(button, 1);
+        Utility.OnMouseEnter(button, "Highlight");
+        Utility.OnMouseLeave(button, "Highlight");
     }
     public void CreateMenuItemsForNode(VisualElement menu)
     {

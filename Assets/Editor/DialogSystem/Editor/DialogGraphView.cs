@@ -9,8 +9,8 @@ using UnityEngine.Rendering;
 public class DialogGraphView
 {
     //UI Assets Paths
-    private string _treePath = "Assets/DialogSystem/Editor/1-UI Documents/DialogGraphEditorWindow.uxml";
-    private string _stylePath = "Assets/DialogSystem/Editor/2-Styles/DialogGraphEditorWindowStyle.uss";
+    private string _treePath = "Assets/Editor/DialogSystem/Editor/1-UIDocuments/DialogGraphEditorWindow.uxml";
+    private string _stylePath = "Assets/Editor/DialogSystem/Editor/2-Styles/DialogGraphEditorWindowStyle.uss";
 
 
 
@@ -68,10 +68,10 @@ public class DialogGraphView
         RegisterCallBacks();
         zoomFactor = 1f;
         ScrollView.SetEnabled(false);
-        Helpers.Hide(GenerateGraphButton);
-        Helpers.Hide(GenerateGraphInSceneButton);
-        Helpers.Hide(SyncDialogGraphButton);
-        Helpers.Hide(BackButton);
+        Utility.Hide(GenerateGraphButton);
+        Utility.Hide(GenerateGraphInSceneButton);
+        Utility.Hide(SyncDialogGraphButton);
+        Utility.Hide(BackButton);
     }
 
     public void SetTitleText(string text)
@@ -111,23 +111,23 @@ public class DialogGraphView
         this.ScrollView.RegisterCallback<PointerUpEvent>(OnPointerUp);
         this.ScrollView.RegisterCallback<WheelEvent>(OnZoom);
 
-        Helpers.OnMouseEnter(CreateNewDialogGraphButton, "Highlight");
-        Helpers.OnMouseLeave(CreateNewDialogGraphButton, "Highlight");
+        Utility.OnMouseEnter(CreateNewDialogGraphButton, "Highlight");
+        Utility.OnMouseLeave(CreateNewDialogGraphButton, "Highlight");
 
-        Helpers.OnMouseEnter(SelectDialogGraphButton, "Highlight");
-        Helpers.OnMouseLeave(SelectDialogGraphButton, "Highlight");
+        Utility.OnMouseEnter(SelectDialogGraphButton, "Highlight");
+        Utility.OnMouseLeave(SelectDialogGraphButton, "Highlight");
 
-        Helpers.OnMouseEnter(GenerateGraphButton, "Highlight");
-        Helpers.OnMouseLeave(GenerateGraphButton, "Highlight");
+        Utility.OnMouseEnter(GenerateGraphButton, "Highlight");
+        Utility.OnMouseLeave(GenerateGraphButton, "Highlight");
 
-        Helpers.OnMouseEnter(GenerateGraphInSceneButton, "Highlight");
-        Helpers.OnMouseLeave(GenerateGraphInSceneButton, "Highlight");
+        Utility.OnMouseEnter(GenerateGraphInSceneButton, "Highlight");
+        Utility.OnMouseLeave(GenerateGraphInSceneButton, "Highlight");
 
-        Helpers.OnMouseEnter(BackButton, "Highlight");
-        Helpers.OnMouseLeave(BackButton, "Highlight");
+        Utility.OnMouseEnter(BackButton, "Highlight");
+        Utility.OnMouseLeave(BackButton, "Highlight");
 
-        Helpers.OnMouseEnter(SyncDialogGraphButton, "Highlight");
-        Helpers.OnMouseLeave(SyncDialogGraphButton, "Highlight");
+        Utility.OnMouseEnter(SyncDialogGraphButton, "Highlight");
+        Utility.OnMouseLeave(SyncDialogGraphButton, "Highlight");
     }
 
     public void ResetCanvas()

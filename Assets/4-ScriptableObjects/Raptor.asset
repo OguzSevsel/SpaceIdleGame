@@ -20,4 +20,4 @@ MonoBehaviour:
   _fireInterval: 2
   _bulletCount: 0
   _bulletCapacity: 100
-  _hitRadius: 1
+  _hitRadius: 0.18

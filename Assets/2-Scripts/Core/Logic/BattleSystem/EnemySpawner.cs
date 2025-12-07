@@ -57,7 +57,6 @@ public class EnemySpawner : MonoBehaviour
             {
                 spots = FormationGenerator.Generate(_bottomFormation.FormationShape, _spawnCount, _bottomFormation.FormationLayerCount, 0.5f);
             }
-            Debug.Log($"Spawn Count: {_spawnCount}, Spots Count: {spots.Count}");
 
             foreach (var pos in spots)
             {

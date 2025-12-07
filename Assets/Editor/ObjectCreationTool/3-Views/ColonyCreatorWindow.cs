@@ -24,7 +24,7 @@ public class ColonyCreatorWindow : EditorWindow
     #endregion
 
 
-    private string _SOFolder = "Assets/4- ScriptableObjects/";
+    private string _SOFolder = "Assets/4-ScriptableObjects";
 
 
     #region Custom Classes

@@ -101,6 +101,12 @@ public class Ship : MonoBehaviour, IDamageable
         }
     }
 
+    private void OnDrawGizmos()
+    {
+        Gizmos.color = Color.green;
+        Gizmos.DrawWireSphere(transform.position, DataSO.HitRadius);
+    }
+
     private void Die()
     {
         if (this is EnemyShip)
@@ -127,18 +133,6 @@ public class Ship : MonoBehaviour, IDamageable
     private void CreateBulletPool(int count)
     {
         PoolManager.Instance.CreatePool(DataSO.BulletObject, this.transform, Quaternion.identity, count);
-
-        foreach (var item in PoolManager.Instance.GetPool(this.gameObject))
-        {
-            if (this is PlayerShip)
-            {
-                BulletManager.Instance.Register(item.GetComponent<Bullet>(), true);
-            }
-            else
-            {
-                BulletManager.Instance.Register(item.GetComponent<Bullet>(), false);
-            }
-        }
     }
 
     public void Shoot(Ship target)
@@ -147,6 +141,15 @@ public class Ship : MonoBehaviour, IDamageable
         {
             BulletObjectInstance = PoolManager.Instance.Get(this.gameObject);
             BulletObjectInstance.transform.position = this.transform.position;
+
+            if (this is PlayerShip)
+            {
+                BulletManager.Instance.Register(BulletObjectInstance.GetComponent<Bullet>(), true);
+            }
+            else
+            {
+                BulletManager.Instance.Register(BulletObjectInstance.GetComponent<Bullet>(), false);
+            }
         }
 
         if (BulletObjectInstance != null)

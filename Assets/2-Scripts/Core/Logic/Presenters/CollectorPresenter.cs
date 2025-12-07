@@ -5,7 +5,6 @@ public class CollectorPresenter
 {
     private CollectorModel _collectorModel;
     private CollectorView _collectorView;
-    private static event Action<CollectorEventArgs> OnCollectorCollect;
 
     public CollectorPresenter(CollectorModel model, CollectorView view)
     {
@@ -17,7 +16,6 @@ public class CollectorPresenter
         _collectorView.OnUpgradeAmountChanged += UpgradeAmountChangedHandler;
         _collectorView.OnCollectorCollect += CollectorCollectHandler;
         _collectorView.OnCollectorUpgrade += CollectorUpgradeHandler;
-        
 
         //Model Events
         _collectorModel.OnCollectorUpgrade += CollectorUpgradedHandler;
