@@ -4,19 +4,24 @@ using UnityEngine;
 public class EnemySpawner : MonoBehaviour
 {
     private Dictionary<Transform, Transform> _spawnPoints;
+
     [SerializeField] private Transform _leftSpawnLocation;
-    [SerializeField] private Transform _rightSpawnLocation;
-    [SerializeField] private Transform _topSpawnLocation;
-    [SerializeField] private Transform _bottomSpawnLocation;
     [SerializeField] private Transform _leftDestinationLocation;
-    [SerializeField] private Transform _rightDestinationLocation;
-    [SerializeField] private Transform _topDestinationLocation;
-    [SerializeField] private Transform _bottomDestinationLocation;
-    [SerializeField] private Transform _playerFleetLocation;
     [SerializeField] private Formation _leftFormation;
+
+    [SerializeField] private Transform _rightSpawnLocation;
+    [SerializeField] private Transform _rightDestinationLocation;
     [SerializeField] private Formation _rightFormation;
+
+    [SerializeField] private Transform _topSpawnLocation;
+    [SerializeField] private Transform _topDestinationLocation;
     [SerializeField] private Formation _topFormation;
+
+    [SerializeField] private Transform _bottomSpawnLocation;
+    [SerializeField] private Transform _bottomDestinationLocation;
     [SerializeField] private Formation _bottomFormation;
+
+    [SerializeField] private Transform _playerFleetLocation;
     [SerializeField] private GameObject _enemyShipPrefab;
     [SerializeField] private int _spawnCount = 1;
 
@@ -41,21 +46,23 @@ public class EnemySpawner : MonoBehaviour
         PopulateSpawnPoints();
         foreach (KeyValuePair<Transform, Transform> pair in _spawnPoints)
         {
-            List<Vector3> spots = FormationGenerator.Generate(_leftFormation.FormationShape, _spawnCount, _leftFormation.FormationLayerCount, 0.5f);
+            float spacing = 2f;
+
+            List<Vector3> spots = FormationGenerator.Generate(_leftFormation.FormationShape, _spawnCount, _leftFormation.FormationLayerCount, spacing);
 
             if (pair.Key == _rightSpawnLocation)
             {
-                spots = FormationGenerator.Generate(_rightFormation.FormationShape, _spawnCount, _rightFormation.FormationLayerCount, 0.5f);
+                spots = FormationGenerator.Generate(_rightFormation.FormationShape, _spawnCount, _rightFormation.FormationLayerCount, spacing);
             }
 
             if (pair.Key == _topSpawnLocation)
             {
-                spots = FormationGenerator.Generate(_topFormation.FormationShape, _spawnCount, _topFormation.FormationLayerCount, 0.5f);
+                spots = FormationGenerator.Generate(_topFormation.FormationShape, _spawnCount, _topFormation.FormationLayerCount, spacing);
             }
 
             if (pair.Key == _bottomSpawnLocation)
             {
-                spots = FormationGenerator.Generate(_bottomFormation.FormationShape, _spawnCount, _bottomFormation.FormationLayerCount, 0.5f);
+                spots = FormationGenerator.Generate(_bottomFormation.FormationShape, _spawnCount, _bottomFormation.FormationLayerCount, spacing);
             }
 
             foreach (var pos in spots)

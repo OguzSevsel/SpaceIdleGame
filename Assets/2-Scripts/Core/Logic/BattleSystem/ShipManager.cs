@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using Unity.Mathematics;
 using UnityEngine;
 
 public class ShipManager : MonoBehaviour
@@ -42,5 +43,39 @@ public class ShipManager : MonoBehaviour
     public List<Ship> GetTargetsForBullet(bool isPlayerBullet)
     {
         return isPlayerBullet ? new List<Ship>(EnemyShips) : new List<Ship>(PlayerShips);
+    }
+
+    public List<Ship> GetTargetForHealing(Ship ship)
+    {
+        var ships = new List<Ship>();
+
+        if (ship is EnemyShip)
+        {
+            foreach (var enemyShip in EnemyShips)
+            {
+                float distancesq = math.distancesq(enemyShip.transform.position, ship.transform.position);
+                float radSum = enemyShip.DataSO.HitRadius + ship.DataSO.HealRadius;
+
+                if (distancesq <= radSum * radSum)
+                {
+                    ships.Add(enemyShip);
+                }
+            }
+        }
+        else
+        {
+            foreach (var playerShip in PlayerShips)
+            {
+                float distancesq = math.distancesq(playerShip.transform.position, ship.transform.position);
+                float radSum = playerShip.DataSO.HitRadius + ship.DataSO.HealRadius;
+
+                if (distancesq <= radSum * radSum)
+                {
+                    ships.Add(playerShip);
+                }
+            }
+        }
+
+        return ships;
     }
 }

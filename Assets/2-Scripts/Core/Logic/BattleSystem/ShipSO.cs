@@ -5,18 +5,28 @@ using UnityEngine;
 public class ShipSO : ScriptableObject
 {
     [SerializeField] private string _shipName;
+    [SerializeField] private ShipType _shipType;
     [SerializeField] private Sprite _sprite;
-    [SerializeField] private GameObject _bulletObject;
-    [SerializeField] private float _damage;
+    [SerializeField] private GameObject _bulletObjectPrefab;
+    
+    [SerializeField] private float _actionAmount;
     [SerializeField] private float _health;
-    [SerializeField] private float _fireInterval;
-    [SerializeField] private int _bulletCount;
-    [SerializeField] private int _bulletCapacity;
+    [SerializeField] private float _actionInterval;
     [SerializeField] private float _hitRadius;
+    [SerializeField] private float _healRadius;
 
-    public GameObject BulletObject => _bulletObject;
-    public float FireInterval => _fireInterval;
+    public GameObject BulletObjectPrefab => _bulletObjectPrefab;
+    public float ActionInterval => _actionInterval;
     public float Health => _health;
-    public float Damage => _damage;
+    public float ActionAmount => _actionAmount;
     public float HitRadius => _hitRadius;
+    public float HealRadius => _healRadius;
+    public ShipType ShipType => _shipType;
+}
+
+public enum ShipType
+{
+    Dps,
+    Tank,
+    Healer
 }

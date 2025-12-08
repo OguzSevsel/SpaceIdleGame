@@ -89,32 +89,32 @@ public class PoolManager : MonoBehaviour
             if (!item.activeInHierarchy)
             {
                 GameObjectInstance = item;
-                break;
+                return GameObjectInstance;
             }
-        }
-
-        if (GameObjectInstance != null)
-        {
-            GameObjectInstance.SetActive(true);
-            return GameObjectInstance;
-        }
-        else
-        {
-            Debug.Log("Some of the bullets is not found");
         }
 
         Debug.LogWarning($"No available objects in pool, named {GameObjectInstance.name}!");
         return null;
     }
 
-    public void MakeActive(GameObject key)
+    public void AddToPool(GameObject key, GameObject poolItem)
     {
-        GameObjectInstance = Pools[key].Find(obj => !obj.activeInHierarchy);
+        var pool = Pools[key];
+        bool isPoolFull = true;
 
-        if (GameObjectInstance != null)
-            GameObjectInstance.SetActive(true);
+        foreach (GameObject item in pool)
+        {
+            if (!item.activeInHierarchy)
+            {
+                isPoolFull = false;
+                break;
+            }
+        }
 
-        Debug.LogWarning($"No available objects in pool, named {GameObjectInstance.name}!");
+        if (isPoolFull)
+        {
+            pool.Add(poolItem);
+        }
     }
 
     public List<GameObject> GetPool(GameObject key)

@@ -1,4 +1,3 @@
-using System.Linq;
 using UnityEngine;
 
 public class EnemyShip : Ship
@@ -11,8 +10,9 @@ public class EnemyShip : Ship
         _cursorField = FindAnyObjectByType<CursorField>();
     }
 
-    public void Update()
+    public override void Tick()
     {
+        base.Tick();
         float dist = Vector2.Distance(transform.position, _cursorField.transform.position);
 
         if (!isInside && dist <= _cursorField.radius)
@@ -24,6 +24,40 @@ public class EnemyShip : Ship
         {
             isInside = false;
             _cursorField.UnregisterShip(this);
+        }
+
+        if (CanAction)
+        {
+            Action();
+        }
+    }
+
+    private void Action()
+    {
+        switch (DataSO.ShipType)
+        {
+            case ShipType.Dps:
+
+                var target = GetTarget();
+                if (target == null) return;
+                Shoot(target);
+                CanAction = false;
+                ActionIntervalTimer = DataSO.ActionInterval;
+
+                break;
+
+            case ShipType.Tank:
+                break;
+            case ShipType.Healer:
+
+                Heal();
+
+                CanAction = false;
+                ActionIntervalTimer = DataSO.ActionInterval;
+
+                break;
+            default:
+                break;
         }
     }
 }
