@@ -19,5 +19,5 @@ MonoBehaviour:
   _actionAmount: 5
   _health: 100
   _actionInterval: 1
-  _hitRadius: 0.18
+  _hitRadius: 0.15
   _healRadius: 1.7

@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using UnityEngine;
+using static UnityEditor.PlayerSettings;
 
 public class EnemySpawner : MonoBehaviour
 {
@@ -48,49 +49,100 @@ public class EnemySpawner : MonoBehaviour
         {
             float spacing = 2f;
 
-            List<Vector3> spots = FormationGenerator.Generate(_leftFormation.FormationShape, _spawnCount, _leftFormation.FormationLayerCount, spacing);
+            (Dictionary<List<Vector3>, int>, Dictionary<List<Quaternion>, int>) formation = FormationGenerator.Generate(_leftFormation.FormationShape, _spawnCount, _leftFormation.FormationLayerCount, 2f);
+            SpawnShips(formation, pair.Key);
 
             if (pair.Key == _rightSpawnLocation)
             {
-                spots = FormationGenerator.Generate(_rightFormation.FormationShape, _spawnCount, _rightFormation.FormationLayerCount, spacing);
+                formation = FormationGenerator.Generate(_rightFormation.FormationShape, _spawnCount, _rightFormation.FormationLayerCount, spacing);
+                SpawnShips(formation, pair.Key);
             }
 
             if (pair.Key == _topSpawnLocation)
             {
-                spots = FormationGenerator.Generate(_topFormation.FormationShape, _spawnCount, _topFormation.FormationLayerCount, spacing);
+                formation = FormationGenerator.Generate(_topFormation.FormationShape, _spawnCount, _topFormation.FormationLayerCount, spacing);
+                SpawnShips(formation, pair.Key);
             }
 
             if (pair.Key == _bottomSpawnLocation)
             {
-                spots = FormationGenerator.Generate(_bottomFormation.FormationShape, _spawnCount, _bottomFormation.FormationLayerCount, spacing);
-            }
+                formation = FormationGenerator.Generate(_bottomFormation.FormationShape, _spawnCount, _bottomFormation.FormationLayerCount, spacing);
 
-            foreach (var pos in spots)
-            {
-                _ship = Instantiate(_enemyShipPrefab, pair.Key.transform.position + pos, Quaternion.identity, pair.Key.transform);
-
-                if (pair.Key == _leftSpawnLocation)
-                {
-                    _ship.transform.rotation = Quaternion.Euler(new Vector3(0, 0, 90));
-                }
-
-                if (pair.Key == _rightSpawnLocation)
-                {
-                    _ship.transform.rotation = Quaternion.Euler(new Vector3(0, 0, 270));
-                }
-
-                if (pair.Key == _topSpawnLocation)
-                {
-                    _ship.transform.rotation = Quaternion.Euler(new Vector3(0, 0, 0));
-                }
-
-                if (pair.Key == _bottomSpawnLocation)
-                {
-                    _ship.transform.rotation = Quaternion.Euler(new Vector3(0, 0, 180));
-                }
+                SpawnShips(formation, pair.Key);
             }
         }
         _isSpawned = true;
+    }
+
+    private void SpawnShips((Dictionary<List<Vector3>, int>, Dictionary<List<Quaternion>, int>) formation, Transform spawnLocation)
+    {
+        int layer = 0;
+
+        foreach (var layerPosition in formation.Item1)
+        {
+            layer = layerPosition.Value;
+
+            foreach (var positions in layerPosition.Key)
+            {
+                int id = layerPosition.Value;
+                Vector3 position = positions;
+
+                if (layer == 1)
+                {
+                    _ship = Instantiate(_enemyShipPrefab, spawnLocation.position + position, Quaternion.identity, spawnLocation);
+                }
+                else if (layer == 2)
+                {
+                    _ship = Instantiate(_enemyShipPrefab, spawnLocation.position + position, Quaternion.identity, spawnLocation);
+                }
+                else if (layer == 3)
+                {
+                    _ship = Instantiate(_enemyShipPrefab, spawnLocation.position + position, Quaternion.identity, spawnLocation);
+                }
+                else if (layer == 4)
+                {
+                    _ship = Instantiate(_enemyShipPrefab, spawnLocation.position + position, Quaternion.identity, spawnLocation);
+                }
+                else if (layer == 5)
+                {
+                    _ship = Instantiate(_enemyShipPrefab, spawnLocation.position + position, Quaternion.identity, spawnLocation);
+                }
+
+                foreach (var layerRotation in formation.Item2)
+                {
+                    foreach (var rotations in layerRotation.Key)
+                    {
+                        int rotId = layerRotation.Value;
+
+                        if (id == rotId)
+                        {
+                            Quaternion rotation = rotations;
+                            _ship.transform.rotation = rotation;
+
+                            if (spawnLocation == _leftSpawnLocation)
+                            {
+                                _ship.transform.rotation = Quaternion.Euler(new Vector3(0, 0, 90));
+                            }
+
+                            if (spawnLocation == _rightSpawnLocation)
+                            {
+                                _ship.transform.rotation = Quaternion.Euler(new Vector3(0, 0, 270));
+                            }
+
+                            if (spawnLocation == _topSpawnLocation)
+                            {
+                                _ship.transform.rotation = Quaternion.Euler(new Vector3(0, 0, 0));
+                            }
+
+                            if (spawnLocation == _bottomSpawnLocation)
+                            {
+                                _ship.transform.rotation = Quaternion.Euler(new Vector3(0, 0, 180));
+                            }
+                        }
+                    }
+                }
+            }
+        }
     }
 
     private void MoveToDestination(Transform currentLocation, Transform DestinationLocation)

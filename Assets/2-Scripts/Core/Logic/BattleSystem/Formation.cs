@@ -1,6 +1,17 @@
+using NUnit.Framework.Constraints;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
+using static UnityEditor.Experimental.GraphView.GraphView;
+
+public enum FormationShape
+{
+    Circle,
+    Triangle,
+    Rectangle,
+    Pentagon,
+    Hexagon,
+}
 
 [System.Serializable]
 public class Formation
@@ -10,156 +21,191 @@ public class Formation
     public FormationShape FormationShape = FormationShape.Rectangle;
 }
 
-public enum FormationShape
+public class Layer
 {
-    Circle,
-    Rectangle,
-    Triangle,
-    Star,
-    Line,
+    public Dictionary<List<Quaternion>, int> rotations;
+    public Dictionary<List<Vector3>, int> positions;
+
+    public Layer(FormationShape shape, int layer, float spacing, int unitCount)
+    {
+        rotations = new Dictionary<List<Quaternion>, int>();
+        positions = new Dictionary<List<Vector3>, int>();
+
+        switch (shape)
+        {
+            case FormationShape.Circle:
+                GenerateCircle(layer, spacing, unitCount);
+                break;
+            case FormationShape.Triangle:
+                GeneratePolygonWithLayers(unitCount, spacing, sides: 3, layer);
+                break;
+            case FormationShape.Rectangle:
+                GeneratePolygonWithLayers(unitCount, spacing, sides: 4, layer);
+                break;
+            case FormationShape.Pentagon:
+                GeneratePolygonWithLayers(unitCount, spacing, sides: 5, layer);
+                break;
+            case FormationShape.Hexagon:
+                GeneratePolygonWithLayers(unitCount, spacing, sides: 6, layer);
+                break;
+            default:
+                break;
+        }
+    }
+
+    public void AdjustDirections(Dictionary<List<Vector3>, int> layerPositions, Vector3 center)
+    {
+        var rotations = new List<Quaternion>();
+
+        foreach (var layer in layerPositions)
+        {
+            foreach (var position in layer.Key)
+            {
+                Vector2 direction = (position - center).normalized;
+                float angle = Mathf.Atan2(direction.y, direction.x) * Mathf.Rad2Deg;
+                Quaternion rotation = Quaternion.Euler(0, 0, angle - 90f);
+                rotations.Add(rotation);
+            }
+            this.rotations.Add(rotations, layer.Value);
+            rotations = new List<Quaternion>();
+            this.positions.Add(layer.Key, layer.Value);
+        }
+    }
+
+    //private void GenerateCircle(int layer, float spacing, int unitCount)
+    //{
+    //    List<Vector3> list = new();
+
+    //    float radius = spacing * layer;
+
+    //    for (int i = 0; i < unitCount; i++)
+    //    {
+    //        float angle = (i / (float)unitCount) * Mathf.PI * 2f;
+    //        list.Add(new Vector3(Mathf.Cos(angle), Mathf.Sin(angle)) * radius);
+    //    }
+
+    //    AdjustDirections(list, new Vector3(0, 0));
+    //}
+
+    private void GenerateCircle(int layers, float spacing, int unitCount)
+    {
+        Dictionary<List<Vector3>, int> final = new();
+        List<Vector3> list = new();
+
+        int remaining = unitCount;
+        int layerIndex = 1;
+
+        while (remaining > 0 && layerIndex <= layers)
+        {
+            float radius = spacing * layerIndex;
+
+            // how many points this ring should have
+            int ringCount = Mathf.Min(remaining, layerIndex * 6);   // good density scaling
+
+            for (int i = 0; i < ringCount; i++)
+            {
+                float angle = (i / (float)ringCount) * Mathf.PI * 2f;
+                Vector3 p = new Vector3(Mathf.Cos(angle), Mathf.Sin(angle)) * radius;
+                list.Add(p);
+            }
+
+            final.Add(list, layerIndex);
+            remaining -= ringCount;
+            list = new();
+            layerIndex++;
+        }
+
+        AdjustDirections(final, Vector3.zero);
+    }
+
+    private void GeneratePolygonWithLayers(int unitCount, float spacing, int sides, int layerCount)
+    {
+        Dictionary<List<Vector3>, int> final = new();
+        List<Vector3> list = new();
+
+        int layer = 1;
+        int remaining = unitCount;
+
+        while (remaining > 0 && layer <= layerCount)
+        {
+            int desiredUnits = sides * layer;   // example rule (scales nicely)
+            int take = Mathf.Min(desiredUnits, remaining);
+
+            float radius = layer * spacing * 1f; // scale radius per layer
+
+            if (layer != 1)
+            {
+                radius = layer * spacing * 0.7f; // scale radius per layer
+            }
+
+            var ring = GeneratePolygonLayer(sides, radius, take);
+            list.AddRange(ring);
+            final.Add(list, layer);
+            list = new List<Vector3>();
+            remaining -= take;
+            layer++;
+        }
+
+        AdjustDirections(final, Vector3.zero);
+    }
+
+    private List<Vector3> GeneratePolygonLayer(int sides, float radius, int units)
+    {
+        List<Vector3> pts = new List<Vector3>();
+
+        float angleStep = (-Mathf.PI * 2f) / sides;
+        float startAngle = -Mathf.PI / 2f - (Mathf.PI / sides);
+
+        // points per side
+        int perSide = units / sides;
+        int extra = units % sides;
+
+        for (int side = 0; side < sides; side++)
+        {
+            int count = perSide + (side < extra ? 1 : 0);
+
+            Vector3 a = new Vector3(
+                Mathf.Cos(startAngle + angleStep * side),
+                Mathf.Sin(startAngle + angleStep * side)
+            ) * radius;
+
+            Vector3 b = new Vector3(
+                Mathf.Cos(startAngle + angleStep * (side + 1)),
+                Mathf.Sin(startAngle + angleStep * (side + 1))
+            ) * radius;
+
+            for (int i = 0; i < count; i++)
+            {
+                float t = (float)i / count;
+                pts.Add(Vector3.Lerp(a, b, t));
+            }
+        }
+
+        return pts;
+    }
 }
+
+
 
 public static class FormationGenerator
 {
-    public static List<Vector3> Generate(FormationShape shape, int totalUnits, int layers, float spacing)
+    public static (Dictionary<List<Vector3>, int>, Dictionary<List<Quaternion>, int>) 
+        Generate(FormationShape shape, int unitCount, int layerCount, float spacing)
     {
-        List<Vector3> positions = new();
+        Dictionary<List<Vector3>, int> positions = new();
+        Dictionary<List<Quaternion>, int> rotations = new();
 
-        if (totalUnits <= 0)
-            return positions;
+        if (unitCount <= 0)
+            return (null, null);
 
-        // Always center
-        positions.Add(Vector3.zero);
-        totalUnits--;
-
-        // Fill layers
-        for (int layer = 1; layer <= layers && totalUnits > 0; layer++)
+        for (int i = 1; i <= layerCount; i++)
         {
-            List<Vector3> layerPositions = GenerateLayer(shape, layer, spacing, totalUnits);
-
-            foreach (var pos in layerPositions)
-            {
-                positions.Add(pos);
-                totalUnits--;
-                if (totalUnits <= 0)
-                    break;
-            }
+            Layer layer = new Layer(shape, i, spacing, unitCount);
+            positions = layer.positions;
+            rotations = layer.rotations;
         }
 
-        return positions;
-    }
-
-    private static List<Vector3> GenerateLayer(FormationShape shape, int layer, float spacing, int availableUnits)
-    {
-        switch (shape)
-        {
-            case FormationShape.Circle: return Circle(layer, spacing, availableUnits);
-            case FormationShape.Triangle: return Triangle(layer, spacing, availableUnits);
-            case FormationShape.Rectangle: return Square(layer, spacing, availableUnits);
-            case FormationShape.Line: return Line(layer, spacing, availableUnits);
-            case FormationShape.Star: return Star(layer, spacing, availableUnits);
-        }
-
-        return new();
-    }
-
-    // ---------------- Shapes -----------------
-
-    private static List<Vector3> Circle(int layer, float spacing, int maxUnits)
-    {
-        List<Vector3> list = new();
-
-        int count = Mathf.Min(maxUnits, 6 * layer);
-        float radius = layer * spacing;
-
-        for (int i = 0; i < count; i++)
-        {
-            float angle = (i / (float)count) * Mathf.PI * 2f;
-            list.Add(new Vector3(Mathf.Cos(angle), Mathf.Sin(angle)) * radius);
-        }
-
-        return list;
-    }
-
-    private static List<Vector3> Triangle(int layer, float spacing, int maxUnits)
-    {
-        List<Vector3> list = new();
-
-        float size = layer * spacing;
-        Vector3 p1 = new(0, size);
-        Vector3 p2 = new(-size, -size);
-        Vector3 p3 = new(size, -size);
-
-        List<Vector3> perimeter = new();
-        AddLine(perimeter, p1, p2, layer * 3);
-        AddLine(perimeter, p2, p3, layer * 3);
-        AddLine(perimeter, p3, p1, layer * 3);
-
-        return perimeter.Take(maxUnits).ToList();
-    }
-
-    private static List<Vector3> Square(int layer, float spacing, int maxUnits)
-    {
-        List<Vector3> list = new();
-        float half = layer * spacing;
-
-        Vector3 p1 = new(-half, half);
-        Vector3 p2 = new(half, half);
-        Vector3 p3 = new(half, -half);
-        Vector3 p4 = new(-half, -half);
-
-        List<Vector3> perimeter = new();
-        AddLine(perimeter, p1, p2, layer * 4);
-        AddLine(perimeter, p2, p3, layer * 4);
-        AddLine(perimeter, p3, p4, layer * 4);
-        AddLine(perimeter, p4, p1, layer * 4);
-
-        return perimeter.Take(maxUnits).ToList();
-    }
-
-    private static List<Vector3> Line(int layer, float spacing, int maxUnits)
-    {
-        List<Vector3> list = new();
-        float y = layer * spacing;
-
-        int half = Mathf.Min(maxUnits / 2, layer * 2);
-
-        for (int i = -half; i <= half; i++)
-            list.Add(new Vector3(i * spacing, y));
-
-        return list.Take(maxUnits).ToList();
-    }
-
-    private static List<Vector3> Star(int layer, float spacing, int maxUnits)
-    {
-        List<Vector3> list = new();
-        int points = 5;
-
-        int unitsPerArm = Mathf.Min(maxUnits / points, layer + 1);
-
-        for (int p = 0; p < points; p++)
-        {
-            float angle = (p / (float)points) * Mathf.PI * 2f;
-            Vector3 dir = new(Mathf.Cos(angle), Mathf.Sin(angle));
-
-            for (int j = 1; j <= unitsPerArm; j++)
-            {
-                list.Add(dir * (j * spacing));
-                if (list.Count >= maxUnits)
-                    return list;
-            }
-        }
-
-        return list;
-    }
-
-    private static void AddLine(List<Vector3> list, Vector3 a, Vector3 b, int steps)
-    {
-        for (int i = 0; i <= steps; i++)
-        {
-            float t = i / (float)steps;
-            list.Add(Vector3.Lerp(a, b, t));
-        }
+        return (positions, rotations);
     }
 }
 

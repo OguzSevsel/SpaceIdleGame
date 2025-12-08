@@ -13,19 +13,60 @@ public class PlayerFleet : MonoBehaviour
 
     private void Start()
     {
-        List<Vector3> spots = FormationGenerator.Generate(_formation.FormationShape, _spawnCount, _formation.FormationLayerCount, 2f);
-        
-        for (int i = 0; i < spots.Count; i++)
-        {
-            var pos = spots[i];
+        (Dictionary<List<Vector3>, int>, Dictionary<List<Quaternion>, int>) formation = FormationGenerator.Generate(_formation.FormationShape, _spawnCount, _formation.FormationLayerCount, 2f);
 
-            if (i % 10 == 0)
+        int layer = 0;
+
+
+        foreach (var layerPosition in formation.Item1)
+        {
+            layer = layerPosition.Value;
+            var ships = new List<GameObject>();
+
+            foreach (var positions in layerPosition.Key)
             {
-                _ship = Instantiate(_playerHealerShipPrefab, transform.position + pos, Quaternion.identity, transform);
+                Vector3 position = positions;
+
+                if (layer == 1)
+                {
+                    _ship = Instantiate(_playerHealerShipPrefab, transform.position + position, Quaternion.identity, transform);
+                    ships.Add(_ship);
+                }
+                else if (layer == 2)
+                {
+                    _ship = Instantiate(_playerDpsShipPrefab, transform.position + position, Quaternion.identity, transform);
+                    ships.Add(_ship);
+                }
+                else if (layer == 3)
+                {
+                    _ship = Instantiate(_playerDpsShipPrefab, transform.position + position, Quaternion.identity, transform);
+                    ships.Add(_ship);
+                }
+                else if (layer == 4)
+                {
+                    _ship = Instantiate(_playerHealerShipPrefab, transform.position + position, Quaternion.identity, transform);
+                    ships.Add(_ship);
+                }
+                else if (layer == 5)
+                {
+                    _ship = Instantiate(_playerDpsShipPrefab, transform.position + position, Quaternion.identity, transform);
+                    ships.Add(_ship);
+                }
             }
-            else
+
+            foreach (var layerRotation in formation.Item2)
             {
-                _ship = Instantiate(_playerDpsShipPrefab, transform.position + pos, Quaternion.identity, transform);
+                int i = 0;
+
+                foreach (var rotations in layerRotation.Key)
+                {
+                    if (layer == layerRotation.Value)
+                    {
+                        Quaternion rotation = rotations;
+                        ships[i].transform.localRotation = rotation;
+                        i++;
+                    }
+                }
             }
         }
     }
