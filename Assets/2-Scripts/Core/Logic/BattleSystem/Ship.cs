@@ -5,7 +5,6 @@ public class Ship : MonoBehaviour, IDamageable
 {
     public ShipSO DataSO;
     public float CurrentHealth { get; private set; }
-    public GameObject BulletObjectInstance { get; private set; }
     public bool CanAction { get; set; } = false;
     public float ActionIntervalTimer { get; set; } = 0f;
     [HideInInspector] public EnemyShip Target;
@@ -62,34 +61,43 @@ public class Ship : MonoBehaviour, IDamageable
 
     public void Shoot(Ship target)
     {
-        if (this.gameObject != null)
-        {
-            BulletObjectInstance = PoolManager.Instance.Get(this.gameObject);
-            BulletObjectInstance.transform.position = this.transform.position;
+        var bullet = GetBulletFromPool();
 
-            if (this is PlayerShip)
-            {
-                BulletManager.Instance.Register(BulletObjectInstance.GetComponent<Bullet>(), true);
-            }
-            else
-            {
-                BulletManager.Instance.Register(BulletObjectInstance.GetComponent<Bullet>(), false);
-            }
-        }
-
-        if (BulletObjectInstance != null)
+        if (bullet != null)
         {
             if (this is PlayerShip)
             {
-                BulletObjectInstance.GetComponent<Bullet>().Shoot(target, DataSO.ActionAmount, fromPlayer: true);
+                bullet.GetComponent<Bullet>().Shoot(target, DataSO.ActionAmount, fromPlayer: true);
             }
             else
             {
-                BulletObjectInstance.GetComponent<Bullet>().Shoot(target, DataSO.ActionAmount);
+                bullet.GetComponent<Bullet>().Shoot(target, DataSO.ActionAmount);
             }
         }
 
         return;
+    }
+
+    private GameObject GetBulletFromPool()
+    {
+        var bullet = new GameObject();
+
+        if (this.gameObject != null)
+        {
+            bullet = PoolManager.Instance.Get(this.gameObject);
+            bullet.transform.position = this.transform.position;
+
+            if (this is PlayerShip)
+            {
+                BulletManager.Instance.Register(bullet.GetComponent<Bullet>(), true);
+            }
+            else
+            {
+                BulletManager.Instance.Register(bullet.GetComponent<Bullet>(), false);
+            }
+        }
+
+        return bullet;
     }
 
     public void Heal()
@@ -127,7 +135,7 @@ public class Ship : MonoBehaviour, IDamageable
         int index = Random.Range(0, ships.Count);
         return ships[index];
     }
-
+    
     public void TakeDamage(float damage)
     {
         CurrentHealth -= damage;

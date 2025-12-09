@@ -29,7 +29,10 @@ public class CursorField : MonoBehaviour
 
     private void DetectShipsInside()
     {
-        isClicked.Invoke(shipsInside);
+        if (shipsInside != null)
+        {
+            isClicked?.Invoke(shipsInside);
+        }
     }
 
     public void RegisterShip(EnemyShip ship)

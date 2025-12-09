@@ -1,8 +1,5 @@
-using NUnit.Framework.Constraints;
 using System.Collections.Generic;
-using System.Linq;
 using UnityEngine;
-using static UnityEditor.Experimental.GraphView.GraphView;
 
 public enum FormationShape
 {
@@ -13,199 +10,99 @@ public enum FormationShape
     Hexagon,
 }
 
-[System.Serializable]
 public class Formation
 {
-    public int FormationLayerCount = 1;
-    public int CurrentFormationLayer = 1;
-    public FormationShape FormationShape = FormationShape.Rectangle;
-}
+    private int LayerCount = 1;
+    private float Spacing = 1.0f;
+    private int TotalUnitCount;
+    private FormationShape[] Shapes;
+    private ShipType[] ShipTypes;
+    private Layer[] Layers;
+    private int[] LayerUnitCounts;
 
-public class Layer
-{
-    public Dictionary<List<Quaternion>, int> rotations;
-    public Dictionary<List<Vector3>, int> positions;
-
-    public Layer(FormationShape shape, int layer, float spacing, int unitCount)
+    public Formation(int layerCount, FormationShape[] shape, ShipType[] shipTypes, float spacing, int totalUnitCount)
     {
-        rotations = new Dictionary<List<Quaternion>, int>();
-        positions = new Dictionary<List<Vector3>, int>();
+        Layers = new Layer[layerCount];
+        ShipTypes = new ShipType[layerCount];
+        Shapes = new FormationShape[layerCount];
+        this.LayerCount = layerCount;
+        this.Shapes = shape;
+        this.ShipTypes = shipTypes;
+        this.Spacing = spacing;
+        this.TotalUnitCount = totalUnitCount;
+        InitializeLayerUnitCounts(this.TotalUnitCount, this.LayerCount);
+        InitializeLayers();
+    }
 
-        switch (shape)
+    public Layer[] GetLayers()
+    {
+        return Layers;
+    }
+
+    private void InitializeLayerUnitCounts(int totalUnitCount, int layerCount)
+    {
+        int count = totalUnitCount % layerCount;
+
+        if (count == 0)
         {
-            case FormationShape.Circle:
-                GenerateCircle(layer, spacing, unitCount);
-                break;
-            case FormationShape.Triangle:
-                GeneratePolygonWithLayers(unitCount, spacing, sides: 3, layer);
-                break;
-            case FormationShape.Rectangle:
-                GeneratePolygonWithLayers(unitCount, spacing, sides: 4, layer);
-                break;
-            case FormationShape.Pentagon:
-                GeneratePolygonWithLayers(unitCount, spacing, sides: 5, layer);
-                break;
-            case FormationShape.Hexagon:
-                GeneratePolygonWithLayers(unitCount, spacing, sides: 6, layer);
-                break;
-            default:
-                break;
+            LayerUnitCounts = new int[layerCount];
+            for (int i = 0; i < LayerUnitCounts.Length; i++)
+            {
+                int unit = LayerUnitCounts[i];
+                unit = (int)totalUnitCount / layerCount;
+            }
+        }
+        else
+        {
+            LayerUnitCounts = new int[layerCount];
+            for (int i = 0; i < LayerUnitCounts.Length; i++)
+            {
+                int unit = LayerUnitCounts[i];
+                unit = (int)totalUnitCount / layerCount;
+
+                if (i == LayerUnitCounts.Length - 1)
+                {
+                    unit = count;
+                }
+            }
         }
     }
 
-    public void AdjustDirections(Dictionary<List<Vector3>, int> layerPositions, Vector3 center)
+    private void InitializeLayers()
     {
-        var rotations = new List<Quaternion>();
-
-        foreach (var layer in layerPositions)
+        for (int i = 0; i < Layers.Length; i++)
         {
-            foreach (var position in layer.Key)
-            {
-                Vector2 direction = (position - center).normalized;
-                float angle = Mathf.Atan2(direction.y, direction.x) * Mathf.Rad2Deg;
-                Quaternion rotation = Quaternion.Euler(0, 0, angle - 90f);
-                rotations.Add(rotation);
-            }
-            this.rotations.Add(rotations, layer.Value);
-            rotations = new List<Quaternion>();
-            this.positions.Add(layer.Key, layer.Value);
+            var layer = Layers[i];
+            int index = System.Array.IndexOf(Layers, layer);
+            int layerUnitCount = LayerUnitCounts[index];
+            var shape = Shapes[i];
+            var shipType = ShipTypes[i];
+            layer = new Layer(shape, shipType, index + 1, this.Spacing, layerUnitCount);
         }
-    }
-
-    //private void GenerateCircle(int layer, float spacing, int unitCount)
-    //{
-    //    List<Vector3> list = new();
-
-    //    float radius = spacing * layer;
-
-    //    for (int i = 0; i < unitCount; i++)
-    //    {
-    //        float angle = (i / (float)unitCount) * Mathf.PI * 2f;
-    //        list.Add(new Vector3(Mathf.Cos(angle), Mathf.Sin(angle)) * radius);
-    //    }
-
-    //    AdjustDirections(list, new Vector3(0, 0));
-    //}
-
-    private void GenerateCircle(int layers, float spacing, int unitCount)
-    {
-        Dictionary<List<Vector3>, int> final = new();
-        List<Vector3> list = new();
-
-        int remaining = unitCount;
-        int layerIndex = 1;
-
-        while (remaining > 0 && layerIndex <= layers)
-        {
-            float radius = spacing * layerIndex;
-
-            // how many points this ring should have
-            int ringCount = Mathf.Min(remaining, layerIndex * 6);   // good density scaling
-
-            for (int i = 0; i < ringCount; i++)
-            {
-                float angle = (i / (float)ringCount) * Mathf.PI * 2f;
-                Vector3 p = new Vector3(Mathf.Cos(angle), Mathf.Sin(angle)) * radius;
-                list.Add(p);
-            }
-
-            final.Add(list, layerIndex);
-            remaining -= ringCount;
-            list = new();
-            layerIndex++;
-        }
-
-        AdjustDirections(final, Vector3.zero);
-    }
-
-    private void GeneratePolygonWithLayers(int unitCount, float spacing, int sides, int layerCount)
-    {
-        Dictionary<List<Vector3>, int> final = new();
-        List<Vector3> list = new();
-
-        int layer = 1;
-        int remaining = unitCount;
-
-        while (remaining > 0 && layer <= layerCount)
-        {
-            int desiredUnits = sides * layer;   // example rule (scales nicely)
-            int take = Mathf.Min(desiredUnits, remaining);
-
-            float radius = layer * spacing * 1f; // scale radius per layer
-
-            if (layer != 1)
-            {
-                radius = layer * spacing * 0.7f; // scale radius per layer
-            }
-
-            var ring = GeneratePolygonLayer(sides, radius, take);
-            list.AddRange(ring);
-            final.Add(list, layer);
-            list = new List<Vector3>();
-            remaining -= take;
-            layer++;
-        }
-
-        AdjustDirections(final, Vector3.zero);
-    }
-
-    private List<Vector3> GeneratePolygonLayer(int sides, float radius, int units)
-    {
-        List<Vector3> pts = new List<Vector3>();
-
-        float angleStep = (-Mathf.PI * 2f) / sides;
-        float startAngle = -Mathf.PI / 2f - (Mathf.PI / sides);
-
-        // points per side
-        int perSide = units / sides;
-        int extra = units % sides;
-
-        for (int side = 0; side < sides; side++)
-        {
-            int count = perSide + (side < extra ? 1 : 0);
-
-            Vector3 a = new Vector3(
-                Mathf.Cos(startAngle + angleStep * side),
-                Mathf.Sin(startAngle + angleStep * side)
-            ) * radius;
-
-            Vector3 b = new Vector3(
-                Mathf.Cos(startAngle + angleStep * (side + 1)),
-                Mathf.Sin(startAngle + angleStep * (side + 1))
-            ) * radius;
-
-            for (int i = 0; i < count; i++)
-            {
-                float t = (float)i / count;
-                pts.Add(Vector3.Lerp(a, b, t));
-            }
-        }
-
-        return pts;
     }
 }
-
-
 
 public static class FormationGenerator
 {
-    public static (Dictionary<List<Vector3>, int>, Dictionary<List<Quaternion>, int>) 
-        Generate(FormationShape shape, int unitCount, int layerCount, float spacing)
+    public static Formation Generate(FormationShape[] shapes, ShipType[] shipTypes, int unitCount, int layerCount, float spacing)
     {
-        Dictionary<List<Vector3>, int> positions = new();
-        Dictionary<List<Quaternion>, int> rotations = new();
+        List<GameObject> gameObjectList = new List<GameObject>();
+        List<Formation> formationList = new List<Formation>();
 
-        if (unitCount <= 0)
-            return (null, null);
-
-        for (int i = 1; i <= layerCount; i++)
+        if (shapes.Length != layerCount)
         {
-            Layer layer = new Layer(shape, i, spacing, unitCount);
-            positions = layer.positions;
-            rotations = layer.rotations;
+            Debug.LogWarning("Shape count and layer count dont match!");
+            return null;
         }
 
-        return (positions, rotations);
+        if (unitCount <= 0)
+        {
+            Debug.LogWarning("Unit count cant be 0 or smaller.");
+            return null;
+        }
+
+        Formation formation = new Formation(layerCount, shapes, shipTypes, spacing, unitCount);
+        return formation;
     }
 }
 

@@ -4,10 +4,7 @@ using UnityEngine;
 public class ExplosionManager : MonoBehaviour
 {
     public static ExplosionManager Instance;
-
     public GameObject explosionPrefab;
-    public GameObject explosionInstance;
-
 
     private void Awake()
     {
@@ -21,26 +18,26 @@ public class ExplosionManager : MonoBehaviour
 
     public void CreateExplosion(Vector3 position)
     {
-        explosionInstance = PoolManager.Instance.Get(this.gameObject);
+        var explosion = PoolManager.Instance.Get(this.gameObject);
 
-        if (explosionInstance != null)
+        if (explosion != null)
         {
-            explosionInstance.transform.position = position;
-            explosionInstance.SetActive(true);
-            var explosionPS = explosionInstance.GetComponent<ParticleSystem>();
+            explosion.transform.position = position;
+            explosion.SetActive(true);
+            var explosionPS = explosion.GetComponent<ParticleSystem>();
             explosionPS.Play();
-            StartCoroutine(DeactivateExplosion(explosionInstance));
+            StartCoroutine(DeactivateExplosion(explosion));
         }
         else
         {
-            explosionInstance = Instantiate(explosionPrefab, this.transform);
-            explosionInstance.SetActive(false);
-            PoolManager.Instance.AddToPool(this.gameObject, explosionInstance);
-            explosionInstance.transform.position = position;
-            explosionInstance.SetActive(true);
-            var explosionPS = explosionInstance.GetComponent<ParticleSystem>();
+            explosion = Instantiate(explosionPrefab, this.transform);
+            explosion.SetActive(false);
+            PoolManager.Instance.AddToPool(this.gameObject, explosion);
+            explosion.transform.position = position;
+            explosion.SetActive(true);
+            var explosionPS = explosion.GetComponent<ParticleSystem>();
             explosionPS.Play();
-            StartCoroutine(DeactivateExplosion(explosionInstance));
+            StartCoroutine(DeactivateExplosion(explosion));
         }
     }
 

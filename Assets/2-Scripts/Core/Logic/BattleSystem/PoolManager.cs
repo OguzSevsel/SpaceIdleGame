@@ -7,8 +7,6 @@ public class PoolManager : MonoBehaviour
 
     public Dictionary<GameObject, List<GameObject>> Pools;
 
-    private GameObject GameObjectInstance;
-
     private void Awake()
     {
         Instance = this;
@@ -26,12 +24,11 @@ public class PoolManager : MonoBehaviour
 
         for (int i = 0; i < count; i++)
         {
-            GameObjectInstance = Instantiate(prefab, parent.position, rotation, parent);
-            GameObjectInstance.SetActive(false);
-            pool.Add(GameObjectInstance);
+            var gameObject = Instantiate(prefab, parent.position, rotation, parent);
+            gameObject.SetActive(false);
+            pool.Add(gameObject);
         }
 
-        GameObjectInstance = null;
         Pools.Add(parent.gameObject, pool);
     }
 
@@ -41,10 +38,9 @@ public class PoolManager : MonoBehaviour
 
         for (int i = 0; i < count; i++)
         {
-            GameObjectInstance = Instantiate(prefab, position, rotation);
-            GameObjectInstance.SetActive(false);
-            pool.Add(GameObjectInstance);
-            GameObjectInstance = null;
+            var gameObject = Instantiate(prefab, position, rotation);
+            gameObject.SetActive(false);
+            pool.Add(gameObject);
         }
 
         Pools.Add(new GameObject("Pool"), pool);
@@ -61,10 +57,9 @@ public class PoolManager : MonoBehaviour
 
         for (int i = 0; i < count; i++)
         {
-            GameObjectInstance = Instantiate(prefab, parent);
-            GameObjectInstance.SetActive(false);
-            pool.Add(GameObjectInstance);
-            GameObjectInstance = null;
+            var gameObject = Instantiate(prefab, parent);
+            gameObject.SetActive(false);
+            pool.Add(gameObject);
         }
 
         Pools.Add(parent.gameObject, pool);
@@ -83,17 +78,18 @@ public class PoolManager : MonoBehaviour
     public GameObject Get(GameObject key)
     {
         var pool = Pools[key];
+        var gameObject = pool[0];
 
         foreach (GameObject item in pool)
         {
             if (!item.activeInHierarchy)
             {
-                GameObjectInstance = item;
-                return GameObjectInstance;
+                gameObject = item;
+                return gameObject;
             }
         }
 
-        Debug.LogWarning($"No available objects in pool, named {GameObjectInstance.name}!");
+        Debug.LogWarning($"No available objects in pool, named {gameObject.name}!");
         return null;
     }
 
