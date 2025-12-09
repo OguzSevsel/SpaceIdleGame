@@ -16,8 +16,8 @@ MonoBehaviour:
   _shipType: 2
   _sprite: {fileID: 21300004, guid: 8aeb9e233fbb8f14db39770841b78b94, type: 3}
   _bulletObjectPrefab: {fileID: 0}
-  _actionAmount: 5
+  _actionAmount: 10
   _health: 100
-  _actionInterval: 1
+  _actionInterval: 2
   _hitRadius: 0.18
   _healRadius: 1.7

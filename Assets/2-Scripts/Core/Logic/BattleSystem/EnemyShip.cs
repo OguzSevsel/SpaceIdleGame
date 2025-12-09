@@ -49,12 +49,7 @@ public class EnemyShip : Ship
             case ShipType.Tank:
                 break;
             case ShipType.Healer:
-
-                Heal();
-
-                CanAction = false;
-                ActionIntervalTimer = DataSO.ActionInterval;
-
+                
                 break;
             default:
                 break;

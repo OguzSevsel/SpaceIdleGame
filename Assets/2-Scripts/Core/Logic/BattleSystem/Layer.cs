@@ -3,15 +3,17 @@ using UnityEngine;
 
 public class Layer
 {
-    public Dictionary<List<Quaternion>, int> rotations;
-    public Dictionary<List<Vector3>, int> positions;
+    public List<Quaternion> rotations;
+    public List<Vector3> positions;
     public ShipType ShipType;
+    public int layerUnitCount;
 
     public Layer(FormationShape shape, ShipType shipType, int layer, float spacing, int unitCount)
     {
-        rotations = new Dictionary<List<Quaternion>, int>();
-        positions = new Dictionary<List<Vector3>, int>();
+        rotations = new List<Quaternion>();
+        positions = new List<Vector3>();
         this.ShipType = shipType;
+        this.layerUnitCount = unitCount;
 
         switch (shape)
         {
@@ -35,65 +37,53 @@ public class Layer
         }
     }
 
-    public void AdjustDirections(Dictionary<List<Vector3>, int> layerPositions, Vector3 center)
+    public void AdjustDirections(List<Vector3> Positions, Vector3 center)
     {
-        var rotations = new List<Quaternion>();
-
-        foreach (var layer in layerPositions)
+        foreach (var position in Positions)
         {
-            foreach (var position in layer.Key)
-            {
-                Vector2 direction = (position - center).normalized;
-                float angle = Mathf.Atan2(direction.y, direction.x) * Mathf.Rad2Deg;
-                Quaternion rotation = Quaternion.Euler(0, 0, angle - 90f);
-                rotations.Add(rotation);
-            }
-            this.rotations.Add(rotations, layer.Value);
-            rotations = new List<Quaternion>();
-            this.positions.Add(layer.Key, layer.Value);
+            Vector2 direction = (position - center).normalized;
+            float angle = Mathf.Atan2(direction.y, direction.x) * Mathf.Rad2Deg;
+            Quaternion rotation = Quaternion.Euler(0, 0, angle - 90f);
+            rotations.Add(rotation);
+            positions.Add(position);
         }
     }
 
     private void GenerateCircle(int currentLayer, float spacing, int unitCount)
     {
-        Dictionary<List<Vector3>, int> final = new();
         List<Vector3> list = new();
 
-        float radius = spacing * currentLayer * 0.5f;
+        float radius = spacing * currentLayer;
 
-        int ringCount = Mathf.Min(unitCount, currentLayer * 6);
-
-        for (int i = 0; i < ringCount; i++)
+        if (currentLayer != 1)
         {
-            float angle = (i / (float)ringCount) * Mathf.PI * 2f;
+            radius = currentLayer * spacing * 0.9f; // scale radius per layer
+        }
+
+        for (int i = 0; i < unitCount; i++)
+        {
+            float angle = (i / (float)unitCount) * Mathf.PI * 2f;
             Vector3 p = new Vector3(Mathf.Cos(angle), Mathf.Sin(angle)) * radius;
             list.Add(p);
         }
 
-        final.Add(list, currentLayer);
-        list = new();
-
-        AdjustDirections(final, Vector3.zero);
+        AdjustDirections(list, Vector3.zero);
     }
 
     private void GeneratePolygonWithLayers(int unitCount, float spacing, int sides, int currentLayer)
     {
-        Dictionary<List<Vector3>, int> final = new();
         List<Vector3> list = new();
 
-        float radius = currentLayer * spacing * 0.5f; // scale radius per layer
+        float radius = currentLayer * spacing; // scale radius per layer
 
         if (currentLayer != 1)
         {
-            radius = currentLayer * spacing * 0.5f; // scale radius per layer
+            radius = currentLayer * spacing * 0.8f; // scale radius per layer
         }
 
         var ring = GeneratePolygonLayer(sides, radius, unitCount);
         list.AddRange(ring);
-        final.Add(list, currentLayer);
-        list = new List<Vector3>();
-
-        AdjustDirections(final, Vector3.zero);
+        AdjustDirections(list, Vector3.zero);
     }
 
     private List<Vector3> GeneratePolygonLayer(int sides, float radius, int units)

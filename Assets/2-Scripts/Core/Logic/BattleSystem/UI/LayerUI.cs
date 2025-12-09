@@ -4,6 +4,7 @@ using TMPro;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.InputSystem;
+using UnityEngine.Rendering.UI;
 using UnityEngine.UI;
 
 public class LayerUI : MonoBehaviour, IPointerClickHandler
@@ -16,8 +17,6 @@ public class LayerUI : MonoBehaviour, IPointerClickHandler
     [SerializeField] private TextMeshProUGUI _layerNumberText;
     [SerializeField] private TextMeshProUGUI _shipTypeText;
     [SerializeField] private TextMeshProUGUI _layerShapeText;
-    private Color _transColor;
-    private Color _visibleColor;
     [SerializeField] private Color _dpsColor;
     [SerializeField] private Color _healerColor;
     [SerializeField] private Color _tankColor;
@@ -25,22 +24,11 @@ public class LayerUI : MonoBehaviour, IPointerClickHandler
     private void Start()
     {
         _image = GetComponent<Image>();
-        _transColor = _image.color;
-        _visibleColor = _image.color;
-        _transColor.a = 0f;
-        FormationCreationUI.OnLayerChanged += OnLayerChangedHandler;
-        _image.color = _transColor;
-        _layerNumberText.enabled = false;
-        _layerShapeText.enabled = false;
-        _shipTypeText.enabled = false;
+        gameObject.SetActive(false);
     }
 
     private void UpdateLayerInfo()
     {
-        _layerNumberText.enabled = true;
-        _layerShapeText.enabled = true;
-        _shipTypeText.enabled = true;
-
         _layerNumberText.text = $"Layer {layerNumber}";
         _shipTypeText.text = $"Ship Type: {_shipType.ToString()}";
         _layerShapeText.text = $"Layer Shape: {_formationShape.ToString()}";
@@ -143,28 +131,5 @@ public class LayerUI : MonoBehaviour, IPointerClickHandler
     {
         this._formationShape = FormationShape.Circle;
         UpdateLayerInfo();
-    }
-
-    private void OnLayerChangedHandler(int layerNum)
-    {
-        if (this.layerNumber <= layerNum)
-        {
-            _layerNumberText.enabled = true;
-            _layerShapeText.enabled = true;
-            _shipTypeText.enabled = true;
-
-            _image.color = _visibleColor;
-        }
-        else if (this.layerNumber > layerNum)
-        {
-            _image.color = _transColor;
-
-            if (_layerNumberText.enabled == true)
-            {
-                _layerNumberText.enabled = false;
-                _layerShapeText.enabled = false;
-                _shipTypeText.enabled = false;
-            }
-        }
     }
 }

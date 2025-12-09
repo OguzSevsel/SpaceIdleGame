@@ -1,77 +1,62 @@
+using System;
 using System.Collections.Generic;
 using UnityEngine;
 
 public class PlayerFleet : MonoBehaviour
 {
-    [SerializeField] private Formation _formation;
+    private Formation _formation;
     private GameObject _ship;
     [SerializeField] private GameObject _playerDpsShipPrefab;
+    [SerializeField] private GameObject _playerTankShipPrefab;
     [SerializeField] private GameObject _playerHealerShipPrefab;
-    [SerializeField] private int _spawnCount = 1;
 
     private void Start()
     {
-
+        FormationCreationUI.OnFormationSaved += OnFormationSavedHandler;
+        BattleSystemUI.OnStartLevel += OnStartLevelHandler;
     }
 
+    private void OnStartLevelHandler()
+    {
+        if (this._formation == null)
+        {
+            Debug.Log("Create formation first");
+            return;
+        }
 
-    //private void FormationCreation()
-    //{
-    //    (Dictionary<List<Vector3>, int> positions, Dictionary<List<Quaternion>, int> rotations) formation = FormationGenerator.Generate(_formation.Shape, _spawnCount, _formation.LayerCount, 2f);
+        var layers = _formation.GetLayers();
 
-    //    int layer = 0;
+        foreach (var layer in layers)
+        {
+            int unitCount = layer.layerUnitCount;
 
+            for (int i = 0; i < unitCount; i++)
+            {
+                SpawnShipByType(layer.ShipType, layer.positions[i], layer.rotations[i], this.gameObject.transform);
+            }
+        }
+    }
 
-    //    foreach (var layerPosition in formation.positions)
-    //    {
-    //        layer = layerPosition.Value;
-    //        var ships = new List<GameObject>();
+    private void OnFormationSavedHandler(Formation formation)
+    {
+        this._formation = formation;
+    }
 
-    //        foreach (var positions in layerPosition.Key)
-    //        {
-    //            Vector3 position = positions;
-
-    //            if (layer == 1)
-    //            {
-    //                _ship = Instantiate(_playerHealerShipPrefab, transform.position + position, Quaternion.identity, transform);
-    //                ships.Add(_ship);
-    //            }
-    //            else if (layer == 2)
-    //            {
-    //                _ship = Instantiate(_playerDpsShipPrefab, transform.position + position, Quaternion.identity, transform);
-    //                ships.Add(_ship);
-    //            }
-    //            else if (layer == 3)
-    //            {
-    //                _ship = Instantiate(_playerDpsShipPrefab, transform.position + position, Quaternion.identity, transform);
-    //                ships.Add(_ship);
-    //            }
-    //            else if (layer == 4)
-    //            {
-    //                _ship = Instantiate(_playerHealerShipPrefab, transform.position + position, Quaternion.identity, transform);
-    //                ships.Add(_ship);
-    //            }
-    //            else if (layer == 5)
-    //            {
-    //                _ship = Instantiate(_playerDpsShipPrefab, transform.position + position, Quaternion.identity, transform);
-    //                ships.Add(_ship);
-    //            }
-    //        }
-
-    //        foreach (var layerRotation in formation.rotations)
-    //        {
-    //            int i = 0;
-
-    //            foreach (var rotations in layerRotation.Key)
-    //            {
-    //                if (layer == layerRotation.Value)
-    //                {
-    //                    Quaternion rotation = rotations;
-    //                    ships[i].transform.localRotation = rotation;
-    //                    i++;
-    //                }
-    //            }
-    //        }
-    //    }
-    //}
+    private void SpawnShipByType(ShipType shipType, Vector3 position, Quaternion rotation, Transform parent)
+    {
+        switch (shipType)
+        {
+            case ShipType.Dps:
+                _ship = Instantiate(_playerDpsShipPrefab, position, rotation, parent);
+                break;
+            case ShipType.Tank:
+                _ship = Instantiate(_playerTankShipPrefab, position, rotation, parent);
+                break;
+            case ShipType.Healer:
+                _ship = Instantiate(_playerHealerShipPrefab, position, rotation, parent);
+                break;
+            default:
+                break;
+        }
+    }
 }

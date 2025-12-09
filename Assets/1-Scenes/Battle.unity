@@ -273,6 +273,16 @@ Transform:
   - {fileID: 652349564}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &128493846 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 7949469190354488606, guid: d5e90fbf48395fc438ac01c1d6653928, type: 3}
+  m_PrefabInstance: {fileID: 960060078}
+  m_PrefabAsset: {fileID: 0}
+--- !u!1 &161317450 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 6616651020534870887, guid: d5e90fbf48395fc438ac01c1d6653928, type: 3}
+  m_PrefabInstance: {fileID: 960060078}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &166374487
 GameObject:
   m_ObjectHideFlags: 0
@@ -502,6 +512,51 @@ Transform:
   m_Children: []
   m_Father: {fileID: 1028742213}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &355470015
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 355470016}
+  - component: {fileID: 355470017}
+  m_Layer: 0
+  m_Name: HealAnimationManager
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &355470016
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 355470015}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: -0.93853, y: -0.68881, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &355470017
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 355470015}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c34f82f3fea9d7f4288e550b330f7b43, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::HealAnimationManager
+  baseColor: {r: 0, g: 1, b: 0.22587347, a: 1}
 --- !u!1 &373439838
 GameObject:
   m_ObjectHideFlags: 0
@@ -981,8 +1036,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::PlayerFleet
   _playerDpsShipPrefab: {fileID: 3351739740165037740, guid: 3595b081e75845b4888757e689d46351, type: 3}
+  _playerTankShipPrefab: {fileID: 3351739740165037740, guid: 8c86c6127ff239e4e823a316525655ee, type: 3}
   _playerHealerShipPrefab: {fileID: 3351739740165037740, guid: 8c86c6127ff239e4e823a316525655ee, type: 3}
-  _spawnCount: 55
 --- !u!1 &747045920
 GameObject:
   m_ObjectHideFlags: 0
@@ -1014,6 +1069,11 @@ Transform:
   m_Children: []
   m_Father: {fileID: 1028742213}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &831075040 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 899438286673070880, guid: d5e90fbf48395fc438ac01c1d6653928, type: 3}
+  m_PrefabInstance: {fileID: 960060078}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &861908019
 GameObject:
   m_ObjectHideFlags: 0
@@ -1077,7 +1137,7 @@ Camera:
   far clip plane: 50
   field of view: 60
   orthographic: 1
-  orthographic size: 20
+  orthographic size: 40
   m_Depth: -1
   m_CullingMask:
     serializedVersion: 2
@@ -1166,8 +1226,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::CameraZoom
   _zoom: 0
   _zoomMultiplier: 3
-  _minZoom: 3
-  _maxZoom: 20
+  _minZoom: 10
+  _maxZoom: 40
   _velocity: 0
   _smoothTime: 0.25
   _camera: {fileID: 861908021}
@@ -1320,6 +1380,11 @@ RectTransform:
   m_CorrespondingSourceObject: {fileID: 4129186681597277518, guid: d5e90fbf48395fc438ac01c1d6653928, type: 3}
   m_PrefabInstance: {fileID: 960060078}
   m_PrefabAsset: {fileID: 0}
+--- !u!1 &975689809 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 8556731222511474447, guid: d5e90fbf48395fc438ac01c1d6653928, type: 3}
+  m_PrefabInstance: {fileID: 960060078}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &986958242
 GameObject:
   m_ObjectHideFlags: 0
@@ -1416,6 +1481,12 @@ MonoBehaviour:
   _saveFormationButton: {fileID: 207030869}
   _addLayerButton: {fileID: 624618875}
   _removeLayerButton: {fileID: 24437298}
+  layerUIs:
+  - {fileID: 161317450}
+  - {fileID: 1950798595}
+  - {fileID: 128493846}
+  - {fileID: 831075040}
+  - {fileID: 975689809}
 --- !u!114 &986958247
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1485,7 +1556,9 @@ MonoBehaviour:
   _topSpawnLocation: {fileID: 1195613651}
   _bottomSpawnLocation: {fileID: 2084287020}
   _playerFleetLocation: {fileID: 691500747}
-  _enemyShipPrefab: {fileID: 3351739740165037740, guid: 495c610b14710fa44b734233b2da8c17, type: 3}
+  _enemyDpsShipPrefab: {fileID: 3351739740165037740, guid: 495c610b14710fa44b734233b2da8c17, type: 3}
+  _enemyHealerShipPrefab: {fileID: 3351739740165037740, guid: b450dc0213fc1654c8a66b35c7d0f134, type: 3}
+  _enemyTankShipPrefab: {fileID: 3351739740165037740, guid: b450dc0213fc1654c8a66b35c7d0f134, type: 3}
   _spawnCount: 15
   spawnOffset: 200
   innerOffset: 170
@@ -2288,6 +2361,7 @@ GameObject:
   - component: {fileID: 1748701411}
   - component: {fileID: 1748701413}
   - component: {fileID: 1748701412}
+  - component: {fileID: 1748701414}
   m_Layer: 5
   m_Name: Panel_Main
   m_TagString: Untagged
@@ -2355,6 +2429,21 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1748701410}
   m_CullTransparentMesh: 1
+--- !u!114 &1748701414
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1748701410}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 32f1a89fd33d2964686cd54e0eda5000, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::BattleSystemUI
+  _startLevelButton: {fileID: 1207835566}
+  _createFormationButton: {fileID: 1384146915}
+  _formationText: {fileID: 0}
 --- !u!1 &1749334950
 GameObject:
   m_ObjectHideFlags: 0
@@ -2444,6 +2533,11 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::ExplosionManager
   explosionPrefab: {fileID: 8562229570638719607, guid: 367587605de8f864c9c57543925f45bc, type: 3}
+--- !u!1 &1950798595 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 7747473171317731513, guid: d5e90fbf48395fc438ac01c1d6653928, type: 3}
+  m_PrefabInstance: {fileID: 960060078}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &1971207081
 GameObject:
   m_ObjectHideFlags: 0
@@ -2503,7 +2597,7 @@ Transform:
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_LocalScale: {x: 2.34, y: 2.34, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
@@ -2578,7 +2672,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6093b5a6586676341b38f1ccaba72f92, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::CursorField
-  radius: 2.5
+  radius: 5.82
   shipLayer:
     serializedVersion: 2
     m_Bits: 64
@@ -2721,3 +2815,4 @@ SceneRoots:
   - {fileID: 85637250}
   - {fileID: 2003058531}
   - {fileID: 873429641}
+  - {fileID: 355470016}

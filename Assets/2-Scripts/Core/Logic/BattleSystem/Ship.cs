@@ -9,7 +9,6 @@ public class Ship : MonoBehaviour, IDamageable
     public float ActionIntervalTimer { get; set; } = 0f;
     [HideInInspector] public EnemyShip Target;
     [HideInInspector] public CursorField _cursorField;
-    [SerializeField] private TextMeshProUGUI healthText;
     public SpriteRenderer healthSpriteRenderer;
 
     #region Start
@@ -19,9 +18,10 @@ public class Ship : MonoBehaviour, IDamageable
         ShipManager.Instance.RegisterShip(this);
         CreateBulletPool(10);
         CurrentHealth = DataSO.Health;
-        if (healthSpriteRenderer != null)
+
+        if (DataSO.ShipType == ShipType.Healer || DataSO.ShipType == ShipType.Tank)
         {
-            healthSpriteRenderer.enabled = false;
+            HealthAnimManager.Instance.Add(this, DataSO.ActionInterval, 0f);
         }
     }
 
@@ -139,7 +139,6 @@ public class Ship : MonoBehaviour, IDamageable
     public void TakeDamage(float damage)
     {
         CurrentHealth -= damage;
-        healthText.text = $"{CurrentHealth}/{DataSO.Health}";
         ExplosionManager.Instance.CreateExplosion(this.transform.position);
         if (CurrentHealth <= 0)
         {
@@ -156,13 +155,13 @@ public class Ship : MonoBehaviour, IDamageable
 
         ShipManager.Instance.UnregisterShip(this);
         PoolManager.Instance.DestroyPool(this.gameObject);
+        HealthAnimManager.Instance.Remove(this);
         GameObject.Destroy(this.gameObject);
     }
 
     public void IncreaseHealth(float amount)
     {
         CurrentHealth += amount;
-        healthText.text = $"{CurrentHealth} / {DataSO.Health}";
     }
 
     private void OnDrawGizmos()

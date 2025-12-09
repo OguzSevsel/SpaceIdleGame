@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using static UnityEditor.PlayerSettings;
@@ -9,19 +10,18 @@ public class EnemySpawner : MonoBehaviour
     public enum SpawnSide { Left, Right, Top, Bottom }
 
     [SerializeField] private Transform _leftSpawnLocation;
-    [SerializeField] private Formation _leftFormation;
+    [SerializeField] private Formation _formation;
 
     [SerializeField] private Transform _rightSpawnLocation;
-    [SerializeField] private Formation _rightFormation;
 
     [SerializeField] private Transform _topSpawnLocation;
-    [SerializeField] private Formation _topFormation;
 
     [SerializeField] private Transform _bottomSpawnLocation;
-    [SerializeField] private Formation _bottomFormation;
 
     [SerializeField] private Transform _playerFleetLocation;
-    [SerializeField] private GameObject _enemyShipPrefab;
+    [SerializeField] private GameObject _enemyDpsShipPrefab;
+    [SerializeField] private GameObject _enemyHealerShipPrefab;
+    [SerializeField] private GameObject _enemyTankShipPrefab;
     [SerializeField] private int _spawnCount = 1;
 
     public float spawnOffset = 100f;
@@ -29,7 +29,6 @@ public class EnemySpawner : MonoBehaviour
 
     private GameObject _ship;
     private bool _isSpawned = false;
-    private float lerp = 0.01f;
 
     //This logic can be moved to a Coroutine for better performance
     private void Update()
@@ -47,116 +46,62 @@ public class EnemySpawner : MonoBehaviour
 
     private void Start()
     {
-
+        PopulateSpawnPoints();
+        FormationCreationUI.OnFormationSaved += OnFormationSavedHandler;
+        BattleSystemUI.OnStartLevel += OnStartLevelHandler;
     }
 
-    //private void FormationCreation()
-    //{
-    //    PopulateSpawnPoints();
-    //    foreach (KeyValuePair<Transform, SpawnSide> pair in _spawnPoints)
-    //    {
-    //        float spacing = 2f;
+    private void OnStartLevelHandler()
+    {
+        foreach (KeyValuePair<Transform, SpawnSide> pair in _spawnPoints)
+        {
+            if (this._formation == null)
+            {
+                Debug.Log("Create formation first");
+                return;
+            }
 
-    //        (Dictionary<List<Vector3>, int>, Dictionary<List<Quaternion>, int>) formation = FormationGenerator.Generate(_leftFormation.Shape, _spawnCount, _leftFormation.LayerCount, spacing);
-    //        SpawnShips(formation, pair.Key);
+            var layers = _formation.GetLayers();
 
-    //        if (pair.Value == SpawnSide.Right)
-    //        {
-    //            formation = FormationGenerator.Generate(_rightFormation.Shape, _spawnCount, _rightFormation.LayerCount, spacing);
-    //            SpawnShips(formation, pair.Key);
-    //        }
+            foreach (var layer in layers)
+            {
+                int unitCount = layer.layerUnitCount;
 
-    //        if (pair.Value == SpawnSide.Top)
-    //        {
-    //            formation = FormationGenerator.Generate(_topFormation.Shape, _spawnCount, _topFormation.LayerCount, spacing);
-    //            SpawnShips(formation, pair.Key);
-    //        }
+                for (int i = 0; i < unitCount; i++)
+                {
+                    SpawnShipByType(layer.ShipType, layer.positions[i], layer.rotations[i], pair.Key);
+                }
+            }
+        }
+        _isSpawned = true;
+    }
 
-    //        if (pair.Value == SpawnSide.Bottom)
-    //        {
-    //            formation = FormationGenerator.Generate(_bottomFormation.Shape, _spawnCount, _bottomFormation.LayerCount, spacing);
+    private void SpawnShipByType(ShipType shipType, Vector3 position, Quaternion rotation, Transform parent)
+    {
+        switch (shipType)
+        {
+            case ShipType.Dps:
+                _ship = Instantiate(_enemyDpsShipPrefab, parent.position + position, rotation, parent);
+                break;
+            case ShipType.Tank:
+                _ship = Instantiate(_enemyTankShipPrefab, parent.position + position, rotation, parent);
+                break;
+            case ShipType.Healer:
+                _ship = Instantiate(_enemyHealerShipPrefab, parent.position + position, rotation, parent);
+                break;
+            default:
+                break;
+        }
+    }
 
-    //            SpawnShips(formation, pair.Key);
-    //        }
-    //    }
-    //    _isSpawned = true;
-    //}
-
-    //private void SpawnShips((Dictionary<List<Vector3>, int>, Dictionary<List<Quaternion>, int>) formation, Transform spawnLocation)
-    //{
-    //    int layer = 0;
-
-    //    foreach (var layerPosition in formation.Item1)
-    //    {
-    //        layer = layerPosition.Value;
-
-    //        foreach (var positions in layerPosition.Key)
-    //        {
-    //            int id = layerPosition.Value;
-    //            Vector3 position = positions;
-
-    //            if (layer == 1)
-    //            {
-    //                _ship = Instantiate(_enemyShipPrefab, spawnLocation.position + position, Quaternion.identity, spawnLocation);
-    //            }
-    //            else if (layer == 2)
-    //            {
-    //                _ship = Instantiate(_enemyShipPrefab, spawnLocation.position + position, Quaternion.identity, spawnLocation);
-    //            }
-    //            else if (layer == 3)
-    //            {
-    //                _ship = Instantiate(_enemyShipPrefab, spawnLocation.position + position, Quaternion.identity, spawnLocation);
-    //            }
-    //            else if (layer == 4)
-    //            {
-    //                _ship = Instantiate(_enemyShipPrefab, spawnLocation.position + position, Quaternion.identity, spawnLocation);
-    //            }
-    //            else if (layer == 5)
-    //            {
-    //                _ship = Instantiate(_enemyShipPrefab, spawnLocation.position + position, Quaternion.identity, spawnLocation);
-    //            }
-
-    //            foreach (var layerRotation in formation.Item2)
-    //            {
-    //                foreach (var rotations in layerRotation.Key)
-    //                {
-    //                    int rotId = layerRotation.Value;
-
-    //                    if (id == rotId)
-    //                    {
-    //                        Quaternion rotation = rotations;
-    //                        _ship.transform.rotation = rotation;
-
-    //                        if (spawnLocation == _leftSpawnLocation)
-    //                        {
-    //                            _ship.transform.rotation = Quaternion.Euler(new Vector3(0, 0, 90));
-    //                        }
-
-    //                        if (spawnLocation == _rightSpawnLocation)
-    //                        {
-    //                            _ship.transform.rotation = Quaternion.Euler(new Vector3(0, 0, 270));
-    //                        }
-
-    //                        if (spawnLocation == _topSpawnLocation)
-    //                        {
-    //                            _ship.transform.rotation = Quaternion.Euler(new Vector3(0, 0, 0));
-    //                        }
-
-    //                        if (spawnLocation == _bottomSpawnLocation)
-    //                        {
-    //                            _ship.transform.rotation = Quaternion.Euler(new Vector3(0, 0, 180));
-    //                        }
-    //                    }
-    //                }
-    //            }
-    //        }
-    //    }
-    //}
+    private void OnFormationSavedHandler(Formation formation)
+    {
+        this._formation = formation;
+    }
 
 
     #region Initial Movement Logic
 
-    // ---------------------- Replace MoveObject ----------------------
     IEnumerator MoveObject(GameObject obj, SpawnSide side)
     {
         Camera cam = Camera.main;
@@ -194,7 +139,6 @@ public class EnemySpawner : MonoBehaviour
         t.position = end;
     }
 
-    // ---------------------- Replace GetSpawnPoint ----------------------
     private Vector3 GetSpawnPoint(Camera cam, SpawnSide side, float offset = 5f, Transform obj = null)
     {
         // z distance from camera to the object's plane (if obj null use 0)
@@ -218,7 +162,6 @@ public class EnemySpawner : MonoBehaviour
         return Vector3.zero;
     }
 
-    // ---------------------- Replace GetTargetPoint ----------------------
     private Vector3 GetTargetPoint(Camera cam, SpawnSide side, float innerOffset = 5f, Transform obj = null)
     {
         float zDistance = Mathf.Abs(cam.transform.position.z - (obj != null ? obj.position.z : 0f));
@@ -243,7 +186,6 @@ public class EnemySpawner : MonoBehaviour
 
     #endregion
 
-
     private void PopulateSpawnPoints()
     {
         _spawnPoints = new Dictionary<Transform, SpawnSide>();
@@ -252,7 +194,6 @@ public class EnemySpawner : MonoBehaviour
         _spawnPoints.Add(_topSpawnLocation, SpawnSide.Top);
         _spawnPoints.Add(_bottomSpawnLocation, SpawnSide.Bottom);
     }
-
 
     private void OnDrawGizmos()
     {

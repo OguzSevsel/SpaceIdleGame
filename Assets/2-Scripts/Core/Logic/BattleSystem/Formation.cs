@@ -14,23 +14,22 @@ public class Formation
 {
     private int LayerCount = 1;
     private float Spacing = 1.0f;
-    private int TotalUnitCount;
     private FormationShape[] Shapes;
     private ShipType[] ShipTypes;
     private Layer[] Layers;
     private int[] LayerUnitCounts;
 
-    public Formation(int layerCount, FormationShape[] shape, ShipType[] shipTypes, float spacing, int totalUnitCount)
+    public Formation(int layerCount, int[] unitCounts, FormationShape[] shapes, ShipType[] shipTypes, float spacing, int totalUnitCount)
     {
         Layers = new Layer[layerCount];
         ShipTypes = new ShipType[layerCount];
         Shapes = new FormationShape[layerCount];
+        LayerUnitCounts = new int[layerCount];
+        this.LayerUnitCounts = unitCounts;
         this.LayerCount = layerCount;
-        this.Shapes = shape;
+        this.Shapes = shapes;
         this.ShipTypes = shipTypes;
         this.Spacing = spacing;
-        this.TotalUnitCount = totalUnitCount;
-        InitializeLayerUnitCounts(this.TotalUnitCount, this.LayerCount);
         InitializeLayers();
     }
 
@@ -50,6 +49,7 @@ public class Formation
             {
                 int unit = LayerUnitCounts[i];
                 unit = (int)totalUnitCount / layerCount;
+                LayerUnitCounts[i] = unit;
             }
         }
         else
@@ -64,45 +64,48 @@ public class Formation
                 {
                     unit = count;
                 }
+                LayerUnitCounts[i] = unit;
             }
         }
     }
 
     private void InitializeLayers()
     {
-        for (int i = 0; i < Layers.Length; i++)
+        for (int i = Layers.Length - 1; i >= 0; i--)
         {
             var layer = Layers[i];
-            int index = System.Array.IndexOf(Layers, layer);
-            int layerUnitCount = LayerUnitCounts[index];
+            int layerUnitCount = LayerUnitCounts[i];
             var shape = Shapes[i];
             var shipType = ShipTypes[i];
-            layer = new Layer(shape, shipType, index + 1, this.Spacing, layerUnitCount);
+            int index = SwitchLayers(i + 1);
+            layer = new Layer(shape, shipType, index, this.Spacing, layerUnitCount);
+            Layers[i] = layer;
         }
     }
-}
 
-public static class FormationGenerator
-{
-    public static Formation Generate(FormationShape[] shapes, ShipType[] shipTypes, int unitCount, int layerCount, float spacing)
+    private int SwitchLayers(int value)
     {
-        List<GameObject> gameObjectList = new List<GameObject>();
-        List<Formation> formationList = new List<Formation>();
-
-        if (shapes.Length != layerCount)
+        switch (value)
         {
-            Debug.LogWarning("Shape count and layer count dont match!");
-            return null;
+            case 5:
+                value = 1;
+                break;
+            case 4:
+                value = 2;
+                break;
+            case 3:
+                value = 3;
+                break;
+            case 2:
+                value = 4;
+                break;
+            case 1:
+                value = 5;
+                break;
+            default:
+                break;
         }
-
-        if (unitCount <= 0)
-        {
-            Debug.LogWarning("Unit count cant be 0 or smaller.");
-            return null;
-        }
-
-        Formation formation = new Formation(layerCount, shapes, shipTypes, spacing, unitCount);
-        return formation;
+        return value;
     }
 }
 
