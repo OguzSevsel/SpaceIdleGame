@@ -1285,10 +1285,6 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 986958243}
     m_Modifications:
-    - target: {fileID: 899438286673070880, guid: d5e90fbf48395fc438ac01c1d6653928, type: 3}
-      propertyPath: m_IsActive
-      value: 1
-      objectReference: {fileID: 0}
     - target: {fileID: 4129186681597277518, guid: d5e90fbf48395fc438ac01c1d6653928, type: 3}
       propertyPath: m_Pivot.x
       value: 0.5
@@ -1369,22 +1365,6 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
-    - target: {fileID: 6616651020534870887, guid: d5e90fbf48395fc438ac01c1d6653928, type: 3}
-      propertyPath: m_IsActive
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 7747473171317731513, guid: d5e90fbf48395fc438ac01c1d6653928, type: 3}
-      propertyPath: m_IsActive
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 7949469190354488606, guid: d5e90fbf48395fc438ac01c1d6653928, type: 3}
-      propertyPath: m_IsActive
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 8556731222511474447, guid: d5e90fbf48395fc438ac01c1d6653928, type: 3}
-      propertyPath: m_IsActive
-      value: 1
-      objectReference: {fileID: 0}
     - target: {fileID: 8574651628667057202, guid: d5e90fbf48395fc438ac01c1d6653928, type: 3}
       propertyPath: m_Name
       value: Panel_FormationLayerUI
@@ -1460,7 +1440,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: UnityEngine.UI::UnityEngine.UI.Image
   m_Material: {fileID: 0}
-  m_Color: {r: 0.3726415, g: 0.38002223, b: 1, a: 0.13333334}
+  m_Color: {r: 0, g: 0, b: 0, a: 0.87058824}
   m_RaycastTarget: 1
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1

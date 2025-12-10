@@ -5,6 +5,9 @@ public class ContextMenuCloser : MonoBehaviour, IPointerClickHandler
 {
     public void OnPointerClick(PointerEventData eventData)
     {
-        ContextMenuManager.Instance.HideAll();
+        if (eventData.button == PointerEventData.InputButton.Left)
+        {
+            ContextMenuManager.Instance.HideAll();
+        }
     }
 }

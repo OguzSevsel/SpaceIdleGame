@@ -1,9 +1,12 @@
+using System;
 using TMPro;
+using UnityEditor;
 using UnityEngine;
 
 public class Ship : MonoBehaviour, IDamageable
 {
     public ShipSO DataSO;
+    private Guid _id;
     public float CurrentHealth { get; private set; }
     public bool CanAction { get; set; } = false;
     public float ActionIntervalTimer { get; set; } = 0f;
@@ -18,6 +21,7 @@ public class Ship : MonoBehaviour, IDamageable
         ShipManager.Instance.RegisterShip(this);
         CreateBulletPool(10);
         CurrentHealth = DataSO.Health;
+        _id = Guid.NewGuid();
 
         if (DataSO.ShipType == ShipType.Healer || DataSO.ShipType == ShipType.Tank)
         {
@@ -25,6 +29,10 @@ public class Ship : MonoBehaviour, IDamageable
         }
     }
 
+    public Guid GetId()
+    {
+        return _id;
+    }
     private void CreateBulletPool(int count)
     {
         if (DataSO.ShipType == ShipType.Dps || DataSO.ShipType == ShipType.Tank)
@@ -132,7 +140,7 @@ public class Ship : MonoBehaviour, IDamageable
 
         if (ships.Count == 0) return null;
 
-        int index = Random.Range(0, ships.Count);
+        int index = UnityEngine.Random.Range(0, ships.Count);
         return ships[index];
     }
     

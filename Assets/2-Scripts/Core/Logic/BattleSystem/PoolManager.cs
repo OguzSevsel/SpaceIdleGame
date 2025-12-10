@@ -89,7 +89,7 @@ public class PoolManager : MonoBehaviour
             }
         }
 
-        Debug.LogWarning($"No available objects in pool, named {gameObject.name}!");
+        Debug.Log($"No available objects in pool, named {gameObject.name}!");
         return null;
     }
 

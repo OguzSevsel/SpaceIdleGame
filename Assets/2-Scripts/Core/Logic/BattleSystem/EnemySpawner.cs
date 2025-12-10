@@ -22,27 +22,12 @@ public class EnemySpawner : MonoBehaviour
     [SerializeField] private GameObject _enemyDpsShipPrefab;
     [SerializeField] private GameObject _enemyHealerShipPrefab;
     [SerializeField] private GameObject _enemyTankShipPrefab;
-    [SerializeField] private int _spawnCount = 1;
 
     public float spawnOffset = 100f;
     public float innerOffset = 2f;
 
     private GameObject _ship;
     private bool _isSpawned = false;
-
-    //This logic can be moved to a Coroutine for better performance
-    private void Update()
-    {
-        if (_isSpawned)
-        {
-            _isSpawned = false;  // run only once
-
-            foreach (KeyValuePair<Transform, SpawnSide> pair in _spawnPoints)
-            {
-                StartCoroutine(MoveObject(pair.Key.gameObject, pair.Value));
-            }
-        }
-    }
 
     private void Start()
     {
@@ -73,7 +58,11 @@ public class EnemySpawner : MonoBehaviour
                 }
             }
         }
-        _isSpawned = true;
+
+        foreach (KeyValuePair<Transform, SpawnSide> pair in _spawnPoints)
+        {
+            StartCoroutine(MoveObject(pair.Key.gameObject, pair.Value));
+        }
     }
 
     private void SpawnShipByType(ShipType shipType, Vector3 position, Quaternion rotation, Transform parent)

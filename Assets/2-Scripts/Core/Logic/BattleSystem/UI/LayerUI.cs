@@ -4,34 +4,77 @@ using TMPro;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.InputSystem;
-using UnityEngine.Rendering.UI;
 using UnityEngine.UI;
 
-public class LayerUI : MonoBehaviour, IPointerClickHandler
+public class LayerUI : MonoBehaviour, IPointerClickHandler, IPointerEnterHandler, IPointerExitHandler
 {
     private ShipType _shipType;
     private FormationShape _formationShape;
     public int layerNumber = 1;
-    [SerializeField] private List<GameObject> Images;
+    [SerializeField] private List<Sprite> _images;
+    [SerializeField] private List<string> _imageNames;
+    private Dictionary<string, Sprite> _imageDict;
     private Image _image;
     [SerializeField] private TextMeshProUGUI _layerNumberText;
-    [SerializeField] private TextMeshProUGUI _shipTypeText;
-    [SerializeField] private TextMeshProUGUI _layerShapeText;
     [SerializeField] private Color _dpsColor;
     [SerializeField] private Color _healerColor;
     [SerializeField] private Color _tankColor;
+    private Outline _outline;
 
     private void Start()
     {
         _image = GetComponent<Image>();
         gameObject.SetActive(false);
+        _imageDict = new Dictionary<string, Sprite>();
+
+        for (int i = 0; i < _images.Count; i++)
+        {
+            Sprite image = _images[i];
+            string imageName = _imageNames[i];
+
+            _imageDict.Add(imageName, image);
+        }
+
+        _image.alphaHitTestMinimumThreshold = 0.1f;
+        this._formationShape = FormationShape.Rectangle;
+        this._shipType = ShipType.Dps;
+
+        _outline = gameObject.AddComponent<Outline>();
+        _outline.effectDistance = new Vector2(2f, 2f);
+        _outline.enabled = false;
+        _outline.effectColor = _dpsColor;
+
+        SwitchImage(_formationShape, _shipType);
+        FormationCreationUI.OnFormationShapeChanged += OnFormationShapeChangedHandler;
+    }
+
+    private void OnFormationShapeChangedHandler(FormationShape shape)
+    {
+        this._formationShape = shape;
+        UpdateLayerInfo();
+        SwitchImage(_formationShape, _shipType);
+    }
+
+    private string GetImageName(FormationShape shape, ShipType type)
+    {
+        return shape.ToString() + type.ToString();
+    }
+
+    private void SwitchImage(FormationShape shape, ShipType type)
+    {
+        string imageName = GetImageName(shape, type);
+
+        var image = _imageDict[imageName];
+
+        if (image != null)
+        {
+            _image.sprite = image;
+        }
     }
 
     private void UpdateLayerInfo()
     {
         _layerNumberText.text = $"Layer {layerNumber}";
-        _shipTypeText.text = $"Ship Type: {_shipType.ToString()}";
-        _layerShapeText.text = $"Layer Shape: {_formationShape.ToString()}";
     }
 
     public void OnPointerClick(PointerEventData eventData)
@@ -55,15 +98,6 @@ public class LayerUI : MonoBehaviour, IPointerClickHandler
     {
         if (eventData.button == PointerEventData.InputButton.Right)
         {
-            var shapeSubMenu = new List<ContextMenuOption>()
-            {
-                new ContextMenuOption("Circle", OnCircleClicked),
-                new ContextMenuOption("Triangle", OnTriangleClicked),
-                new ContextMenuOption("Rectangle", OnRectangleClicked),
-                new ContextMenuOption("Pentagon", OnPentagonClicked),
-                new ContextMenuOption("Hexagon", OnHexagonClicked),
-            };
-
             var shipTypeSubMenu = new List<ContextMenuOption>()
             {
                 new ContextMenuOption("Dps", OnDpsClicked),
@@ -74,11 +108,27 @@ public class LayerUI : MonoBehaviour, IPointerClickHandler
             var options = new List<ContextMenuOption>()
             {
                 new ContextMenuOption("Change Ship Type", null, shipTypeSubMenu),
-                new ContextMenuOption("Change Shape", null, shapeSubMenu),
             };
 
             Vector2 mousePos = Mouse.current.position.ReadValue();
             ContextMenuManager.Instance.Show(mousePos, options);
+        }
+    }
+    private void SetOutlineEffectColor(ShipType type)
+    {
+        switch (type)
+        {
+            case ShipType.Dps:
+                _outline.effectColor = _dpsColor;
+                break;
+            case ShipType.Tank:
+                _outline.effectColor = _tankColor;
+                break;
+            case ShipType.Healer:
+                _outline.effectColor = _healerColor;
+                break;
+            default:
+                break;
         }
     }
 
@@ -86,50 +136,37 @@ public class LayerUI : MonoBehaviour, IPointerClickHandler
     {
         this._shipType = ShipType.Tank;
         UpdateLayerInfo();
-        _image.color = _tankColor;
+        SwitchImage(_formationShape, _shipType);
+        SetOutlineEffectColor(_shipType);
     }
 
     private void OnHealerClicked()
     {
         this._shipType = ShipType.Healer;
         UpdateLayerInfo();
-        _image.color = _healerColor;
+        SwitchImage(_formationShape, _shipType);
+        SetOutlineEffectColor(_shipType);
     }
 
     private void OnDpsClicked()
     {
         this._shipType = ShipType.Dps;
         UpdateLayerInfo();
-        _image.color = _dpsColor;
+        SwitchImage(_formationShape, _shipType);
+        SetOutlineEffectColor(_shipType);
+    }
+    private void OnDestroy()
+    {
+        FormationCreationUI.OnFormationShapeChanged -= OnFormationShapeChangedHandler;
     }
 
-    private void OnHexagonClicked()
+    public void OnPointerExit(PointerEventData eventData)
     {
-        this._formationShape = FormationShape.Hexagon;
-        UpdateLayerInfo();
+        _outline.enabled = false;
     }
 
-    private void OnPentagonClicked()
+    public void OnPointerEnter(PointerEventData eventData)
     {
-        this._formationShape = FormationShape.Pentagon;
-        UpdateLayerInfo();
-    }
-
-    private void OnRectangleClicked()
-    {
-        this._formationShape = FormationShape.Rectangle;
-        UpdateLayerInfo();
-    }
-
-    private void OnTriangleClicked()
-    {
-        this._formationShape = FormationShape.Triangle;
-        UpdateLayerInfo();
-    }
-
-    private void OnCircleClicked()
-    {
-        this._formationShape = FormationShape.Circle;
-        UpdateLayerInfo();
+        _outline.enabled = true;
     }
 }

@@ -1,10 +1,12 @@
 using System;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.EventSystems;
+using UnityEngine.InputSystem;
 using UnityEngine.UI;
 using static UnityEditor.Experimental.GraphView.GraphView;
 
-public class FormationCreationUI : MonoBehaviour
+public class FormationCreationUI : MonoBehaviour, IPointerClickHandler
 {
     [SerializeField] private Button _saveFormationButton;
     [SerializeField] private Button _addLayerButton;
@@ -14,6 +16,7 @@ public class FormationCreationUI : MonoBehaviour
 
     private int _currentLayer;
     public static event Action<Formation> OnFormationSaved;
+    public static event Action<FormationShape> OnFormationShapeChanged;
 
     private void Start()
     {
@@ -121,5 +124,48 @@ public class FormationCreationUI : MonoBehaviour
                 LayerUnitCounts[i] = unit;
             }
         }
+    }
+
+    public void OnPointerClick(PointerEventData eventData)
+    {
+        if (eventData.button == PointerEventData.InputButton.Right)
+        {
+            var options = new List<ContextMenuOption>()
+            {
+                new ContextMenuOption("Circle", OnCircleClicked),
+                new ContextMenuOption("Triangle", OnTriangleClicked),
+                new ContextMenuOption("Rectangle", OnRectangleClicked),
+                new ContextMenuOption("Pentagon", OnPentagonClicked),
+                new ContextMenuOption("Hexagon", OnHexagonClicked),
+            };
+
+            Vector2 mousePos = Mouse.current.position.ReadValue();
+            ContextMenuManager.Instance.Show(mousePos, options);
+        }
+    }
+
+    private void OnHexagonClicked()
+    {
+        OnFormationShapeChanged?.Invoke(FormationShape.Hexagon);
+    }
+
+    private void OnPentagonClicked()
+    {
+        OnFormationShapeChanged?.Invoke(FormationShape.Pentagon);
+    }
+
+    private void OnRectangleClicked()
+    {
+        OnFormationShapeChanged?.Invoke(FormationShape.Rectangle);
+    }
+
+    private void OnTriangleClicked()
+    {
+        OnFormationShapeChanged?.Invoke(FormationShape.Triangle);
+    }
+
+    private void OnCircleClicked()
+    {
+        OnFormationShapeChanged?.Invoke(FormationShape.Circle);
     }
 }
