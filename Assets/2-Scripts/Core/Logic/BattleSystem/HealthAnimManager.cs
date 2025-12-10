@@ -33,14 +33,6 @@ public class HealthAnimManager : MonoBehaviour
         var anim = new HealthAnim { duration = duration, ship = ship, timer = timer };
 
         _healerDict.Add(ship.GetId(), anim);
-
-        // otherwise add new
-        //active.Add(new HealthAnim
-        //{
-        //    ship = ship,
-        //    duration = duration,
-        //    timer = timer
-        //});
     }
 
     public void Remove(Ship ship)
@@ -81,33 +73,6 @@ public class HealthAnimManager : MonoBehaviour
                 anim.ship.ActionIntervalTimer = anim.ship.DataSO.ActionInterval;
             }
         }
-        //for (int i = active.Count - 1; i >= 0; i--)
-        //{
-        //    var anim = active[i];
-        //    anim.timer += Time.deltaTime;
-
-        //    float half = anim.duration * 0.5f;
-        //    float peakAlpha = 0.7f;
-
-        //    float alpha;
-
-        //    if (anim.timer < half)
-        //        alpha = Mathf.Lerp(0f, peakAlpha, anim.timer / half);
-        //    else
-        //        alpha = Mathf.Lerp(peakAlpha, 0f, (anim.timer - half) / half);
-
-        //    var c = anim.ship.healthSpriteRenderer.color;
-        //    c.a = alpha;
-        //    anim.ship.healthSpriteRenderer.color = c;
-
-        //    if (anim.timer >= anim.duration)
-        //    {
-        //        anim.timer = 0f;
-        //        anim.ship.Heal();
-        //        anim.ship.CanAction = false;
-        //        anim.ship.ActionIntervalTimer = anim.ship.DataSO.ActionInterval;
-        //    }
-        //}
     }
 }
 
