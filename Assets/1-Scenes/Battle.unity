@@ -556,7 +556,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c34f82f3fea9d7f4288e550b330f7b43, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::HealAnimationManager
-  baseColor: {r: 0, g: 1, b: 0.22587347, a: 1}
 --- !u!1 &373439838
 GameObject:
   m_ObjectHideFlags: 0

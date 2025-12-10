@@ -19,10 +19,9 @@ public class HealthAnimManager : MonoBehaviour
     private void Awake()
     {
         Instance = this;
-        DontDestroyOnLoad(this.gameObject);
     }
 
-    public void Add(Ship ship, float duration, float timer, float peakAlpha = 1f)
+    public void Add(Ship ship, float duration, float timer)
     {
         if (ship == null) return;
         if (ship.healthSpriteRenderer == null) return;
@@ -56,14 +55,14 @@ public class HealthAnimManager : MonoBehaviour
             anim.timer += Time.deltaTime;
 
             float half = anim.duration * 0.5f;
-            float peakAlpha = 1f;
+            float peakAlpha = 0.7f;
 
             float alpha;
 
             if (anim.timer < half)
-                alpha = Mathf.Lerp(0.5f, peakAlpha, anim.timer / half);
+                alpha = Mathf.Lerp(0f, peakAlpha, anim.timer / half);
             else
-                alpha = Mathf.Lerp(peakAlpha, 0.5f, (anim.timer - half) / half);
+                alpha = Mathf.Lerp(peakAlpha, 0f, (anim.timer - half) / half);
 
             var c = anim.ship.healthSpriteRenderer.color;
             c.a = alpha;

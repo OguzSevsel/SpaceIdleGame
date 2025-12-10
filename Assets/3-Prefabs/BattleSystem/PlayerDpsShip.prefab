@@ -57,7 +57,7 @@ SpriteRenderer:
   m_RenderingLayerMask: 4294967295
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 10754, guid: 0000000000000000f000000000000000, type: 0}
+  - {fileID: 2100000, guid: 9cfe782c41e8cd344a24a7693ff01365, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -149,7 +149,7 @@ SpriteRenderer:
   m_RenderingLayerMask: 4294967295
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 10754, guid: 0000000000000000f000000000000000, type: 0}
+  - {fileID: 2100000, guid: 9cfe782c41e8cd344a24a7693ff01365, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -197,6 +197,4 @@ MonoBehaviour:
   DataSO: {fileID: 11400000, guid: 761bd556df300e247b792c0a2ea7c16c, type: 2}
   Target: {fileID: 0}
   _cursorField: {fileID: 0}
-  healthText: {fileID: 0}
   healthSpriteRenderer: {fileID: 0}
-  fadeSystem: {fileID: 0}
